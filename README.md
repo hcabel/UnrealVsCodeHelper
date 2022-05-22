@@ -1,6 +1,6 @@
-# IDK README
+# UnrealVsCodeHelper README
 
-This is the README for your extension "IDK". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "UnrealVsCodeHelper". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
