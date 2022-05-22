@@ -12,7 +12,8 @@
 
 import * as vscode from 'vscode';
 
-const log_uvch = vscode.window.createOutputChannel("UVCH")
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const log_uvch = vscode.window.createOutputChannel("UVCH");
 
 export default {
 	natif: log_uvch,

@@ -12,7 +12,7 @@
         "@typescript-eslint/naming-convention": [
             "error",
             {
-                "selector": "memberLike",
+                "selector": "property",
                 "modifiers": ["private"],
                 "format": ["PascalCase"],
                 "leadingUnderscore": "require"
@@ -29,7 +29,7 @@
                 "leadingUnderscore": "forbid",
                 "trailingUnderscore": "forbid",
                 "custom": {
-                    "regex": "_Implementation(",
+                    "regex": "()|(_Implementation\\()",
                     "match": true
                 }
             }

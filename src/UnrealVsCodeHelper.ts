@@ -24,7 +24,7 @@ const commands: ICommands[] = [
 
 const viewsId: string[] = [
 	"ProjectView"
-]
+];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function	activate(context: vscode.ExtensionContext)
@@ -42,7 +42,7 @@ export function	activate(context: vscode.ExtensionContext)
 	viewsId.forEach((viewId: string) => {
 		log_uvch.log(`[UVHC] Register [VIEW_${viewId}]`);
 		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
-	})
+	});
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

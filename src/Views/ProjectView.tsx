@@ -19,7 +19,7 @@ function	UVCHProjectView()
 		<div>
 			Project View - ici
 		</div>
-	)
+	);
 }
 
 ReactDOM.render(
