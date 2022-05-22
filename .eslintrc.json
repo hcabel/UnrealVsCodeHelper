@@ -9,10 +9,34 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": "warn",
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "memberLike",
+                "modifiers": ["private"],
+                "format": ["PascalCase"],
+                "leadingUnderscore": "require"
+            },
+            {
+                "selector": "variable",
+                "format": ["camelCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            {
+                "selector": "function",
+                "format": ["PascalCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid",
+                "custom": {
+                    "regex": "_Implementation(",
+                    "match": true
+                }
+            }
+        ],
+        "@typescript-eslint/semi": "error",
 
-        "indent": [4, "tab"],
+        "indent": ["error", "tab"],
         "no-multi-str": 2,
         "prefer-const": "error",
         "no-var": "error",
@@ -33,7 +57,7 @@
         "no-self-assign": "error",
         "no-self-compare": "error",
         "no-new-func": "error",
-        "no-new": "error",
+        "no-new": "off",
         "curly": "error",
         "dot-notation": "error",
         "eqeqeq": "error",
