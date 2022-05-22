@@ -12,7 +12,7 @@
 
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
-import UVCHWebViewSubsystem from './Views/controllers';
+import UVCHWebViewSubsystem from './Views/WebViewSubsystem';
 
 interface	ICommands {
 	cmd: string,
