@@ -12,7 +12,7 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import UVCHDataSubsystem from '../DataSubsystem';
+import UVCHDataSubsystem from './DataSubsystem';
 import log_uvch from '../utils/log_uvch';
 
 export interface ICommand {

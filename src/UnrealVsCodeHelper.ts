@@ -12,7 +12,7 @@
 
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
-import UVCHWebViewSubsystem from './Views/WebViewSubsystem';
+import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
 import { RefreshProjectInfos_Implementation } from "./Commands/ProjectCommands";
 
 interface	ICommands {

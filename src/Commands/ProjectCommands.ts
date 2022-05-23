@@ -14,7 +14,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { IUEProject } from "../utils/UETypes";
 import log_uvch from "../utils/log_uvch";
-import UVCHDataSubsystem from "../DataSubsystem";
+import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
 
 /**
  * Read a all file parse it has a JSON object then create a IUEProject
