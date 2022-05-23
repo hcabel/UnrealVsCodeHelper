@@ -30,12 +30,13 @@ export class UVCHWebViewBase
 
 	constructor(context: vscode.ExtensionContext, bundleFileName: string, viewId: string)
 	{
-		log_uvch.log(`[UVHC] [View_${viewId}] Create`);
+		log_uvch.log(`[View_${viewId}] Create`);
 
 		this._Context = context;
 		this._BundleFileName = bundleFileName;
 		this._ViewId = viewId;
 
+		// This function is triggered by VsCode the first time the WebView is showed
 		vscode.window.registerWebviewViewProvider(this._ViewId, {
 			resolveWebviewView: (webView: vscode.WebviewView) => {
 				this.InitWebView(webView);
@@ -43,11 +44,17 @@ export class UVCHWebViewBase
 		});
 	}
 
+	/**
+	 * Init the WebView
+	 *
+	 * @param webView The WebView you want to init
+	 * @returns The WebView initialized
+	 */
 	private InitWebView(webView: vscode.WebviewView): vscode.WebviewView
 	{
 		if (this._WebView === undefined)
 		{
-			log_uvch.log(`[UVHC] [View_${this._ViewId}] Init`);
+			log_uvch.log(`[View_${this._ViewId}] Init`);
 
 			this._WebView = webView;
 			this._WebView.webview.options = {
@@ -57,12 +64,15 @@ export class UVCHWebViewBase
 				],
 			};
 
-			this._WebView.webview.onDidReceiveMessage(this.OnMessageReceived);
+			this.SetOnMessageReceived();
 			this._WebView.webview.html = this.GetHTMLHasString();
 		}
 		return (this._WebView);
 	}
 
+	/**
+	 * Get the base HTML to allow showing a React component
+	 */
 	private	GetHTMLHasString(): string
 	{
 		const reactAppPathOnDisk = vscode.Uri.file(
@@ -93,28 +103,36 @@ export class UVCHWebViewBase
 		`);
 	}
 
-	// Event triggered when the react component is calling 'props.vscode.postMessage'
-	private	OnMessageReceived(command: ICommand)
+	/**
+	 * Set the function who's gonna receive all the message from the React WebView
+	 */
+	private	SetOnMessageReceived()
 	{
-		switch (command.action) {
-		case "ExecuteCommand": // Allow React component to execute vscode commands
-			vscode.commands.executeCommand(command.content.cmd);
-			return;
-		case "ListenToDataSubsystem": // Allow React component to listen to datas
-			for (const entry of command.content) {
-				if (entry.dataKey && entry.callbackMessageType) {
-					this.AddDataListener(entry.dataKey, entry.callbackMessageType);
+		this._WebView?.webview.onDidReceiveMessage((command: ICommand) => {
+			switch (command.action) {
+			case "ExecuteCommand": // Allow React component to execute vscode commands
+				vscode.commands.executeCommand(command.content.cmd);
+				return;
+			case "ListenToDataSubsystem": // Allow React component to listen to datas
+				for (const entry of command.content) {
+					if (entry.dataKey && entry.callbackMessageType) {
+						this.AddDataListener(entry.dataKey, entry.callbackMessageType);
+					}
 				}
+				return;
+			default:
+				log_uvch.log(`[View_${this._ViewId}] Unknown vscode action: ${command.action}`);
+				return;
 			}
-			return;
-		default:
-			log_uvch.log(`[View_${this._ViewId}] Unknown vscode action: ${command.action}`);
-			return;
-		}
+		});
 	}
 
-	public	GetViewId(): string { return (this._ViewId); }
-
+	/**
+	 * Add a new listerner function to the data referencing by the key in the UVCHDataSubsystem
+	 *
+	 * @param dataKey The key who's referencing the data you want to listen
+	 * @param callbackMessageType The function that you want to be called when the data is changed
+	 */
 	private	AddDataListener(dataKey: string, callbackMessageType: string)
 	{
 		if (this._ListeningDataKeys.includes(dataKey) === false) {
@@ -130,10 +148,12 @@ export class UVCHWebViewBase
 			log_uvch.log(`[View_${this._ViewId}] You tried to listen to a datakey that you were already listening to ${dataKey}`);
 		}
 	}
+	public	GetViewId(): string { return (this._ViewId); }
 };
 
 class UVCHWebViewSubsystem
 {
+	// All of this is for having a single instance of the UVCHWebViewSubsystem
 	private static _Instance: UVCHWebViewSubsystem | undefined;
 	public static get instance(): UVCHWebViewSubsystem {
 		if (!this._Instance) {
@@ -142,18 +162,31 @@ class UVCHWebViewSubsystem
 		return (this._Instance);
 	}
 
+	// The Map where all the view has stored with there key is his viewId
 	private _Views: Map<string, UVCHWebViewBase> = new Map();
 
-	public static	RegisterNewView(context: vscode.ExtensionContext, viewname: string): string
+	/**
+	 * Register and create a new WebView
+	 *
+	 * @params context, The vscode context
+	 * @Params viewId, The Id of the new view
+	 */
+	public static	RegisterNewView(context: vscode.ExtensionContext, viewId: string): string
 	{
-		this.instance._Views.set(viewname, new UVCHWebViewBase(
+		this.instance._Views.set(viewId, new UVCHWebViewBase(
 			context,
-			`UVCH-${viewname}`,
-			viewname
+			`UVCH-${viewId}`,
+			viewId
 		));
-		return (viewname);
+		return (viewId);
 	}
 
+	/**
+	 * Get a reference on a WebView
+	 *
+	 * @param viewId The Id of the WebView you want to get
+	 * @returns The WebView or undefined if not exist
+	 */
 	public static	GetView(viewId: string): UVCHWebViewBase | undefined {
 		return (this.instance._Views.get(viewId));
 	}

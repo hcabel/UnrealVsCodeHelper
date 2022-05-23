@@ -35,22 +35,27 @@ function	UVCHProjectView(props: { vscode: any })
 		}
 	}
 
+	// Message Received from VsCode
 	function	OnMessage(message: any) {
-		if (message.data.type === "Reload-View_ProjectView") {
+		console.log(7);
+		if (message.data.type === "Update-Project-Infos") {
 			UpadateProjectInfos(message.data.data);
 		}
 	}
 
+	// Constructor
 	React.useEffect(() => {
 		window.addEventListener('message', OnMessage);
 
+		// Listen to our data changes
 		props.vscode.postMessage({
 			action: "ListenToDataSubsystem",
 			content: [
-				{ dataKey: "ProjectInfos", callbackMessageType: "Reload-View_ProjectView" }
+				{ dataKey: "ProjectInfos", callbackMessageType: "Update-Project-Infos" }
 			]
 		});
 
+		// Refresh project infos (or find them if never open before)
 		props.vscode.postMessage({
 			action: "ExecuteCommand",
 			content: {
@@ -64,10 +69,12 @@ function	UVCHProjectView(props: { vscode: any })
 	return (
 		<div>
 			{_ProjectInfos === undefined ?
+				// ERROR MSG
 				<h1 style={{ textAlign: "center" }}>
 					{_ErrorMessage}
 				</h1>
 				:
+				// INTERFACE
 				<div>
 					{_ProjectInfos.Name}
 				</div>

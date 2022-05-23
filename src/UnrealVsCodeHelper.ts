@@ -20,14 +20,21 @@ interface	ICommands {
 	func: (...args: any[]) => any
 }
 
+// An Array containing all the commands and the function to called when the command is triggered
 const commands: ICommands[] = [
 	{ cmd: "RefreshProjectInfos", func: RefreshProjectInfos_Implementation }
 ];
 
+// an array containing all the view to create
+// @note: adding a string to this is not enough
+//     You also have to add the same stringId in the 'webpack.config.js' (at the end)
+//     Then Create a file in the 'View' folder (with the same stringId)
+//     Add a view to the package.json and set his Id with the same stringId
 const viewsId: string[] = [
 	"ProjectView"
 ];
 
+// Function triggered when the 'activationEvents' in the package.json is called
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function	activate(context: vscode.ExtensionContext)
 {
