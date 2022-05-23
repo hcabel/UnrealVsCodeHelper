@@ -24,14 +24,29 @@
                 "trailingUnderscore": "forbid"
             },
             {
-                "selector": "function",
+                "selector": "variable",
+                "modifiers": ["exported"],
                 "format": ["PascalCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            {
+                // Function should be 'PascalCase' but they can have '_Implementation' has a suffix
+                "selector": "function",
+                "format": null,
                 "leadingUnderscore": "forbid",
                 "trailingUnderscore": "forbid",
                 "custom": {
-                    "regex": "()|(_Implementation\\()",
+                    "regex": "^([A-Z][A-Za-z]*)+(_Implementation)?$",
                     "match": true
                 }
+            },
+            {
+                "selector": "interface",
+                "format": ["PascalCase"],
+                "prefix": ["I"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
             }
         ],
         "@typescript-eslint/semi": "error",

@@ -12,14 +12,21 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
+import UVCHDataSubsystem from '../DataSubsystem';
 import log_uvch from '../utils/log_uvch';
+
+export interface ICommand {
+	action: string,
+	content: any
+}
 
 export class UVCHWebViewBase
 {
-	private _BundleFileName: string = '';
-	private _Context: vscode.ExtensionContext;
+	private readonly _BundleFileName: string = '';
+	private readonly _Context: vscode.ExtensionContext;
+	protected readonly _ViewId: string = '';
 	protected _WebView: vscode.WebviewView | undefined;
-	protected _ViewId: string = '';
+	protected _ListeningDataKeys: string[] = [];
 
 	constructor(context: vscode.ExtensionContext, bundleFileName: string, viewId: string)
 	{
@@ -50,6 +57,7 @@ export class UVCHWebViewBase
 				],
 			};
 
+			this._WebView.webview.onDidReceiveMessage(this.OnMessageReceived);
 			this._WebView.webview.html = this.GetHTMLHasString();
 		}
 		return (this._WebView);
@@ -73,6 +81,9 @@ export class UVCHWebViewBase
 							img-src https:;
 							script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
 							style-src vscode-resource: 'unsafe-inline';">
+					<script>
+						window.acquireVsCodeApi = acquireVsCodeApi;
+					</script>
 				</head>
 				<body>
 					<div id="root"></div>
@@ -82,7 +93,43 @@ export class UVCHWebViewBase
 		`);
 	}
 
+	// Event triggered when the react component is calling 'props.vscode.postMessage'
+	private	OnMessageReceived(command: ICommand)
+	{
+		switch (command.action) {
+		case "ExecuteCommand": // Allow React component to execute vscode commands
+			vscode.commands.executeCommand(command.content.cmd);
+			return;
+		case "ListenToDataSubsystem": // Allow React component to listen to datas
+			for (const entry of command.content) {
+				if (entry.dataKey && entry.callbackMessageType) {
+					this.AddDataListener(entry.dataKey, entry.callbackMessageType);
+				}
+			}
+			return;
+		default:
+			log_uvch.log(`[View_${this._ViewId}] Unknown vscode action: ${command.action}`);
+			return;
+		}
+	}
+
 	public	GetViewId(): string { return (this._ViewId); }
+
+	private	AddDataListener(dataKey: string, callbackMessageType: string)
+	{
+		if (this._ListeningDataKeys.includes(dataKey) === false) {
+			this._ListeningDataKeys = this._ListeningDataKeys.concat([dataKey]);
+			log_uvch.log(`[View_${this._ViewId}] Now listening to ${dataKey}`);
+
+			UVCHDataSubsystem.Listen(dataKey, (data: any) => {
+				this._WebView?.webview.postMessage({ type: callbackMessageType, data: data });
+			});
+		}
+		else {
+			// @TODO: handle unlistening and callbackMessageType update
+			log_uvch.log(`[View_${this._ViewId}] You tried to listen to a datakey that you were already listening to ${dataKey}`);
+		}
+	}
 };
 
 class UVCHWebViewSubsystem

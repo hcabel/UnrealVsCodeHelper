@@ -13,6 +13,7 @@
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
 import UVCHWebViewSubsystem from './Views/WebViewSubsystem';
+import { RefreshProjectInfos_Implementation } from "./Commands/ProjectCommands";
 
 interface	ICommands {
 	cmd: string,
@@ -20,6 +21,7 @@ interface	ICommands {
 }
 
 const commands: ICommands[] = [
+	{ cmd: "RefreshProjectInfos", func: RefreshProjectInfos_Implementation }
 ];
 
 const viewsId: string[] = [
@@ -33,14 +35,17 @@ export function	activate(context: vscode.ExtensionContext)
 
 	// Register all commands
 	commands.forEach((command: ICommands) => {
-		log_uvch.log(`[UVHC] Register commands: UVCH.${command.cmd}`);
-		context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, command.func));
+		log_uvch.log(`[UVHC] Register commands [UVCH.${command.cmd}]`);
+		context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, (...args: any[]) => {
+			log_uvch.log(`[UVCH.${command.cmd}] Fired`);
+			return (command.func(args));
+		}));
 	});
 
 	// Create Action Panel
 	log_uvch.log(`[UVHC] Create Webview`);
 	viewsId.forEach((viewId: string) => {
-		log_uvch.log(`[UVHC] Register [VIEW_${viewId}]`);
+		log_uvch.log(`[UVHC] Register view [VIEW_${viewId}]`);
 		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
 	});
 }

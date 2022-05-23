@@ -18,8 +18,8 @@
 		],
 		"commands": [
 			{
-				"command": "UVCH.OpenUVCH",
-				"title": "Open UVCH"
+				"command": "UVCH.RefreshProjectInfos",
+				"title": "Refresh Project Infos"
 			}
 		],
 		"viewsContainers": {

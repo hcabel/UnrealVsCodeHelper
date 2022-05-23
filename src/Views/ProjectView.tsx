@@ -12,17 +12,71 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { IProjectInfos } from '../Commands/ProjectCommands';
 
-function	UVCHProjectView()
+declare const window: Window & {
+	acquireVsCodeApi: any
+};
+
+function	UVCHProjectView(props: { vscode: any })
 {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_ProjectInfos, set_ProjectInfos] = React.useState<IProjectInfos | undefined>();
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_ErrorMessage, set_ErrorMessage] = React.useState<string>("Loading...");
+
+	function	UpadateProjectInfos(projectInfos: any)
+	{
+		projectInfos = projectInfos || undefined;
+		set_ProjectInfos(projectInfos);
+
+		if (!projectInfos) {
+			set_ErrorMessage("Unable to find your project");
+		}
+	}
+
+	function	OnMessage(message: any) {
+		if (message.data.type === "Reload-View_ProjectView") {
+			UpadateProjectInfos(message.data.data);
+		}
+	}
+
+	React.useEffect(() => {
+		window.addEventListener('message', OnMessage);
+
+		props.vscode.postMessage({
+			action: "ListenToDataSubsystem",
+			content: [
+				{ dataKey: "ProjectInfos", callbackMessageType: "Reload-View_ProjectView" }
+			]
+		});
+
+		props.vscode.postMessage({
+			action: "ExecuteCommand",
+			content: {
+				cmd: "UVCH.RefreshProjectInfos"
+			}
+		});
+
+		return () => window.removeEventListener('message', OnMessage);
+	}, [false]);
+
 	return (
 		<div>
-			Project View - ici
+			{_ProjectInfos === undefined ?
+				<h1 style={{ textAlign: "center" }}>
+					{_ErrorMessage}
+				</h1>
+				:
+				<div>
+					{_ProjectInfos.Name}
+				</div>
+			}
 		</div>
 	);
 }
 
 ReactDOM.render(
-	<UVCHProjectView/>,
+	<UVCHProjectView vscode={window.acquireVsCodeApi()} />,
 	document.getElementById('root')
 );
