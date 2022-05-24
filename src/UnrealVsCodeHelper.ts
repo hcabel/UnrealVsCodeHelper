@@ -13,7 +13,13 @@
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
 import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
-import { PlayGame_Implementation, RefreshProjectInfos_Implementation } from "./Commands/ProjectCommands";
+import {
+	GetProjectInfos_Implementation,
+	PlayGame_Implementation,
+	PlayEditor_Implementation,
+	BuildEditor_Implementation
+} from "./Commands/ProjectCommands";
+import { GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
 
 interface	ICommands {
 	cmd: string,
@@ -22,8 +28,11 @@ interface	ICommands {
 
 // An Array containing all the commands and the function to called when the command is triggered
 const commands: ICommands[] = [
-	{ cmd: "RefreshProjectInfos", func: RefreshProjectInfos_Implementation },
-	{ cmd: "PlayGame", func: PlayGame_Implementation }
+	{ cmd: "GetProjectInfos", func: GetProjectInfos_Implementation },
+	{ cmd: "PlayGame", func: PlayGame_Implementation },
+	{ cmd: "PlayEditor", func: PlayEditor_Implementation },
+	{ cmd: "BuildEditor", func: BuildEditor_Implementation },
+	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation }
 ];
 
 // an array containing all the view to create
@@ -31,6 +40,8 @@ const commands: ICommands[] = [
 //     You also have to add the same stringId in the 'webpack.config.js' (at the end)
 //     Then Create a file in the 'View' folder (with the same stringId)
 //     Add a view to the package.json and set his Id with the same stringId
+// @TODO: not working, in fact the view/panel is created but the 'registerWebviewViewProvider' event is never triggered :/
+//     So you can't have multiple view IDK why
 const viewsId: string[] = [
 	"ProjectView"
 ];

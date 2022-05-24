@@ -17,9 +17,33 @@
 		"configuration": [],
 		"commands": [
 			{
-				"command": "UVCH.RefreshProjectInfos",
+				"command": "UVCH.GetProjectInfos",
 				"title": "Refresh",
 				"icon": "$(refresh)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.PlayGame",
+				"title": "Play (Game)",
+				"icon": "$(play)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.PlayEditor",
+				"title": "Play (Editor)",
+				"icon": "$(play)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.BuildEditor",
+				"title": "Build (Editor)",
+				"icon": "$(package)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.GetUnrealEnginePath",
+				"title": "Find Unreal Engine folder path",
+				"icon": "$(folder)",
 				"category": "UVCH"
 			}
 		],
@@ -44,7 +68,7 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "UVCH.RefreshProjectInfos",
+					"command": "UVCH.GetProjectInfos",
 					"group": "navigation",
 					"when": "view == ProjectView"
 				}

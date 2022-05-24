@@ -5,6 +5,7 @@
 		"target": "ES2020",
 		"lib": [
 			"ES2020",
+			"ES2021.String",
 			"dom"
 		],
 		"sourceMap": true,

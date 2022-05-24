@@ -16,6 +16,9 @@ import { IUEProject } from "../utils/UETypes";
 import log_uvch from "../utils/log_uvch";
 import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
 
+///////////////////////////////////////////////////////////////////////////////
+// GetProjectInfos
+
 /**
  * Read a all file parse it has a JSON object then create a IUEProject
  * replacing all unvalid value by 'undefined'
@@ -57,7 +60,7 @@ export interface IProjectInfos {
  *
  * @return true or false depending if yes or no we succeeded finding and parsing the project
  */
-export async function	RefreshProjectInfos_Implementation(): Promise<boolean>
+export async function	GetProjectInfos_Implementation(): Promise<boolean>
 {
 	if (!vscode.workspace.workspaceFolders) {
 		return (false);
@@ -87,8 +90,7 @@ export async function	RefreshProjectInfos_Implementation(): Promise<boolean>
 
 			// store the project informations
 			// Even when undefined(if failed) to refresh all the component who depends of those informations
-			console.log(4);
-			UVCHDataSubsystem.Set('Project', uproject);
+			UVCHDataSubsystem.Set('UProject', uproject);
 			UVCHDataSubsystem.Set('ProjectInfos', uproject ? projectInfos : undefined);
 
 			// Show a nice message to inform that we found(or not) a project
@@ -107,6 +109,9 @@ export async function	RefreshProjectInfos_Implementation(): Promise<boolean>
 	return (false);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// PlayGame
+
 export async function	PlayGame_Implementation(): Promise<boolean>
 {
 	const uproject = UVCHDataSubsystem.Get('ProjectInfos');
@@ -115,4 +120,59 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 		// @TODO: start uproject with --game
 	}
 	return (false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// PlayEditor
+
+export async function	PlayEditor_Implementation(): Promise<boolean>
+{
+	const uproject = UVCHDataSubsystem.Get('ProjectInfos');
+	if (uproject)
+	{
+		// @TODO: start uproject
+	}
+	return (false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// BuildEditor
+
+export async function	BuildEditor_Implementation(): Promise<boolean>
+{
+	// Get Project data if not exist, trigger the command then try again
+	let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+	if (!projectInfos) {
+		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
+		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+		if (!projectInfos) {
+			return (false);
+		}
+	}
+
+	let enginePath: string = UVCHDataSubsystem.Get("EnginePath");
+	if (!enginePath) {
+		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
+		enginePath = UVCHDataSubsystem.Get('EnginePath');
+		if (!enginePath) {
+			return (false);
+		}
+	}
+
+	// Find Or Create terminal
+	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Play Game');
+	if (!terminal) {
+		terminal = vscode.window.createTerminal('[UVCH] Play Game');
+	}
+
+	const buildCommand: string = `${enginePath}\\Engine\\Build\\BatchFiles\\Build.bat`;
+	const args: string[] = [
+		`${projectInfos.Name}Editor`,
+		"Win64",
+		"Development",
+		`'${projectInfos.Path}/${projectInfos.Name}.uproject'`,
+		"-waitmutex"
+	];
+	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
+	return (true);
 }

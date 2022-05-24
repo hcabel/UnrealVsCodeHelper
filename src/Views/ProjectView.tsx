@@ -61,7 +61,7 @@ function	UVCHProjectView(props: { vscode: any })
 		props.vscode.postMessage({
 			action: "ExecuteCommand",
 			content: {
-				cmd: "UVCH.RefreshProjectInfos"
+				cmd: "UVCH.GetProjectInfos"
 			}
 		});
 
