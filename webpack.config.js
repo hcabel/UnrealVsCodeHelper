@@ -30,6 +30,10 @@ const extensionConfig = {
 	module: {
 		rules: [
 			{
+				test: /\.(css)$/i,
+				use: ["style-loader", "css-loader"],
+			},
+			{
 				test: /\.(ts|tsx|js|jsx)$/,
 				exclude: /node_modules/,
 				use: {
@@ -48,7 +52,7 @@ const extensionConfig = {
 	},
 };
 
-function  GenerateAllViewConfigutation(views) {
+function GenerateAllViewConfigutation(views) {
 	return (views.map((entry) => {
 		return ({
 			target: ['web'],
@@ -65,6 +69,10 @@ function  GenerateAllViewConfigutation(views) {
 			},
 			module: {
 				rules: [
+					{
+						test: /\.(css)$/i,
+						use: ["style-loader", "css-loader"],
+					},
 					{
 						test: /\.(ts|tsx|js|jsx)$/,
 						exclude: /node_modules/,
@@ -86,7 +94,8 @@ function  GenerateAllViewConfigutation(views) {
 	}));
 }
 
-module.exports = [ extensionConfig, ...GenerateAllViewConfigutation([
-			"ProjectView"
+module.exports = [ extensionConfig, ...GenerateAllViewConfigutation(
+	[
+		"ProjectView"
 	])
 ];

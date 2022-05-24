@@ -13,7 +13,7 @@
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
 import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
-import { RefreshProjectInfos_Implementation } from "./Commands/ProjectCommands";
+import { PlayGame_Implementation, RefreshProjectInfos_Implementation } from "./Commands/ProjectCommands";
 
 interface	ICommands {
 	cmd: string,
@@ -22,7 +22,8 @@ interface	ICommands {
 
 // An Array containing all the commands and the function to called when the command is triggered
 const commands: ICommands[] = [
-	{ cmd: "RefreshProjectInfos", func: RefreshProjectInfos_Implementation }
+	{ cmd: "RefreshProjectInfos", func: RefreshProjectInfos_Implementation },
+	{ cmd: "PlayGame", func: PlayGame_Implementation }
 ];
 
 // an array containing all the view to create

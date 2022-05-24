@@ -106,3 +106,13 @@ export async function	RefreshProjectInfos_Implementation(): Promise<boolean>
 	vscode.window.showErrorMessage("[UVCH] Unable to find valid Unreal project"); // @TODO: add report action
 	return (false);
 }
+
+export async function	PlayGame_Implementation(): Promise<boolean>
+{
+	const uproject = UVCHDataSubsystem.Get('ProjectInfos');
+	if (uproject)
+	{
+		// @TODO: start uproject with --game
+	}
+	return (false);
+}

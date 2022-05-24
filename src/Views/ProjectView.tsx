@@ -13,6 +13,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { IProjectInfos } from '../Commands/ProjectCommands';
+import ToolBar from './components/Toolbar';
+import { HorizontalBox } from './style/BaseStyle';
 
 declare const window: Window & {
 	acquireVsCodeApi: any
@@ -76,7 +78,15 @@ function	UVCHProjectView(props: { vscode: any })
 				:
 				// INTERFACE
 				<div>
-					{_ProjectInfos.Name}
+					<div style={HorizontalBox} >
+						<h3 style={{ marginTop: "0px" }}>
+							{_ProjectInfos.Name}
+						</h3>
+						<h5 style={{ marginTop: "0px" }}>
+							{_ProjectInfos.UnrealVersion}
+						</h5>
+					</div>
+					<ToolBar />
 				</div>
 			}
 		</div>
