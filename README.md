@@ -1,6 +1,8 @@
 # UnrealVsCodeHelper README
 
 ![UnrealVersion](https://img.shields.io/badge/Compatibility-Window-orange)
+![OpenSource](https://img.shields.io/badge/repo-OpenSource-brightgreen)
+![OpenSource](https://img.shields.io/badge/contribution-Very%20welcome-blue)
 
 Hi,I was sick of **VisualStudio20XX** and sick of having **no intellisense**.<br/>
 So I dedcided to make **my own extension** to fix all the issues I face while developing Unreal Tools/Project by making my own extesion.<br/>
@@ -23,6 +25,8 @@ No need to mess with the launch/task.json with the ToolBar you can **easily laun
 - Parse your project infos
 - Add an **UnrealEngine panel** in the ActivityBar
 - **Tools box** allowing you to start/launch/build your project
+	##### 0.1.1
+	- Bug/Design fixing
 
 ------------------------------------------------------------------------------------------------------------------------
 
