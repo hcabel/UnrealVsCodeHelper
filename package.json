@@ -4,7 +4,7 @@
 	"displayName": "UnrealVsCodeHelper",
 	"description": "This is an extension which give some tools to helps you code in UE with VsCode",
 	"version": "0.1.1",
-	"icon": "./resources/UVCHExtensionIcon.png",
+	"icon": "resources/UVCHExtensionIcon.png",
 	"repository": {
 		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
 	},
@@ -20,6 +20,12 @@
 	"main": "./dist/extension.js",
 	"contributes": {
 		"configuration": [],
+		"keybindings": [
+			{
+				"command": "UVCH.SwitchHeaderCppFile",
+				"key": "alt+o"
+			}
+		],
 		"commands": [
 			{
 				"command": "UVCH.GetProjectInfos",
@@ -49,6 +55,12 @@
 				"command": "UVCH.GetUnrealEnginePath",
 				"title": "Find Unreal Engine folder path",
 				"icon": "$(folder)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.SwitchHeaderCppFile",
+				"title": "Switch between header/cpp file",
+				"icon": "$(arrow-swap)",
 				"category": "UVCH"
 			}
 		],

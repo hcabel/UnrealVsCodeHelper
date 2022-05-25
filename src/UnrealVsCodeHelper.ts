@@ -20,6 +20,7 @@ import {
 	BuildEditor_Implementation
 } from "./Commands/ProjectCommands";
 import { GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
+import { SwitchHeaderCppFile_Implementation } from './Commands/FilesCommands';
 
 interface	ICommands {
 	cmd: string,
@@ -32,7 +33,8 @@ const commands: ICommands[] = [
 	{ cmd: "PlayGame", func: PlayGame_Implementation },
 	{ cmd: "PlayEditor", func: PlayEditor_Implementation },
 	{ cmd: "BuildEditor", func: BuildEditor_Implementation },
-	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation }
+	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation },
+	{ cmd: "SwitchHeaderCppFile", func: SwitchHeaderCppFile_Implementation }
 ];
 
 // an array containing all the view to create
