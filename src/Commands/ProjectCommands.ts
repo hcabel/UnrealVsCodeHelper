@@ -93,11 +93,7 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 			UVCHDataSubsystem.Set('UProject', uproject);
 			UVCHDataSubsystem.Set('ProjectInfos', uproject ? projectInfos : undefined);
 
-			// Show a nice message to inform that we found(or not) a project
-			if (uproject) {
-				vscode.window.showInformationMessage(`[UVCH] Project found: '${projectInfos.Name}' UE${projectInfos.UnrealVersion}.`);
-			}
-			else {
+			if (!uproject) {
 				vscode.window.showErrorMessage(`[UVCH] Unable to parse '${file}'`);
 			}
 
@@ -127,12 +123,43 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 
 export async function	PlayEditor_Implementation(): Promise<boolean>
 {
-	const uproject = UVCHDataSubsystem.Get('ProjectInfos');
-	if (uproject)
-	{
-		// @TODO: start uproject
+	await vscode.commands.executeCommand("UVCH.BuildEditor");
+
+	// Get Project data if not exist, trigger the command then try again
+	let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+	if (!projectInfos) {
+		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
+		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+		if (!projectInfos) {
+			return (false);
+		}
 	}
-	return (false);
+
+	let enginePath: string = UVCHDataSubsystem.Get("EnginePath");
+	if (!enginePath) {
+		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
+		enginePath = UVCHDataSubsystem.Get('EnginePath');
+		if (!enginePath) {
+			return (false);
+		}
+	}
+
+	// Find Or Create terminal
+	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Terminal');
+	if (!terminal) {
+		terminal = vscode.window.createTerminal('[UVCH] Terminal');
+	}
+
+	// The .exe is changing depending of the UE version
+	// @TODO: Find a better way to do this
+	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
+	const buildCommand: string = `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`;
+	const args: string[] = [
+		`'${projectInfos.Path}/${projectInfos.Name}.uproject'`,
+	];
+	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
+	terminal.sendText(`exit`); // We exit the terminal at the end because I think it's not usefull to keep it
+	return (true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -160,9 +187,9 @@ export async function	BuildEditor_Implementation(): Promise<boolean>
 	}
 
 	// Find Or Create terminal
-	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Play Game');
+	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Terminal');
 	if (!terminal) {
-		terminal = vscode.window.createTerminal('[UVCH] Play Game');
+		terminal = vscode.window.createTerminal('[UVCH] Terminal');
 	}
 
 	const buildCommand: string = `${enginePath}\\Engine\\Build\\BatchFiles\\Build.bat`;
