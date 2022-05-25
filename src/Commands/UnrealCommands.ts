@@ -38,6 +38,9 @@ export async function	GetUnrealEnginePath_Implementation(): Promise<boolean>
 		}
 	}
 
+	// @TODO: Check if the path is set in the UVCH config
+	// @TODO: Before looking in all the files make sure the Engine is not in the vscode workspace
+
 	// Find all 'Program Files' folders
 	const startPath = 'C:/';
 	const programFilesPaths = GetAllMatchDirPath(startPath, RegExp(".*Program Files.*"));

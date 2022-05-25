@@ -18,6 +18,16 @@ import "./ToolBar.css";
 
 export default function ToolBar(props: { vscode: any })
 {
+	function	OnPlayGameButtonClick()
+	{
+		props.vscode.postMessage({
+			action: "ExecuteCommand",
+			content: {
+				cmd: "UVCH.PlayGame"
+			}
+		});
+	}
+
 	function	OnPlayEditorButtonClick()
 	{
 		props.vscode.postMessage({
@@ -42,7 +52,10 @@ export default function ToolBar(props: { vscode: any })
 		<div style={{ ...HorizontalBox, justifyContent: "center"}}>
 			<div style={{ ...HorizontalBox, alignItems: 'center', width: "75%", backgroundColor: "#383838", borderRadius: "5px", padding: "2px 5px", justifyContent: "space-around" }} >
 				<Tooltip msg="Play Game">
-					<svg className="IconSvg" width="20" height="20" viewBox="0 0 20 20" fill="#89d185">
+					<svg className="IconSvg" width="20" height="20"
+						viewBox="0 0 20 20" fill="#89d185"
+						onClick={OnPlayGameButtonClick}
+					>
 						<path d="M3.1 17.9L17.4 10.2C17.9 9.9 17.9 9.2 17.4 8.9L3.1 1.1C2.6 0.799997 2 1.2 2 1.8V17.3C2 17.8 2.6 18.2 3.1 17.9Z"/>
 					</svg>
 				</Tooltip>

@@ -93,7 +93,8 @@ function	UVCHProjectView(props: { vscode: any })
 							left: '0',
 							right: '0',
 							margin: 'auto',
-							maxWidth: '350px'
+							maxWidth: '350px',
+							width: '100%'
 						}}
 						src="https://i.giphy.com/media/Gm5cxiFJRVf0YZecFm/giphy.webp"
 					/>
