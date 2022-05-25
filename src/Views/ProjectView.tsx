@@ -97,6 +97,18 @@ function	UVCHProjectView(props: { vscode: any })
 						}}
 						src="https://i.giphy.com/media/Gm5cxiFJRVf0YZecFm/giphy.webp"
 					/>
+					<div
+						style={{
+							position: "absolute",
+							bottom: '0',
+							left: '0',
+							padding: "0 5px",
+							fontSize: '11px'
+						}}
+					>
+						{/* @TODO: Do this programmatically */}
+						Last update: <span style={{ fontWeight: 'bold' }}>25/05/2022</span>
+					</div>
 				</div>
 			}
 		</div>
