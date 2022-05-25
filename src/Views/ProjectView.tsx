@@ -86,6 +86,17 @@ function	UVCHProjectView(props: { vscode: any })
 						</h5>
 					</div>
 					<ToolBar vscode={props.vscode} />
+					<img
+						style={{
+							position: "absolute",
+							bottom: '0',
+							left: '0',
+							right: '0',
+							margin: 'auto',
+							maxWidth: '350px'
+						}}
+						src="https://i.giphy.com/media/Gm5cxiFJRVf0YZecFm/giphy.webp"
+					/>
 				</div>
 			}
 		</div>
