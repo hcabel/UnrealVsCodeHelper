@@ -1,8 +1,10 @@
 {
 	"name": "uvch",
-	"displayName": "UnrealCodeHelper",
+	"publisher": "HugoCabel",
+	"displayName": "UnrealVsCodeHelper",
 	"description": "This is an extension which give some tools to helps you code in UE with VsCode",
-	"version": "0.0.1",
+	"version": "0.1.1",
+	"icon": "./resources/UVCHExtensionIcon.png",
 	"repository": {
 		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
 	},
@@ -55,7 +57,7 @@
 				{
 					"id": "UVCH",
 					"title": "Unreal VsCode Helper",
-					"icon": "resources/UnrealIcon.png"
+					"icon": "./resources/UnrealIcon.png"
 				}
 			]
 		},

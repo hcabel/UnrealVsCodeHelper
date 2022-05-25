@@ -102,6 +102,10 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 		workspaceFoldersIndex++;
 	}
 	vscode.window.showErrorMessage("[UVCH] Unable to find valid Unreal project"); // @TODO: add report action
+
+	// Refresh all components
+	UVCHDataSubsystem.Set('UProject', undefined);
+	UVCHDataSubsystem.Set('ProjectInfos', undefined);
 	return (false);
 }
 
