@@ -94,14 +94,13 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 			UVCHDataSubsystem.Set('ProjectInfos', uproject ? projectInfos : undefined);
 
 			if (!uproject) {
-				vscode.window.showErrorMessage(`[UVCH] Unable to parse '${file}'`);
+				vscode.window.showErrorMessage(`[UVCH] Unable to parse '${file}'`); // @TODO: add report action in case it's an error
 			}
 
 			return (uproject === undefined ? true : false); // @TODO: UVCH is not handling multiple unreal project at the same time YET
 		}
 		workspaceFoldersIndex++;
 	}
-	vscode.window.showErrorMessage("[UVCH] Unable to find valid Unreal project"); // @TODO: add report action
 
 	// Refresh all components
 	UVCHDataSubsystem.Set('UProject', undefined);
