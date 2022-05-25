@@ -39,7 +39,6 @@ function	UVCHProjectView(props: { vscode: any })
 
 	// Message Received from VsCode
 	function	OnMessage(message: any) {
-		console.log(7);
 		if (message.data.type === "Update-Project-Infos") {
 			UpadateProjectInfos(message.data.data);
 		}
@@ -86,7 +85,7 @@ function	UVCHProjectView(props: { vscode: any })
 							{_ProjectInfos.UnrealVersion}
 						</h5>
 					</div>
-					<ToolBar />
+					<ToolBar vscode={props.vscode} />
 				</div>
 			}
 		</div>

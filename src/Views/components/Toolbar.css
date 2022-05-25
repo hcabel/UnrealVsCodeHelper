@@ -1,0 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Toolbar.css                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/25 10:26:43 by HugoCabel         #+#    #+#             */
+/*   Updated: 2022/05/25 10:26:43 by HugoCabel        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+.IconSvg {
+	box-sizing: border-box;
+	width: 25px;
+	height: 25px;
+	cursor: pointer;
+	padding: 2px;
+	border-radius: 5px;
+}
+
+.IconSvg:hover {
+	border: 1px solid white;
+}
