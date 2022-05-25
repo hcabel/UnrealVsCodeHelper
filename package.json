@@ -3,6 +3,9 @@
 	"displayName": "UnrealCodeHelper",
 	"description": "This is an extension which give some tools to helps you code in UE with VsCode",
 	"version": "0.0.1",
+	"repository": {
+		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
+	},
 	"engines": {
 		"vscode": "^1.67.0"
 	},
