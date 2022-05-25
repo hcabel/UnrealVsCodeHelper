@@ -108,6 +108,11 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 ///////////////////////////////////////////////////////////////////////////////
 // PlayGame
 
+/**
+ * Launch the project in game mode
+ *
+ * @returns If the command as successfully been send to the terminal
+ */
 export async function	PlayGame_Implementation(): Promise<boolean>
 {
 	await vscode.commands.executeCommand("UVCH.BuildEditor");
@@ -153,6 +158,11 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 ///////////////////////////////////////////////////////////////////////////////
 // PlayEditor
 
+/**
+ * Launch the Unreal Editor with the current project
+ *
+ * @returns If the command as successfully been send to the terminal
+ */
 export async function	PlayEditor_Implementation(): Promise<boolean>
 {
 	await vscode.commands.executeCommand("UVCH.BuildEditor");
@@ -197,6 +207,11 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 ///////////////////////////////////////////////////////////////////////////////
 // BuildEditor
 
+/**
+ * Launch the Unreal builder with the current project
+ *
+ * @returns If the command as successfully been send to the terminal
+ */
 export async function	BuildEditor_Implementation(): Promise<boolean>
 {
 	// Get Project data if not exist, trigger the command then try again
