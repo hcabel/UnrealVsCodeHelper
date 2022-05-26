@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
 import { IProjectInfos } from "../Commands/ProjectCommands";
 import log_uvch from "../utils/log_uvch";
@@ -71,6 +72,12 @@ export default class UVHCSwitchFileSubsystem
 			}
 			vscode.window.showErrorMessage(`[UVCH] Failed to open switch file: ${switchFilePath}`);
 		}
+		const filePath = vscode.window.activeTextEditor?.document.fileName.replace('\\', '/') || "";
+		const extension = path.extname(filePath);
+		if ([".h", ".hpp", ".cpp"].includes(extension)) {
+			log_uvch.log(`[SWITCH] No switch file found ${path.basename(filePath)}`);
+			vscode.window.showErrorMessage("[UVCH] No SwitchFile found !"); // @TODO: add report action
+		}
 		return (false);
 	}
 	public static	SwitchFile(): Promise<boolean> {
@@ -124,11 +131,6 @@ export default class UVHCSwitchFileSubsystem
 			UVCHDataSubsystem.Set("SwitchFile", switchFile);
 			return (true);
 		}
-		const extension = switchSourceFile.substring(switchSourceFile.lastIndexOf("."));
-		if ([".h", ".hpp", ".cpp"].includes(extension)) {
-			log_uvch.log(`[SWITCH] No switch file found ${switchSourceFile}`);
-			vscode.window.showErrorMessage('[UVCH] No SwitchFile found'); // @TODO: add report action
-		}
 		return (false);
 	}
 
@@ -178,6 +180,19 @@ export default class UVHCSwitchFileSubsystem
 		}
 
 		// TECHNIQUE: 2, Find the header file in the same folder
+
+		// Get all files in the same folder as an array of full path
+		const filesInCurrentFolder = fs.readdirSync(`${rootPath}/${switchSourceFilePath}`)
+			.map((file: string) => `${rootPath}/${switchSourceFilePath}/${file}`);
+
+		// For each full path, check if it is the SwitchFile we are looking for
+		for (const file of filesInCurrentFolder) {
+			if (file.endsWith(`${switchSourceFileNameNoExtension}.h`) || file.endsWith(`${switchSourceFileNameNoExtension}.hpp`)) {
+				log_uvch.log(`[SWITCH] Found header file: '${path.basename(file)}'`);
+				return (file);
+			}
+		}
+
 		// @TODO: Find the header file in the same folder
 		return (undefined);
 	}
@@ -198,6 +213,20 @@ export default class UVHCSwitchFileSubsystem
 			rootPath, switchSourceFileNameNoExtension, switchSourceFilePath, [".cpp"]);
 		if (resultOne !== undefined) {
 			return (resultOne);
+		}
+
+		// TECHNIQUE: 2, Find the header file in the same folder
+
+		// Get all files in the same folder as an array of full path
+		const filesInCurrentFolder = fs.readdirSync(`${rootPath}/${switchSourceFilePath}`)
+			.map((file: string) => `${rootPath}/${switchSourceFilePath}/${file}`);
+
+		// For each full path, check if it is the SwitchFile we are looking for
+		for (const file of filesInCurrentFolder) {
+			if (file.endsWith(`${switchSourceFileNameNoExtension}.cpp`)) {
+				log_uvch.log(`[SWITCH] Found header file: '${path.basename(file)}'`);
+				return (file);
+			}
 		}
 
 		return (undefined);
