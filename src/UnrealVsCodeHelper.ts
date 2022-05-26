@@ -73,29 +73,8 @@ export function	activate(context: vscode.ExtensionContext)
 		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
 	});
 
-	// Create Switch File status bar
-	const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
-	switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
-	UVCHDataSubsystem.Listen("SwitchFile", (data: any) => {
-		if (data) {
-			const fileName = path.basename(data);
-			switchFileStatusbar.text = `[${fileName}]`;
-			switchFileStatusbar.tooltip = `Switch to ${fileName}`;
-			switchFileStatusbar.backgroundColor = undefined;
-		}
-		else {
-			const extension = path.extname(vscode.window.activeTextEditor?.document.fileName || "");
-			if (extension === ".h" || extension === ".hpp" || extension === ".cpp") {
-				switchFileStatusbar.tooltip = `Sorry but we were not able to find matching the file`;
-				switchFileStatusbar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
-			}
-			switchFileStatusbar.text = `[Unknown]`;
-		}
-	});
-	switchFileStatusbar.show();
-
 	// Init SwitchFile Subsystem
-	UVHCSwitchFileSubsystem.init();
+	UVHCSwitchFileSubsystem.Init();
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

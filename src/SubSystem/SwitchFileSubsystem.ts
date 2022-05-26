@@ -17,6 +17,11 @@ import { IProjectInfos } from "../Commands/ProjectCommands";
 import log_uvch from "../utils/log_uvch";
 import UVCHDataSubsystem from "./DataSubsystem";
 
+export interface ISwitchFile {
+	srcPath: string,
+	destPath: string
+}
+
 export default class UVHCSwitchFileSubsystem
 {
 	private static _Instance: UVHCSwitchFileSubsystem | undefined;
@@ -26,13 +31,36 @@ export default class UVHCSwitchFileSubsystem
 		}
 		return (this._Instance);
 	}
-	public static	init(): UVHCSwitchFileSubsystem
-	{
+
+	constructor() {
+		this.Init();
+	}
+	public static	Init(): UVHCSwitchFileSubsystem {
 		return (this.instance);
 	}
-
-	constructor()
+	public	Init()
 	{
+		// Create Switch File status bar
+		const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
+		switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
+		UVCHDataSubsystem.Listen("SwitchFile", (data: ISwitchFile) => {
+			if (data) {
+				const fileName = path.basename(data.destPath);
+				switchFileStatusbar.text = `[${fileName}]`;
+				switchFileStatusbar.tooltip = `Switch to ${fileName}`;
+				switchFileStatusbar.backgroundColor = undefined;
+			}
+			else {
+				const extension = path.extname(vscode.window.activeTextEditor?.document.fileName || "");
+				if (extension === ".h" || extension === ".hpp" || extension === ".cpp") {
+					switchFileStatusbar.tooltip = `Sorry but we were not able to find matching the file`;
+					switchFileStatusbar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
+				}
+				switchFileStatusbar.text = `[Unknown]`;
+			}
+		});
+		switchFileStatusbar.show();
+
 		// Find current SwitchFile
 		const currentDocument = vscode.window.activeTextEditor?.document;
 		if (currentDocument) {
@@ -41,17 +69,11 @@ export default class UVHCSwitchFileSubsystem
 
 		// Listen when you focusing on a file and update the 'SwitchFile' (To switch quicker between header/cpp)
 		vscode.window.onDidChangeActiveTextEditor(async(ev: vscode.TextEditor | undefined) => {
-			UVCHDataSubsystem.Set("SwitchFile", undefined);
-			if (ev && ev.viewColumn) {
+			if (ev && ev.viewColumn && ev.viewColumn >= vscode.ViewColumn.One) {
 				UVHCSwitchFileSubsystem.RequestFindSwitchFile(ev.document);
 			}
 		});
 	}
-
-	// Current switch request
-	private _PendingRequest: Promise<boolean> | undefined = undefined;
-	// If the switch request should be cancelled
-	private _Abandonned: boolean = false;
 
 	/**
 	 * Switch to the file associated with the current file focused in the editor
@@ -59,18 +81,18 @@ export default class UVHCSwitchFileSubsystem
 	 */
 	public async	SwitchFile(): Promise<boolean>
 	{
-		const switchFilePath: string = UVCHDataSubsystem.Get("SwitchFile");
+		const switchFilePath = UVCHDataSubsystem.Get<ISwitchFile>("SwitchFile");
 		if (switchFilePath) {
 
-			log_uvch.log(`[Switch] Switching to file: '${switchFilePath}'`);
+			log_uvch.log(`[Switch] Switching to file: '${path.basename(switchFilePath.destPath)}'`);
 			// Open switch file from path
 
-			const switchFileDoc = await vscode.workspace.openTextDocument(switchFilePath);
+			const switchFileDoc = await vscode.workspace.openTextDocument(switchFilePath.destPath);
 			if (switchFileDoc) {
 				await vscode.window.showTextDocument(switchFileDoc, { preview: false });
 				return (true);
 			}
-			vscode.window.showErrorMessage(`[UVCH] Failed to open switch file: ${switchFilePath}`);
+			vscode.window.showErrorMessage(`[UVCH] Failed to open switch file: ${switchFilePath.destPath}`);
 		}
 		const filePath = vscode.window.activeTextEditor?.document.fileName.replace('\\', '/') || "";
 		const extension = path.extname(filePath);
@@ -91,18 +113,20 @@ export default class UVHCSwitchFileSubsystem
 	 */
 	public async	RequestFindSwitchFile(document: vscode.TextDocument)
 	{
-		// If there is a pending request, abandon it
-		// if (!this._PendingRequest) {
-		// 	this._Abandonned = true;
-		// 	await this._PendingRequest;
-		// 	this._Abandonned = false;
-		// }
+		// If you currently are at the destination of the previous switch file request, swap values instead of doing a new request
+		const oldSwitchFile: ISwitchFile | undefined = UVCHDataSubsystem.Get("SwitchFile");
+		if (oldSwitchFile && path.basename(oldSwitchFile.destPath) === path.basename(document.fileName)) {
+			UVCHDataSubsystem.Set<ISwitchFile>("SwitchFile", {
+				srcPath: oldSwitchFile.destPath,
+				destPath: oldSwitchFile.srcPath
+			});
+			return;
+		}
 
+		UVCHDataSubsystem.Set("SwitchFile", undefined);
 		// Create a new request, who's gonna find the switch file and store it in the data subsystem
-		this._PendingRequest = new Promise<boolean>(async(resolve) => {
+		new Promise<boolean>(async(resolve) => {
 			resolve(await this.FindSwitchFileRequest(document));
-		}).finally(() => {
-			this._PendingRequest = undefined;
 		});
 
 	}
@@ -128,7 +152,10 @@ export default class UVHCSwitchFileSubsystem
 		const switchFile = this.FindSwitchFile(document, `${projectInfos.RootPath}/Source`);
 		if (switchFile) {
 			log_uvch.log(`[SWITCH] Switch file found: '${switchFile.substring(switchFile.lastIndexOf("/") + 1)}'`);
-			UVCHDataSubsystem.Set("SwitchFile", switchFile);
+			UVCHDataSubsystem.Set<ISwitchFile>("SwitchFile", {
+				srcPath: documentPath,
+				destPath: switchFile
+			});
 			return (true);
 		}
 		return (false);

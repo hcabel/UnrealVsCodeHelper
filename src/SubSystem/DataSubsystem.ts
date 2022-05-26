@@ -107,7 +107,7 @@ export default class UVCHDataSubsystem
 	 * @param key The key how's referencing your data
 	 * @returns The data or undefined if key not exist
 	 */
-	public static Get(key: string) {
+	public static Get<T = any>(key: string): T {
 		return (this.instance._Datas.get(key)?.data);
 	}
 
@@ -117,12 +117,12 @@ export default class UVCHDataSubsystem
 	 * @param key The key how's gonna reference your data (or already is if exist)
 	 * @param value The value of the data that you want to add/update
 	 */
-	public static Set(key: string, value: any) {
+	public static Set<T = any>(key: string, value: T) {
 		const data = this.instance._Datas.get(key);
 
 		if (!data) {
 			// Not already exist, create new one
-			this.instance._Datas.set(key, new DataPropertie<any>(value));
+			this.instance._Datas.set(key, new DataPropertie<T>(value));
 		}
 		else {
 			// Already exist, update value
