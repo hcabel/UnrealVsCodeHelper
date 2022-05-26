@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 import log_uvch from './utils/log_uvch';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
 import {
@@ -22,6 +23,7 @@ import {
 import {GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
 import { SwitchHeaderCppFile_Implementation } from './Commands/FilesCommands';
 import UVHCSwitchFileSubsystem from './SubSystem/SwitchFileSubsystem';
+import UVCHDataSubsystem from './SubSystem/DataSubsystem';
 
 interface	ICommands {
 	cmd: string,
@@ -70,6 +72,27 @@ export function	activate(context: vscode.ExtensionContext)
 		log_uvch.log(`[UVHC] Register view [VIEW_${viewId}]`);
 		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
 	});
+
+	// Create Switch File status bar
+	const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
+	switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
+	UVCHDataSubsystem.Listen("SwitchFile", (data: any) => {
+		if (data) {
+			const fileName = path.basename(data);
+			switchFileStatusbar.text = `[${fileName}]`;
+			switchFileStatusbar.tooltip = `Switch to ${fileName}`;
+			switchFileStatusbar.backgroundColor = undefined;
+		}
+		else {
+			const extension = path.extname(vscode.window.activeTextEditor?.document.fileName || "");
+			if (extension === ".h" || extension === ".hpp" || extension === ".cpp") {
+				switchFileStatusbar.tooltip = `Sorry but we were not able to find matching the file`;
+				switchFileStatusbar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
+			}
+			switchFileStatusbar.text = `[Unknown]`;
+		}
+	});
+	switchFileStatusbar.show();
 
 	// Init SwitchFile Subsystem
 	UVHCSwitchFileSubsystem.init();

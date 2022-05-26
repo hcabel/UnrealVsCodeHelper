@@ -27,6 +27,9 @@ export class DataPropertie<T>
 		this._Data = data;
 		if (listeners) {
 			this._Listeners = listeners;
+			for (const listener of this._Listeners) {
+				listener(this._Data);
+			}
 		}
 	}
 
@@ -138,12 +141,12 @@ export default class UVCHDataSubsystem
 
 		if (!data) {
 			// If key doesn't exist create one with the listener and a value of undefined
-			// @Note: Listener are not triggered at init
 			this.instance._Datas.set(key, new DataPropertie<any>(undefined, [listener]));
 		}
 		else {
 			// Add listener
 			data.Listen(listener);
+			listener(data.data);
 		}
 	}
 

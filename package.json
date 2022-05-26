@@ -8,6 +8,10 @@
 	"repository": {
 		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
 	},
+	"bugs": {
+		"url": "https://github.com/hcabel/UnrealVsCodeHelper/issues",
+		"email": "coding@hugocabel.com"
+	},
 	"engines": {
 		"vscode": "^1.67.0"
 	},
