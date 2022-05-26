@@ -19,8 +19,9 @@ import {
 	PlayEditor_Implementation,
 	BuildEditor_Implementation
 } from "./Commands/ProjectCommands";
-import { GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
+import {GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
 import { SwitchHeaderCppFile_Implementation } from './Commands/FilesCommands';
+import UVHCSwitchFileSubsystem from './SubSystem/SwitchFileSubsystem';
 
 interface	ICommands {
 	cmd: string,
@@ -69,6 +70,9 @@ export function	activate(context: vscode.ExtensionContext)
 		log_uvch.log(`[UVHC] Register view [VIEW_${viewId}]`);
 		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
 	});
+
+	// Init SwitchFile Subsystem
+	UVHCSwitchFileSubsystem.init();
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

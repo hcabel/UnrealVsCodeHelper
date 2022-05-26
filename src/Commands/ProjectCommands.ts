@@ -49,7 +49,7 @@ function	CastFileHasUEProject(path: string, file: string): IUEProject | undefine
 // Project infos that we want to keep but who's not referencing into the .uproject
 export interface IProjectInfos {
 	Name: string,
-	Path: string,
+	RootPath: string,
 	UnrealVersion: string,
 	WorkspaceFoldersIndex: number,
 }
@@ -83,7 +83,7 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 			const uproject = CastFileHasUEProject(folder.uri.fsPath, file);
 			const projectInfos: IProjectInfos = {
 				Name: file.replace(".uproject", ''),
-				Path: folder.uri.fsPath,
+				RootPath: folder.uri.fsPath.toString().replaceAll('\\', '/'),
 				UnrealVersion: uproject?.EngineAssociation || "",
 				WorkspaceFoldersIndex: workspaceFoldersIndex
 			};
@@ -150,7 +150,7 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
 	const buildCommand: string = `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`;
 	const args: string[] = [
-		`'${projectInfos.Path}/${projectInfos.Name}.uproject'`,
+		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
 		`-game`
 	];
 	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
@@ -200,7 +200,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
 	const buildCommand: string = `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`;
 	const args: string[] = [
-		`'${projectInfos.Path}/${projectInfos.Name}.uproject'`,
+		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
 	];
 	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
 	terminal.sendText(`exit`); // We exit the terminal at the end because I think it's not usefull to keep it
@@ -247,7 +247,7 @@ export async function	BuildEditor_Implementation(): Promise<boolean>
 		`${projectInfos.Name}Editor`,
 		"Win64",
 		"Development",
-		`'${projectInfos.Path}/${projectInfos.Name}.uproject'`,
+		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
 		"-waitmutex"
 	];
 	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);

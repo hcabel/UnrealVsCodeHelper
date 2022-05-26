@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+import UVHCSwitchFileSubsystem from "../SubSystem/SwitchFileSubsystem";
+
 export async function	SwitchHeaderCppFile_Implementation(): Promise<boolean>
 {
-	// @TODO: Code the implementation
-	return (true);
+	return (await UVHCSwitchFileSubsystem.SwitchFile());
 }
