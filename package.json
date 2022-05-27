@@ -66,6 +66,12 @@
 				"title": "Switch between header/cpp file",
 				"icon": "$(arrow-swap)",
 				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.OpenUnrealDoc",
+				"title": "Open Unreal Documentation",
+				"icon": "$(book)",
+				"category": "UVCH"
 			}
 		],
 		"viewsContainers": {
@@ -132,6 +138,7 @@
 		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {
+		"axios": "^0.27.2",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	}

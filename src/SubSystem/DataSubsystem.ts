@@ -107,7 +107,7 @@ export default class UVCHDataSubsystem
 	 * @param key The key how's referencing your data
 	 * @returns The data or undefined if key not exist
 	 */
-	public static Get<T = any>(key: string): T {
+	public static Get<T = any>(key: string): T | undefined {
 		return (this.instance._Datas.get(key)?.data);
 	}
 
