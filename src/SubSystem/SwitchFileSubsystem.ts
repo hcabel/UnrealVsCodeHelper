@@ -61,18 +61,18 @@ export default class UVHCSwitchFileSubsystem
 		});
 		switchFileStatusbar.show();
 
-		// Find current SwitchFile
-		const currentDocument = vscode.window.activeTextEditor?.document;
-		if (currentDocument) {
-			this.RequestFindSwitchFile(currentDocument);
-		}
-
 		// Listen when you focusing on a file and update the 'SwitchFile' (To switch quicker between header/cpp)
 		vscode.window.onDidChangeActiveTextEditor(async(ev: vscode.TextEditor | undefined) => {
 			if (ev && ev.viewColumn && ev.viewColumn >= vscode.ViewColumn.One) {
 				UVHCSwitchFileSubsystem.RequestFindSwitchFile(ev.document);
 			}
 		});
+
+		// Find current SwitchFile
+		const currentDocument = vscode.window.activeTextEditor?.document;
+		if (currentDocument) {
+			this.RequestFindSwitchFile(currentDocument);
+		}
 	}
 
 	/**
@@ -145,16 +145,16 @@ export default class UVHCSwitchFileSubsystem
 			}
 		}
 
-		const documentPath = document.fileName.replaceAll('\\', '/');
-		const switchSourceFile = documentPath.substring(documentPath.lastIndexOf("/") + 1);
+		const documentFullPath = document.fileName.replaceAll('\\', '/');
+		const switchSourceFile = path.basename(documentFullPath);
 		log_uvch.log(`[SWITCH] Start finding SwitchFile for '${switchSourceFile}'`);
 
-		const switchFile = this.FindSwitchFile(document, `${projectInfos.RootPath}/Source`);
-		if (switchFile) {
-			log_uvch.log(`[SWITCH] Switch file found: '${switchFile.substring(switchFile.lastIndexOf("/") + 1)}'`);
+		const switchFileFullPath = await this.FindSwitchFile(documentFullPath);
+		if (switchFileFullPath) {
+			log_uvch.log(`[SWITCH] Switch file found: '${path.basename(switchFileFullPath)}'`);
 			UVCHDataSubsystem.Set<ISwitchFile>("SwitchFile", {
-				srcPath: documentPath,
-				destPath: switchFile
+				srcPath: documentFullPath,
+				destPath: switchFileFullPath
 			});
 			return (true);
 		}
@@ -162,46 +162,41 @@ export default class UVHCSwitchFileSubsystem
 	}
 
 	/**
-	 * Find the switch file for the given document
-	 * This function will never search before the root path
+	 * Find the header/cpp file corresponding to the file pointed by the 'sourceFullPath'
 	 *
-	 * @param document The document that you wish find his header/cpp file
-	 * @param rootPath The root path of were to find the header/cpp file
-	 * @returns The header/cpp file path corresponding to the document
+	 * @param sourceFullPath The full path of file you want to find his matching header/cpp file
+	 * @returns The header/cpp file full path corresponding to 'sourceFullPath'
 	 * @returns undefined if no header/cpp file was found
 	 */
-	public	FindSwitchFile(document: vscode.TextDocument, rootPath: string): string | undefined
+	public	FindSwitchFile(sourceFullPath: string): Promise<string | undefined> | undefined
 	{
 		// Get document extension
-		const extensionIndex = document.fileName.lastIndexOf('.');
-		const extension = document.fileName.substring(extensionIndex);
+		const extension = path.extname(sourceFullPath);
 
-		let switchFile: string | undefined = undefined;
 		if (extension === ".h" || extension === ".hpp") {
-			switchFile = this.FindCppFileCorresponding(document, rootPath);
+			return (this.FindCppFileCorresponding(sourceFullPath));
 		}
 		else if (extension === ".cpp") {
-			switchFile = this.FindHeaderFileCorresponding(document, rootPath);
+			return (this.FindHeaderFileCorresponding(sourceFullPath));
 		}
-		return (switchFile);
+		return (undefined);
 	}
 
 	/**
-	 * Find the header file corresponding to document
+	 * Find the header file corresponding to the file pointed by the 'sourceFullPath'
 	 *
-	 * @param document The document that you wish find his header file
-	 * @param rootPath The root path of were to start find the header file
-	 * @returns The SwitchFile path corresponding to the document
+	 * @param sourceFullPath The full path of file you want to find his matching header file
+	 * @returns The header file full path corresponding to 'sourceFullPath'
+	 * @returns undefined if no header file was found
 	 */
-	public	FindHeaderFileCorresponding(document: vscode.TextDocument, rootPath: string): string | undefined
+	public async	FindHeaderFileCorresponding(sourceFullPath: string): Promise<string | undefined>
 	{
-		const filePath = document.fileName.replaceAll('\\', '/').replace(`${rootPath}/`, '');
-		const switchSourceFileNameNoExtension = filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
-		const switchSourceFilePath = filePath.substring(0, filePath.lastIndexOf('/'));
+		const switchSourceFileNameNoExtension = path.basename(sourceFullPath).replace(path.extname(sourceFullPath), '');
+		const switchSourceFilePath = path.dirname(sourceFullPath);
 
 		// TECHNIQUE: 1, Find the header file in the public folder
 		const resultOne = this.SearchSwitchFileUsingPublicPrivateFolders(
-			rootPath, switchSourceFileNameNoExtension, switchSourceFilePath, [".h", ".hpp"]);
+			switchSourceFileNameNoExtension, switchSourceFilePath, [".h", ".hpp"]);
 		if (resultOne !== undefined) {
 			return (resultOne);
 		}
@@ -209,8 +204,8 @@ export default class UVHCSwitchFileSubsystem
 		// TECHNIQUE: 2, Find the header file in the same folder
 
 		// Get all files in the same folder as an array of full path
-		const filesInCurrentFolder = fs.readdirSync(`${rootPath}/${switchSourceFilePath}`)
-			.map((file: string) => `${rootPath}/${switchSourceFilePath}/${file}`);
+		const filesInCurrentFolder = fs.readdirSync(switchSourceFilePath)
+			.map((file: string) => `${switchSourceFilePath}/${file}`);
 
 		// For each full path, check if it is the SwitchFile we are looking for
 		for (const file of filesInCurrentFolder) {
@@ -220,24 +215,33 @@ export default class UVHCSwitchFileSubsystem
 			}
 		}
 
-		// @TODO: Find the header file in the same folder
-		return (undefined);
+		// TECHNIQUE: 3, Look on every folder in vscode
+		// TODO: Add extension settings to exclude folders
+		return (new Promise<string | undefined>(
+			(resolve) => {
+				vscode.workspace.findFiles(`**/${switchSourceFileNameNoExtension}.{h,hpp}`, undefined, 1)
+					.then((fileFound: vscode.Uri[]) => {
+						resolve(fileFound.length > 0 ? fileFound[0].fsPath : undefined);
+					});
+			}
+		));
 	}
 
 	/**
 	 * Find the cpp file corresponding to document
 	 *
-	 * @param document The document that you wish find his cpp file
+	 * @param sourceFullPath The full path of file you want to find his matching cpp file
+	 * @returns The header file full path corresponding to 'sourceFullPath'
+	 * @returns undefined if no cpp file was found
 	 */
-	public	FindCppFileCorresponding(document: vscode.TextDocument, rootPath: string): string | undefined
+	public async	FindCppFileCorresponding(sourceFullPath: string): Promise<string | undefined>
 	{
-		const filePath = document.fileName.replaceAll('\\', '/').replace(`${rootPath}/`, '');
-		const switchSourceFileNameNoExtension = filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
-		const switchSourceFilePath = filePath.substring(0, filePath.lastIndexOf('/'));
+		const switchSourceFileNameNoExtension = path.basename(sourceFullPath).replace(path.extname(sourceFullPath), '');
+		const switchSourceFilePath = path.dirname(sourceFullPath);
 
 		// TECHNIQUE: 1, Find the header file in the public folder
 		const resultOne = this.SearchSwitchFileUsingPublicPrivateFolders(
-			rootPath, switchSourceFileNameNoExtension, switchSourceFilePath, [".cpp"]);
+			switchSourceFileNameNoExtension, switchSourceFilePath, [".cpp"]);
 		if (resultOne !== undefined) {
 			return (resultOne);
 		}
@@ -245,8 +249,8 @@ export default class UVHCSwitchFileSubsystem
 		// TECHNIQUE: 2, Find the header file in the same folder
 
 		// Get all files in the same folder as an array of full path
-		const filesInCurrentFolder = fs.readdirSync(`${rootPath}/${switchSourceFilePath}`)
-			.map((file: string) => `${rootPath}/${switchSourceFilePath}/${file}`);
+		const filesInCurrentFolder = fs.readdirSync(switchSourceFilePath)
+			.map((file: string) => `${switchSourceFilePath}/${file}`);
 
 		// For each full path, check if it is the SwitchFile we are looking for
 		for (const file of filesInCurrentFolder) {
@@ -256,21 +260,29 @@ export default class UVHCSwitchFileSubsystem
 			}
 		}
 
-		return (undefined);
+		// TECHNIQUE: 3, Look on every folder in vscode
+		// TODO: Add extension settings to exclude folders
+		return (new Promise<string | undefined>(
+			(resolve) => {
+				vscode.workspace.findFiles(`**/${switchSourceFileNameNoExtension}.cpp`, undefined, 1)
+					.then((fileFound: vscode.Uri[]) => {
+						resolve(fileFound.length > 0 ? fileFound[0].fsPath : undefined);
+					});
+			}
+		));
 	}
 
 	/**
 	 * Seach the SwitchFile in the public folder, using the SwitchSourceFile private path
 	 * (eg: /Source/Private/MyClass.h => /Source/Public/MyClass.hpp)
 	 *
-	 * @param rootPath The path were to start the search
 	 * @param sourceNameNoExtension The name of the SwitchSourceFile without extension
 	 * @param sourcePath The path of the SwitchSourceFile
 	 * @param extensions The potential extensions of the SwitchFile
 	 * @returns The SwitchFile path if found else undefined
 	 */
-	 private	SearchSwitchFileUsingPublicPrivateFolders(rootPath: string, sourceNameNoExtension: string,
-		sourcePath: string, extensions: string[]): string | undefined
+	private		SearchSwitchFileUsingPublicPrivateFolders(sourceNameNoExtension: string, sourcePath: string,
+		extensions: string[]): string | undefined
 	{
 		let bIsSouceInPrivateFolder = false;
 
@@ -290,7 +302,7 @@ export default class UVHCSwitchFileSubsystem
 		}
 
 		// Search the public folder at the same path has the private folder
-		const pathBeforePrivate = `${rootPath}/${sourcePath.substring(0, sourcePath.lastIndexOf(privateFolderName) - 1)}`;
+		const pathBeforePrivate = sourcePath.substring(0, sourcePath.lastIndexOf(privateFolderName) - 1);
 		const publicFolderName = fs.readdirSync(pathBeforePrivate)
 			.find((folderName) => {
 				if (bIsSouceInPrivateFolder) {
@@ -302,7 +314,7 @@ export default class UVHCSwitchFileSubsystem
 		if (publicFolderName)
 		{
 			const publicPath = sourcePath.replace(privateFolderName, publicFolderName);
-			const publicRootPath = `${rootPath}/${publicPath}/${sourceNameNoExtension}`;
+			const publicRootPath = `${publicPath}/${sourceNameNoExtension}`;
 
 			// Search for the switch file in the public folder using all the extension in params
 			for (const extension of extensions) {
