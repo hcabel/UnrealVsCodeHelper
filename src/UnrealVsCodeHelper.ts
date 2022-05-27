@@ -13,6 +13,7 @@
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
 import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
+import UVHCSwitchFileSubsystem from './SubSystem/SwitchFileSubsystem';
 import {
 	GetProjectInfos_Implementation,
 	PlayGame_Implementation,
@@ -21,8 +22,10 @@ import {
 } from "./Commands/ProjectCommands";
 import {GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
 import { SwitchHeaderCppFile_Implementation } from './Commands/FilesCommands';
-import UVHCSwitchFileSubsystem from './SubSystem/SwitchFileSubsystem';
-import { OpenUnrealDoc_Implementation } from './Commands/BrowserCommands';
+import {
+	OpenUnrealDoc_Implementation,
+	OpenUnrealDocFromSelection_Implementation
+} from './Commands/BrowserCommands';
 
 interface	ICommands {
 	cmd: string,
@@ -37,7 +40,8 @@ const commands: ICommands[] = [
 	{ cmd: "BuildEditor", func: BuildEditor_Implementation },
 	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation },
 	{ cmd: "SwitchHeaderCppFile", func: SwitchHeaderCppFile_Implementation },
-	{ cmd: "OpenUnrealDoc", func: () => OpenUnrealDoc_Implementation(undefined) }
+	{ cmd: "OpenUnrealDoc", func: () => OpenUnrealDoc_Implementation(undefined) },
+	{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation }
 ];
 
 // an array containing all the view to create

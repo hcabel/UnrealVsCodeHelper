@@ -28,6 +28,10 @@
 			{
 				"command": "UVCH.SwitchHeaderCppFile",
 				"key": "alt+o"
+			},
+			{
+				"command": "UVCH.OpenUnrealDocFromSelection",
+				"key": "ctrl+f1"
 			}
 		],
 		"commands": [
@@ -70,6 +74,12 @@
 			{
 				"command": "UVCH.OpenUnrealDoc",
 				"title": "Open Unreal Documentation",
+				"icon": "$(book)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.OpenUnrealDocFromSelection",
+				"title": "Open Unreal Documentation from current selection",
 				"icon": "$(book)",
 				"category": "UVCH"
 			}

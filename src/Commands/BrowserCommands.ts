@@ -46,3 +46,10 @@ export async function	OpenUnrealDoc_Implementation(keyword: string | undefined)
 			}
 		});
 }
+
+export async function	OpenUnrealDocFromSelection_Implementation()
+{
+	const editor = vscode.window.activeTextEditor;
+	const selection = editor?.document.getText(editor.selection);
+	OpenUnrealDoc_Implementation(selection);
+}
