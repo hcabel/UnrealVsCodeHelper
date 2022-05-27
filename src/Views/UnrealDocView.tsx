@@ -91,9 +91,12 @@ function	UnrealDocView(props: { vscode: any })
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_RestApiItems, set_RestApiItems] = React.useState<IRestApiItem[]>([]);
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_Loading, set_Loading] = React.useState<number>(0); // This is a number to display the loading animation
 
 	function	UpdateUrls(items: IRestApiItem[])
 	{
+		set_Loading(0);
 		set_RestApiItems(items || []);
 	}
 
@@ -105,13 +108,17 @@ function	UnrealDocView(props: { vscode: any })
 
 	function	OnBlur(value: string)
 	{
-		props.vscode.postMessage({
-			action: "ExecuteCommand",
-			content: {
-				cmd: "UVCH.OpenUnrealDoc",
-				args: [value, false]
-			}
-		});
+		if (value) {
+			set_Loading(10);
+			set_RestApiItems([]);
+			props.vscode.postMessage({
+				action: "ExecuteCommand",
+				content: {
+					cmd: "UVCH.OpenUnrealDoc",
+					args: [value, false]
+				}
+			});
+		}
 	}
 
 	// constructor
@@ -125,7 +132,6 @@ function	UnrealDocView(props: { vscode: any })
 			]
 		});
 
-		OnBlur("FString");
 		return () => window.removeEventListener('message', OnMessage);
 	}, [ false ]);
 
@@ -134,16 +140,41 @@ function	UnrealDocView(props: { vscode: any })
 			<div style={{ width: "75%" }}>
 				<SearchBar
 					onBlur={OnBlur}
+					blurType={["OnEnter"]}
 				/>
 			</div>
 			<ul style={{ width: "100%", height: "100%", padding: 0 }}>
-				{_RestApiItems.map((item: IRestApiItem) => {
-					return (
-						<li style={{ listStyle: "none", marginBottom: "10px" }}>
-							<RestApiEntry vscode={props.vscode} item={item} />
-						</li>
-					);
-				})}
+				{_Loading <= 0 ?
+					<>
+						{_RestApiItems.map((item: IRestApiItem) => {
+							return (
+								<li style={{ listStyle: "none", marginBottom: "10px" }}>
+									<RestApiEntry vscode={props.vscode} item={item} />
+								</li>
+							);
+						})}
+					</>
+					:
+					<>
+						{Array.from(Array(10).keys()).map(() => {
+							return (
+								<li style={{
+									boxSizing: "border-box",
+									listStyle: "none",
+									marginBottom: "10px",
+									width: "100%",
+									display: "flex",
+									alignContent: "center",
+									justifyContent: "center",
+									padding: "35px",
+									fontSize: "2em",
+								}}>
+									. . .
+								</li>
+							);
+						})}
+					</>
+				}
 			</ul>
 		</div>
 	);

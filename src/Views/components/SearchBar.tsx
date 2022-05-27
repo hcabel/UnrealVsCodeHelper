@@ -12,11 +12,11 @@
 
 import * as React from "react";
 
-export type triggerBlurEvents = "OnExit" | "Dynamicaly" | "OnEnter" | "OnEscape";
+export type blurType = "OnExit" | "Dynamicaly" | "OnEnter" | "OnEscape";
 
 export interface ICSearchBarProps {
 	className?: string;
-	triggerBlurEvents?: triggerBlurEvents[],
+	blurType: blurType[],
 	onBlur?: (value: string) => void
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 	onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void,
@@ -26,14 +26,22 @@ export interface ICSearchBarProps {
 export default function	SearchBar(props: ICSearchBarProps)
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_Value, set_Value] = React.useState<string>("FString");
+	const	[_BlurType, set_BlurType] = React.useState<blurType>("OnExit");
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_Value, set_Value] = React.useState<string>("");
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	// const [_Timer, set_Timer] = React.useState<NodeJS.Timer | undefined>(undefined);
 
 	function	OnBlur()
 	{
-		if (props.onBlur) {
+		document.onkeydown = function() {};
+		document.onkeyup = function() {};
+
+		if (props.onBlur && props.blurType.includes(_BlurType)) {
 			props.onBlur(_Value);
+		}
+		if (_BlurType === "Dynamicaly") {
+			set_BlurType("OnExit");
 		}
 	}
 
@@ -49,6 +57,30 @@ export default function	SearchBar(props: ICSearchBarProps)
 		// 		OnBlur();
 		// 	}));
 		// }
+	}
+
+	function	OnFocus(e: React.FocusEvent<HTMLInputElement, Element>)
+	{
+		const searchBar: HTMLInputElement = e.target;
+
+		document.onkeydown = (event: KeyboardEvent) => {
+			if (event.key === "Escape") {
+				event.preventDefault();
+
+				set_BlurType("OnEscape");
+				searchBar.blur();
+			}
+			else if (event.key === "Enter") {
+				event.preventDefault();
+
+				set_BlurType("OnEnter");
+				searchBar.blur();
+			}
+		};
+
+		document.onkeyup = () => {
+
+		};
 	}
 
 	return (
@@ -79,6 +111,7 @@ export default function	SearchBar(props: ICSearchBarProps)
 					value={_Value}
 					onBlur={OnBlur}
 					onChange={OnChange}
+					onFocus={OnFocus}
 					style={{
 						width: "100%",
 						padding: "5px",
