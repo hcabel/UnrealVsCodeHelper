@@ -17,9 +17,11 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 ## `[0.1.1] - 2022/05/25`
 ### Added
 - logo
+
 ### fixed
 - minor bugs
 - package json information
+
 ### remove
 - Unnecessary popup
 
