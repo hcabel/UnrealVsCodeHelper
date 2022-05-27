@@ -140,7 +140,7 @@ function	UnrealDocView(props: { vscode: any })
 			<div style={{ width: "75%" }}>
 				<SearchBar
 					onBlur={OnBlur}
-					blurType={["OnEnter"]}
+					blurType={["OnEnter", "OnIconClicked"]}
 				/>
 			</div>
 			<ul style={{ width: "100%", height: "100%", padding: 0 }}>
