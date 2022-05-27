@@ -96,6 +96,7 @@ function GenerateAllViewConfigutation(views) {
 
 module.exports = [ extensionConfig, ...GenerateAllViewConfigutation(
 	[
-		"ProjectView"
+		"UnrealProjectView",
+		"UnrealDocView"
 	])
 ];

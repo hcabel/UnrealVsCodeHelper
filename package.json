@@ -97,8 +97,13 @@
 			"UVCH": [
 				{
 					"type": "webview",
-					"id": "ProjectView",
+					"id": "UnrealProjectView",
 					"name": "Project"
+				},
+				{
+					"type": "webview",
+					"id": "UnrealDocView",
+					"name": "Unreal Documentation"
 				}
 			]
 		},

@@ -12,7 +12,7 @@
 
 import log_uvch from './utils/log_uvch';
 import * as vscode from 'vscode';
-import UVCHWebViewSubsystem from './SubSystem/WebViewSubsystem';
+import UVCHWebViewSubsystem, { IReactWebView } from './SubSystem/WebViewSubsystem';
 import UVHCSwitchFileSubsystem from './SubSystem/SwitchFileSubsystem';
 import {
 	GetProjectInfos_Implementation,
@@ -49,10 +49,14 @@ const commands: ICommands[] = [
 //     You also have to add the same stringId in the 'webpack.config.js' (at the end)
 //     Then Create a file in the 'View' folder (with the same stringId)
 //     Add a view to the package.json and set his Id with the same stringId
-// @TODO: not working, in fact the view/panel is created but the 'registerWebviewViewProvider' event is never triggered :/
-//     So you can't have multiple view IDK why
-const viewsId: string[] = [
-	"ProjectView"
+const reactViews: IReactWebView[] = [
+	{
+		viewId: "UVCH",
+		panelIds: [
+			"UnrealProjectView",
+			"UnrealDocView"
+		]
+	}
 ];
 
 // Function triggered when the 'activationEvents' in the package.json is called
@@ -72,9 +76,9 @@ export function	activate(context: vscode.ExtensionContext)
 
 	// Create Action Panel
 	log_uvch.log(`[UVHC] Create Webview`);
-	viewsId.forEach((viewId: string) => {
-		log_uvch.log(`[UVHC] Register view [VIEW_${viewId}]`);
-		UVCHWebViewSubsystem.RegisterNewView(context, viewId);
+	reactViews.forEach((reactView: IReactWebView) => {
+		log_uvch.log(`[UVHC] Register view [VIEW_${reactView.viewId}]`);
+		UVCHWebViewSubsystem.RegisterNewView(context, reactView);
 	});
 
 	// Init SwitchFile Subsystem

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   index.tsx                                          :+:      :+:    :+:   */
+/*   UnrealProjectView.tsx                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -20,7 +20,7 @@ declare const window: Window & {
 	acquireVsCodeApi: any
 };
 
-function	UVCHProjectView(props: { vscode: any })
+function	UnrealProjectView(props: { vscode: any })
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_ProjectInfos, set_ProjectInfos] = React.useState<IProjectInfos | undefined>();
@@ -108,7 +108,7 @@ function	UVCHProjectView(props: { vscode: any })
 						}}
 					>
 						{/* @TODO: Do this programmatically */}
-						Last update: <span style={{ fontWeight: 'bold' }}>25/05/2022</span>
+						Last update: <span style={{ fontWeight: 'bold' }}>27/05/2022</span>
 					</div>
 				</div>
 			}
@@ -117,6 +117,6 @@ function	UVCHProjectView(props: { vscode: any })
 }
 
 ReactDOM.render(
-	<UVCHProjectView vscode={window.acquireVsCodeApi()} />,
-	document.getElementById('root')
+	<UnrealProjectView vscode={window.acquireVsCodeApi()} />,
+	document.getElementById('UnrealProjectView-root')
 );
