@@ -57,7 +57,7 @@ export class ViewPanelBase
 	 * @param webView The WebView you want to init
 	 * @returns The WebView initialized
 	 */
-	private InitReactPanel(panel: vscode.WebviewView): vscode.WebviewView
+	private	InitReactPanel(panel: vscode.WebviewView): vscode.WebviewView
 	{
 		if (this._Panel === undefined)
 		{
@@ -84,8 +84,11 @@ export class ViewPanelBase
 	{
 		this._Panel?.webview.onDidReceiveMessage((command: ICommand) => {
 			switch (command.action) {
+			case "OpenUrl":
+				vscode.env.openExternal(vscode.Uri.parse(command.content));
+				return;
 			case "ExecuteCommand": // Allow React component to execute vscode commands
-				vscode.commands.executeCommand(command.content.cmd);
+				vscode.commands.executeCommand(command.content.cmd, ...(command.content.args || []));
 				return;
 			case "ListenToDataSubsystem": // Allow React component to listen to datas
 				for (const entry of command.content) {

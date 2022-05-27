@@ -27,7 +27,7 @@ function	UnrealProjectView(props: { vscode: any })
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_ErrorMessage, set_ErrorMessage] = React.useState<string>("Loading...");
 
-	function	UpadateProjectInfos(projectInfos: any)
+	function	UpdateProjectInfos(projectInfos: any)
 	{
 		projectInfos = projectInfos || undefined;
 		set_ProjectInfos(projectInfos);
@@ -40,7 +40,7 @@ function	UnrealProjectView(props: { vscode: any })
 	// Message Received from VsCode
 	function	OnMessage(message: any) {
 		if (message.data.type === "Update-Project-Infos") {
-			UpadateProjectInfos(message.data.data);
+			UpdateProjectInfos(message.data.data);
 		}
 	}
 

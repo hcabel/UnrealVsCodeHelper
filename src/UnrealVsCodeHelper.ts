@@ -40,7 +40,7 @@ const commands: ICommands[] = [
 	{ cmd: "BuildEditor", func: BuildEditor_Implementation },
 	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation },
 	{ cmd: "SwitchHeaderCppFile", func: SwitchHeaderCppFile_Implementation },
-	{ cmd: "OpenUnrealDoc", func: () => OpenUnrealDoc_Implementation(undefined) },
+	{ cmd: "OpenUnrealDoc", func: OpenUnrealDoc_Implementation },
 	{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation }
 ];
 
@@ -68,9 +68,9 @@ export function	activate(context: vscode.ExtensionContext)
 	// Register all commands
 	commands.forEach((command: ICommands) => {
 		log_uvch.log(`[UVHC] Register commands [UVCH.${command.cmd}]`);
-		context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, (...args: any[]) => {
+		context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, async(...args: any[]) => {
 			log_uvch.log(`[UVCH.${command.cmd}] Fired`);
-			return (command.func(args));
+			return (await command.func(...args));
 		}));
 	});
 
