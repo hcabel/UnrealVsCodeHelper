@@ -12,6 +12,8 @@
 
 import * as React from "react";
 
+import "./SearchBar.css";
+
 export type blurType = "OnExit" | "Dynamicaly" | "OnEnter" | "OnEscape" | "OnIconClicked";
 
 export interface ICSearchBarProps {
@@ -27,6 +29,8 @@ export interface ICSearchBarProps {
 export default function	SearchBar(props: ICSearchBarProps)
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_Focus, set_Focus] = React.useState<boolean>(false);
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const	[_BlurType, set_BlurType] = React.useState<blurType>("OnExit");
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_Value, set_Value] = React.useState<string>("");
@@ -41,6 +45,7 @@ export default function	SearchBar(props: ICSearchBarProps)
 			props.onBlur(_Value);
 		}
 		set_BlurType("OnExit");
+		set_Focus(false);
 	}
 
 	function	OnChange(event: React.ChangeEvent<HTMLInputElement>)
@@ -59,6 +64,7 @@ export default function	SearchBar(props: ICSearchBarProps)
 
 	function	OnFocus()
 	{
+		set_Focus(true);
 		document.onkeydown = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
 				event.preventDefault();
@@ -91,58 +97,30 @@ export default function	SearchBar(props: ICSearchBarProps)
 	}, [ props.value ]);
 
 	return (
-		<div style={{
-			position: "relative",
-			width: "100%",
-			height:"30px"
-		}}>
-			<div style={{
-				display: "flex",
-				flexDirection: "row",
-				backgroundColor: "#eee",
-				height: "30px"
-			}}>
-				<svg viewBox="0 0 24 24"
-					style={{
-						height: "100%",
-						padding: "5px",
-						boxSizing: "border-box",
-						cursor: "pointer"
-					}}
-					onClick={() => set_BlurType("OnIconClicked")}
-				>
-					<path fill="#000" d="M15.25 0a8.25 8.25 0 0 0-6.18 13.72L1 22.88l1.12 1l8.05-9.12A8.251 8.251 0 1 0 15.25.01V0zm0 15a6.75 6.75 0 1 1 0-13.5a6.75 6.75 0 0 1 0 13.5z" />
+		<div className="SearchBar">
+			<div className="SearchBarContent">
+				{/* Search bar icon, look like: > */}
+				<svg className="SearchBarIcon" onClick={() => set_BlurType("OnIconClicked")} viewBox="0 0 16 16">
+					<path fill="#c5c5c5" fill-rule="evenodd" d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619l4.357-4.357z" clip-rule="evenodd"></path>
 				</svg>
-				<input
-					id="searchBar"
-					className={props.className}
-					placeholder={props.placeholder || "Search..."}
-					type="text"
-					value={_Value}
-					onBlur={OnBlur}
-					onChange={OnChange}
-					onFocus={OnFocus}
-					style={{
-						width: "100%",
-						padding: "5px",
-						backgroundColor: "rgba(0, 0, 0, 0)",
-						border: "none",
-						outline: "none"
-					}}
-				/>
-				{_Value !== "" &&
-					<svg viewBox="0 0 16 16"
-						style={{
-							height: "100%",
-							padding: "5px",
-							boxSizing: "border-box",
-							cursor: "pointer"
-						}}
-						onClick={() => set_Value("")}
-					>
-						<path fill="#000" fill-rule="evenodd" d="m7.116 8l-4.558 4.558l.884.884L8 8.884l4.558 4.558l.884-.884L8.884 8l4.558-4.558l-.884-.884L8 7.116L3.442 2.558l-.884.884L7.116 8z" clip-rule="evenodd"/>
-					</svg>
-				}
+				<div className={`SearchBarInputWrapper ${_Focus && "focused"}`}>
+					<input
+						id="searchBar"
+						className={`SearchBarInput ${props.className}`}
+						placeholder={props.placeholder || "Search..."}
+						type="text"
+						value={_Value}
+						onBlur={OnBlur}
+						onChange={OnChange}
+						onFocus={OnFocus}
+					/>
+					{/* Clear bar icon, look like: X */}
+					{_Value !== "" &&
+						<svg className="SearchBarClearIcon" onClick={() => set_Value("")} viewBox="0 0 16 16">
+							<path fill="#c5c5c5" fill-rule="evenodd" d="m7.116 8l-4.558 4.558l.884.884L8 8.884l4.558 4.558l.884-.884L8.884 8l4.558-4.558l-.884-.884L8 7.116L3.442 2.558l-.884.884L7.116 8z" clip-rule="evenodd"/>
+						</svg>
+					}
+				</div>
 			</div>
 		</div>
 	);

@@ -155,7 +155,7 @@ export class ViewPanelBase
 						 window.acquireVsCodeApi = acquireVsCodeApi;
 					 </script>
 				 </head>
-				 <body>
+				 <body style="padding: 0">
 					 <div id="${this._PanelId}-root"></div>
 					 <script src="${reactAppUri}"></script>
 				 </body>

@@ -1,0 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   SeachBar.css                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/28 14:26:20 by HugoCabel         #+#    #+#             */
+/*   Updated: 2022/05/28 14:26:20 by HugoCabel        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+.SearchBar {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.SearchBarContent {
+	width: calc(100% - 12px);
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+    padding-top: 6px;
+    padding-bottom: 6px;
+	margin: 0 12px 0 2px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: rgb(178.5, 178.5, 178.5);
+	opacity: 0.5; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	color: rgb(178.5, 178.5, 178.5);
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+	color: rgb(178.5, 178.5, 178.5);
+}
+
+.SearchBarInputWrapper {
+	height: 100%;
+	width: 100%;
+	background-color: rgb(29, 31, 35);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 3px 3px 3px 4px;
+}
+
+.SearchBarInputWrapper.focused {
+	outline-color: #3e4452;
+	outline-width: 1px;
+	outline-style: solid;
+	outline-offset: -1px;
+	opacity: 1 !important;
+}
+
+.SearchBarInput {
+	width: 100%;
+	border: none;
+	color: rgb(204, 204, 204);
+	background-color: inherit;
+	font-size: 13px;
+	font-family: Segoe WPC,Segoe UI,sans-serif;
+	flex: 1;
+}
+
+.SearchBarInput:focus {
+	outline: none;
+}
+
+.SearchBarIcon, .SearchBarClearIcon {
+	cursor: pointer;
+	background-color: inherit;
+	width: 16px;
+	box-sizing: border-box;
+}
+
+.SearchBarIcon {
+	width: 18px;
+}
+
+.SearchBarClearIcon {
+	align-items: center;
+}
