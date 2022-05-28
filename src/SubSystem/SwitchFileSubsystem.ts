@@ -136,7 +136,7 @@ export default class UVHCSwitchFileSubsystem
 
 	private async	FindSwitchFileRequest(document: vscode.TextDocument): Promise<boolean>
 	{
-		let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+		let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
 		if (!projectInfos) {
 			await vscode.commands.executeCommand("UVCH.GetProjectInfos");
 			projectInfos = UVCHDataSubsystem.Get('ProjectInfos');

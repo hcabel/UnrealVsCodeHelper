@@ -45,7 +45,8 @@ function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 				color: "#8ab4f8",
 				overflow: "hidden",
 				whiteSpace: "nowrap",
-				backgroundColor: '#fff'
+				backgroundColor: '#fff',
+				fontWeight: 'bold'
 			}}>
 				{props.item.title}
 			</div>
@@ -67,7 +68,8 @@ function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 					display: "flex",
 					flexDirection: "column",
 					fontSize: "0.75em",
-					overflow: "hidden",
+					overflowX: "hidden",
+					overflowY: "scroll",
 				}}>
 					{props.item.snippet}
 				</div>
@@ -146,7 +148,7 @@ function	UnrealDocView(props: { vscode: any })
 				<SearchBar
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
-					placeholder="Search for a Unreal Docs entry"
+					placeholder="Search in unreal docs"
 					value={_Query?.searchTerms || ""}
 				/>
 			</div>

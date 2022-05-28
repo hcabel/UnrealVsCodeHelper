@@ -121,7 +121,7 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 	await vscode.commands.executeCommand("UVCH.BuildEditor");
 
 	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
 	if (!projectInfos) {
 		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
 		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
@@ -130,7 +130,7 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 		}
 	}
 
-	let enginePath: string = UVCHDataSubsystem.Get("EnginePath");
+	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
 	if (!enginePath) {
 		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
 		enginePath = UVCHDataSubsystem.Get('EnginePath');
@@ -171,7 +171,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 	await vscode.commands.executeCommand("UVCH.BuildEditor");
 
 	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
 	if (!projectInfos) {
 		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
 		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
@@ -180,7 +180,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 		}
 	}
 
-	let enginePath: string = UVCHDataSubsystem.Get("EnginePath");
+	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
 	if (!enginePath) {
 		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
 		enginePath = UVCHDataSubsystem.Get('EnginePath');
@@ -218,7 +218,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 export async function	BuildEditor_Implementation(): Promise<boolean>
 {
 	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
 	if (!projectInfos) {
 		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
 		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
@@ -227,7 +227,7 @@ export async function	BuildEditor_Implementation(): Promise<boolean>
 		}
 	}
 
-	let enginePath: string = UVCHDataSubsystem.Get("EnginePath");
+	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
 	if (!enginePath) {
 		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
 		enginePath = UVCHDataSubsystem.Get('EnginePath');

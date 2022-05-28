@@ -29,7 +29,7 @@ function	GetAllMatchDirPath(startPath: string, regex: RegExp): string[]
 
 export async function	GetUnrealEnginePath_Implementation(): Promise<boolean>
 {
-	let uproject: IUEProject = UVCHDataSubsystem.Get('UProject');
+	let uproject: IUEProject | undefined = UVCHDataSubsystem.Get('UProject');
 	if (!uproject) {
 		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
 		uproject = UVCHDataSubsystem.Get('UProject');
