@@ -134,6 +134,8 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", redirec
 			// But we redirect him if he wanted to
 			vscode.env.openExternal(vscode.Uri.parse(oldRequest.items?.[0].link));
 		}
+		// Even if nothing change we set the value to trigger all listener
+		UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest"));
 		return (true);
 	}
 
@@ -142,7 +144,6 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", redirec
 	// @TODO: IMPORTANT: This may throw with a 429 status code, this mean that our google app has reach the limit of request per day
  	const res = await Axios.get<IRestRequest>(
 		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${query}`);
-
 	UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", res.data || undefined);
 
 	if (redirect && res.data.items && res.data.items.length > 0) {
