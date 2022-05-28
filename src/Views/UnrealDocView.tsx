@@ -83,12 +83,12 @@ function	UnrealDocView(props: { vscode: any })
 					value={_Query?.searchTerms || ""}
 				/>
 			</div>
-			<ul style={{ width: "100%", height: "100%", padding: 0 }}>
+			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>
 				{_Loading <= 0 ?
 					<>
 						{_RestApiItems.map((item: IRestApiItem) => {
 							return (
-								<li style={{ listStyle: "none", marginBottom: "10px" }}>
+								<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px", height: "100px" }}>
 									<RestApiEntry vscode={props.vscode} item={item} />
 								</li>
 							);
