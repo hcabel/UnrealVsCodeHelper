@@ -14,7 +14,7 @@
 
 ### **`Unreal Documentation Explorer`**
 <img src="./resources/readme/UnrealDocExplorer.gif" width="35%"/>
-<img width="5%" />
+ 
 <img src="./resources/readme/UnrealDocOpenner.gif" width="48%"/><br/>
 This feature allow you to either go directly to a documentation page from selection.(using ctrl+f1 while selecting text)<br/>Or you can search it with the search bar(or ctrl+alt+f1) to see all the results INSIDE VsCode.
 
