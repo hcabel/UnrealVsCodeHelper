@@ -15,6 +15,7 @@ import * as React from "react";
 export type blurType = "OnExit" | "Dynamicaly" | "OnEnter" | "OnEscape" | "OnIconClicked";
 
 export interface ICSearchBarProps {
+	value?: string,
 	className?: string;
 	blurType: blurType[],
 	onBlur?: (value: string) => void
@@ -82,6 +83,12 @@ export default function	SearchBar(props: ICSearchBarProps)
 			}
 		}
 	});
+
+	React.useEffect(() => {
+		if (props.value) {
+			set_Value(props.value);
+		}
+	}, [ props.value ]);
 
 	return (
 		<div style={{

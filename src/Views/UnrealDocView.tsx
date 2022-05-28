@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IRestApiItem } from '../Commands/BrowserCommands';
+import { IRestApiItem, IRestQueryRequest, IRestRequest } from '../Commands/BrowserCommands';
 import SearchBar from './components/SearchBar';
 
 declare const window: Window & {
@@ -92,16 +92,19 @@ function	UnrealDocView(props: { vscode: any })
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_RestApiItems, set_RestApiItems] = React.useState<IRestApiItem[]>([]);
 	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_Query, set_Query] = React.useState<IRestQueryRequest | undefined>();
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_Loading, set_Loading] = React.useState<number>(0); // This is a number to display the loading animation
 
-	function	UpdateUrls(items: IRestApiItem[])
+	function	UpdateUrls(request: IRestRequest)
 	{
 		set_Loading(0);
-		set_RestApiItems(items || []);
+		set_RestApiItems(request.items || []);
+		set_Query(request.queries.request?.[0] || undefined);
 	}
 
 	function	OnMessage(message: any) {
-		if (message.data.type === "Update-Urls") {
+		if (message.data.type === "Update-Request") {
 			UpdateUrls(message.data.data);
 		}
 	}
@@ -128,7 +131,7 @@ function	UnrealDocView(props: { vscode: any })
 		props.vscode.postMessage({
 			action: "ListenToDataSubsystem",
 			content: [
-				{ dataKey: "DocSearchResult", callbackMessageType: "Update-Urls" }
+				{ dataKey: "DocSearchRequest", callbackMessageType: "Update-Request" }
 			]
 		});
 
@@ -141,6 +144,8 @@ function	UnrealDocView(props: { vscode: any })
 				<SearchBar
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
+					placeholder="Search for a Unreal Docs entry"
+					value={_Query?.searchTerms || ""}
 				/>
 			</div>
 			<ul style={{ width: "100%", height: "100%", padding: 0 }}>

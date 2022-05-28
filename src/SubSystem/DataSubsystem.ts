@@ -117,7 +117,7 @@ export default class UVCHDataSubsystem
 	 * @param key The key how's gonna reference your data (or already is if exist)
 	 * @param value The value of the data that you want to add/update
 	 */
-	public static Set<T = any>(key: string, value: T) {
+	public static Set<T = any>(key: string, value: T | undefined) {
 		const data = this.instance._Datas.get(key);
 
 		if (!data) {
