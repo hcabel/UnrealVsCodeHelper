@@ -141,9 +141,18 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", redirec
 	return (res.data ? true : false);
 }
 
-export async function	OpenUnrealDocFromSelection_Implementation()
+export async function	OpenUnrealDocFromSelection_Implementation(redirect: boolean = true)
 {
+	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
 	const selection = editor?.document.getText(editor.selection);
-	OpenUnrealDoc_Implementation(selection || "", true);
+	// Send request with keyword = selection
+	OpenUnrealDoc_Implementation(selection || "", redirect);
+}
+
+export async function	SearchUnrealDoc_Implementation()
+{
+	OpenUnrealDocFromSelection_Implementation(false);
+	// Show UnrealDocView
+	vscode.commands.executeCommand("UnrealDocView.focus");
 }

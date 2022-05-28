@@ -32,6 +32,10 @@
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",
 				"key": "ctrl+f1"
+			},
+			{
+				"command": "UVCH.SearchUnrealDoc",
+				"key": "ctrl+shift+f1"
 			}
 		],
 		"commands": [
@@ -79,7 +83,13 @@
 			},
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",
-				"title": "Open Unreal Documentation from current selection",
+				"title": "Open Unreal Documentation from selection",
+				"icon": "$(book)",
+				"category": "UVCH"
+			},
+			{
+				"command": "UVCH.SearchUnrealDoc",
+				"title": "Search in Unreal doc",
 				"icon": "$(book)",
 				"category": "UVCH"
 			}

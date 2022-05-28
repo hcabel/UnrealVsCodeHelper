@@ -24,7 +24,8 @@ import {GetUnrealEnginePath_Implementation } from './Commands/UnrealCommands';
 import { SwitchHeaderCppFile_Implementation } from './Commands/FilesCommands';
 import {
 	OpenUnrealDoc_Implementation,
-	OpenUnrealDocFromSelection_Implementation
+	OpenUnrealDocFromSelection_Implementation,
+	SearchUnrealDoc_Implementation
 } from './Commands/BrowserCommands';
 
 interface	ICommands {
@@ -41,7 +42,8 @@ const commands: ICommands[] = [
 	{ cmd: "GetUnrealEnginePath", func: GetUnrealEnginePath_Implementation },
 	{ cmd: "SwitchHeaderCppFile", func: SwitchHeaderCppFile_Implementation },
 	{ cmd: "OpenUnrealDoc", func: OpenUnrealDoc_Implementation },
-	{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation }
+	{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation },
+	{ cmd: "SearchUnrealDoc", func: SearchUnrealDoc_Implementation }
 ];
 
 // an array containing all the view to create
