@@ -98,7 +98,7 @@ function	UnrealDocView(props: { vscode: any })
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_Loading, set_Loading] = React.useState<number>(0); // This is a number to display the loading animation
 
-	function	UpdateUrls(request: IRestRequest)
+	function	UpdateUrls(request: IRestRequest | undefined)
 	{
 		set_Loading(0);
 		if (request) {

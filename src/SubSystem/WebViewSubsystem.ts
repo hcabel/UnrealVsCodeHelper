@@ -121,6 +121,10 @@ export class ViewPanelBase
 			});
 		}
 		else {
+			// If he tried to listen to the same data twice, we trigger the listener to make sure his updated
+			const data: any | undefined = UVCHDataSubsystem.Get(dataKey);
+			this._Panel?.webview.postMessage({ type: callbackMessageType, data: data });
+
 			// @TODO: handle unlistening and callbackMessageType update
 			log_uvch.log(`[Panel_${this._PanelId}] You tried to listen to a datakey that you were already listening to ${dataKey}`);
 		}
