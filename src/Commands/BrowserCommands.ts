@@ -108,10 +108,9 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", redirec
 		keyword = inputSearch;
 	}
 
-	// Remove extra spaces, and replace them by '+' because space aren't allowed in the url
+	// Remove extra spaces
 	keyword = keyword.trim();
 	keyword = keyword.replace(/\s\s+/gm, ' ');
-	keyword = keyword.replace(' ', '+');
 
 	// If keyword is not valid, we return false
 	if (!keyword || /^\s*$/.test(keyword)) {
@@ -122,10 +121,24 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", redirec
 	let unrealVersion = "";
 	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
 	if (projectInfos && /[4|5]\.[0-9]([0-9])?/.test(keyword) === false) {
-		unrealVersion = `+${projectInfos.UnrealVersion}`;
+		unrealVersion = ` ${projectInfos.UnrealVersion}`;
 	}
 
-	const query = `${keyword}${unrealVersion}`;
+	let query = `${keyword}${unrealVersion}`;
+
+	// This help to spam request to the Rest API because we'r limited to 100 request per day
+	const oldRequest = UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest");
+	if (oldRequest && oldRequest.queries.request[0].searchTerms === query) {
+		// If the request is the same
+		if (redirect === true && oldRequest.items && oldRequest.items[0].link) {
+			// But we redirect him if he wanted to
+			vscode.env.openExternal(vscode.Uri.parse(oldRequest.items?.[0].link));
+		}
+		return (true);
+	}
+
+	// replace space by '+' because they aren't allowed in the url
+	query = query.replace(' ', '+');
 	// @TODO: IMPORTANT: This may throw with a 429 status code, this mean that our google app has reach the limit of request per day
  	const res = await Axios.get<IRestRequest>(
 		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${query}`);

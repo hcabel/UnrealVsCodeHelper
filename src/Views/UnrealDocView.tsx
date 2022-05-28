@@ -99,8 +99,10 @@ function	UnrealDocView(props: { vscode: any })
 	function	UpdateUrls(request: IRestRequest)
 	{
 		set_Loading(0);
-		set_RestApiItems(request.items || []);
-		set_Query(request.queries.request?.[0] || undefined);
+		if (request) {
+			set_RestApiItems(request.items || []);
+			set_Query(request.queries.request?.[0] || undefined);
+		}
 	}
 
 	function	OnMessage(message: any) {
