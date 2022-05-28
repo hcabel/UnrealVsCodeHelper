@@ -6,7 +6,13 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - Auto completions on unreal's enums
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
-- Unreal documentations explorer
+
+## `[0.3.0] - 2022/05/28`
+### Added
+- Command: 'UVCH.OpenUnrealDoc' to open unreal documentation
+- Shortcut: 'alt+f1' triggerring 'UVCH.OpenUnrealDoc' with the current selection has keyword
+- Panel: 'Unreal documentation explorer', allowing you to see all the search results INSIDE VsCode
+- Shortcut: 'alt+shift+f1' allow you do to a reseach from the current selection
 
 ## `[0.2.0] - 2022/05/27`
 ### Added

@@ -108,7 +108,7 @@ function	UnrealProjectView(props: { vscode: any })
 						}}
 					>
 						{/* @TODO: Do this programmatically */}
-						Last update: <span style={{ fontWeight: 'bold' }}>27/05/2022</span>
+						Last update: <span style={{ fontWeight: 'bold' }}>28/05/2022</span>
 					</div>
 				</div>
 			}

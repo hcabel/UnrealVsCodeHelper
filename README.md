@@ -1,8 +1,8 @@
 # UnrealVsCodeHelper README
 
-![UnrealVersion](https://img.shields.io/badge/Compatibility-Window-orange)
-![OpenSource](https://img.shields.io/badge/repo-OpenSource-brightgreen)
-![OpenSource](https://img.shields.io/badge/contribution-Very%20welcome-blue)
+![Compatibility](https://img.shields.io/badge/Compatibility-Window-orange)
+![repo](https://img.shields.io/badge/repo-OpenSource-brightgreen)
+![contribution](https://img.shields.io/badge/contribution-Very%20welcome-blue)
 
 #### This extension is here to help developing with UnrealEngine.<br/> My ambitions is to give has much tools has VisualAssistX on VisualStudio (We're no even close yet :D)
 
@@ -11,6 +11,12 @@
 > - **`help`** https://github.com/hcabel/UnrealVsCodeHelper
 
 # Features
+
+### **`Unreal Documentation Explorer`**
+<img src="./resources/readme/UnrealDocExplorer.gif" width="35%"/>
+<img width="5%" />
+<img src="./resources/readme/UnrealDocOpenner.gif" width="48%"/><br/>
+This feature allow you to either go directly to a documentation page from selection.(using ctrl+f1 while selecting text)<br/>Or you can search it with the search bar(or ctrl+alt+f1) to see all the results INSIDE VsCode.
 
 ### **`ToolBar:`**
 ![ToolBar](./resources/readme/ToolBar.gif)<br/>
