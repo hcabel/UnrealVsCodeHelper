@@ -71,8 +71,6 @@ function	UnrealDocView(props: { vscode: any })
 			]
 		});
 
-		OnBlur("FString");
-
 		return () => window.removeEventListener('message', OnMessage);
 	}, [ false ]);
 
@@ -103,10 +101,9 @@ function	UnrealDocView(props: { vscode: any })
 							);
 						})
 						:
-						// No results was found
 						<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
 							<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-								<span style={{ color: "gray" }}>No results found</span>
+								<span style={{ color: "gray" }}>{!_Query?.searchTerms ? "Nothing to search" : "No results found"}</span>
 							</div>
 						</li>
 					)
