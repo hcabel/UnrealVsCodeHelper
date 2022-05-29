@@ -17,12 +17,12 @@
 	border-bottom: 0px;
 	height: 100%;
 	border-radius: 5px;
-	background-color: rgb(29, 31, 35);
+	background-color: var(--vscode-editor-background);
 	cursor: pointer;
 }
 
 .RestApiEntry:hover {
-	border: 1px solid #3e4452;
+	border: 1px solid var(--vscode-focusBorder);
 }
 
 .RestApiEntryTitle {
@@ -63,7 +63,7 @@
 .RestApiEntryUrl {
 	display: inline-block;
 	font-size: 12px;
-	background-color: #3a3a3a;
+	background-color: var(--vscode-input-background);
 	color: rgb(129 137 175);
 	white-space: nowrap;
 	overflow: hidden;

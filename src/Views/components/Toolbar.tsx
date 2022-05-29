@@ -50,7 +50,7 @@ export default function ToolBar(props: { vscode: any })
 
 	return (
 		<div style={{ ...HorizontalBox, justifyContent: "center"}}>
-			<div style={{ ...HorizontalBox, alignItems: 'center', width: "75%", backgroundColor: "#383838", borderRadius: "5px", padding: "2px 5px", justifyContent: "space-around" }} >
+			<div style={{ ...HorizontalBox, alignItems: 'center', width: "75%", backgroundColor: "var(--vscode-editor-background)", borderRadius: "5px", padding: "2px 5px", justifyContent: "space-around" }} >
 				<Tooltip msg="Play Game">
 					<svg className="IconSvg" width="20" height="20"
 						viewBox="0 0 20 20" fill="#89d185"
