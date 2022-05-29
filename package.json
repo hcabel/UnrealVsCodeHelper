@@ -1,9 +1,16 @@
 {
 	"name": "uvch",
 	"publisher": "HugoCabel",
+	"author": {
+		"name": "Hugo Cabel",
+		"email": "coding@hugocabel.com"
+	},
+	"contributors": [
+
+	],
 	"displayName": "UnrealVsCodeHelper",
 	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"icon": "resources/UVCHExtensionIcon.png",
 	"repository": {
 		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
@@ -166,5 +173,10 @@
 		"axios": "^0.27.2",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
-	}
+	},
+	"license": "./LICENSE",
+	"eslintConfig": {
+		"extends": "./eslintrc.json"
+	},
+	"readme": "./README.md"
 }

@@ -7,6 +7,18 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
 
+## `[0.3.1] - 2022/05/29`
+### Added
+- Color responsive to your current theme
+
+### Changed
+- Unreal docuementation explorer, design and code refactoring
+- Search image is hidden when the panel is too small to give more space to the snippets
+
+### Fixed
+- Search scroll Y on search snippets
+- Blocked in loading mode when searching for the same thing
+
 ## `[0.3.0] - 2022/05/28`
 ### Added
 - **Command:** `UVCH.OpenUnrealDoc` Open unreal documentation in your browser
