@@ -94,13 +94,22 @@ function	UnrealDocView(props: { vscode: any })
 						);
 					})
 					:
-					_RestApiItems.map((item: IRestApiItem) => {
-						return (
-							<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
-								<RestApiEntry vscode={props.vscode} item={item} />
-							</li>
-						);
-					})
+					(_RestApiItems.length > 0 ?
+						_RestApiItems.map((item: IRestApiItem) => {
+							return (
+								<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
+									<RestApiEntry vscode={props.vscode} item={item} />
+								</li>
+							);
+						})
+						:
+						// No results was found
+						<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
+							<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+								<span style={{ color: "gray" }}>No results found</span>
+							</div>
+						</li>
+					)
 				}
 			</ul>
 		</div>
