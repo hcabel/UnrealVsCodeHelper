@@ -1,0 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   UnrealDocView.css                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/29 12:25:38 by HugoCabel         #+#    #+#             */
+/*   Updated: 2022/05/29 12:25:38 by HugoCabel        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+@keyframes loadingRestEntry {
+	0% {
+		background-position: -800px 0
+	}
+	100% {
+		background-position: 800px 0
+	}
+}
+
+.animated-loading {
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+	animation-iteration-count: infinite;
+	animation-name: loadingRestEntry;
+	animation-timing-function: linear;
+	background: linear-gradient(to right, var(--vscode-input-background) 8%, var(--vscode-editor-background) 18%, var(--vscode-input-background) 33%);
+	background-size: 800px 104px;
+	height: 100px;
+	position: relative;
+}

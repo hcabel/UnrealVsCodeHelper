@@ -16,6 +16,8 @@ import { IRestApiItem, IRestQueryRequest, IRestRequest } from '../Commands/Brows
 import { RestApiEntry } from './components/RestApiEntry';
 import SearchBar from './components/SearchBar';
 
+import "./UnrealDocView.css";
+
 declare const window: Window & {
 	acquireVsCodeApi: any
 };
@@ -27,11 +29,11 @@ function	UnrealDocView(props: { vscode: any })
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_Query, set_Query] = React.useState<IRestQueryRequest | undefined>();
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_Loading, set_Loading] = React.useState<number>(0); // This is a number to display the loading animation
+	const [_Loading, set_Loading] = React.useState<boolean>(false); // This is a number to display the loading animation
 
 	function	UpdateUrls(request: IRestRequest | undefined)
 	{
-		set_Loading(0);
+		set_Loading(false);
 		if (request) {
 			set_RestApiItems(request.items || []);
 			set_Query(request.queries.request?.[0] || undefined);
@@ -47,8 +49,7 @@ function	UnrealDocView(props: { vscode: any })
 	function	OnBlur(value: string)
 	{
 		if (value) {
-			set_Loading(10);
-			set_RestApiItems([]);
+			set_Loading(true);
 			props.vscode.postMessage({
 				action: "ExecuteCommand",
 				content: {
@@ -70,6 +71,8 @@ function	UnrealDocView(props: { vscode: any })
 			]
 		});
 
+		OnBlur("FString");
+
 		return () => window.removeEventListener('message', OnMessage);
 	}, [ false ]);
 
@@ -84,36 +87,20 @@ function	UnrealDocView(props: { vscode: any })
 				/>
 			</div>
 			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>
-				{_Loading <= 0 ?
-					<>
-						{_RestApiItems.map((item: IRestApiItem) => {
-							return (
-								<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
-									<RestApiEntry vscode={props.vscode} item={item} />
-								</li>
-							);
-						})}
-					</>
+				{_Loading ?
+					Array.from(Array(10).keys()).map(() => {
+						return (
+							<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }} className="animated-loading"/>
+						);
+					})
 					:
-					<>
-						{Array.from(Array(10).keys()).map(() => {
-							return (
-								<li style={{
-									boxSizing: "border-box",
-									listStyle: "none",
-									marginBottom: "10px",
-									width: "100%",
-									display: "flex",
-									alignContent: "center",
-									justifyContent: "center",
-									padding: "35px",
-									fontSize: "2em",
-								}}>
-									. . .
-								</li>
-							);
-						})}
-					</>
+					_RestApiItems.map((item: IRestApiItem) => {
+						return (
+							<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
+								<RestApiEntry vscode={props.vscode} item={item} />
+							</li>
+						);
+					})
 				}
 			</ul>
 		</div>
