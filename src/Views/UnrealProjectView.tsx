@@ -86,18 +86,6 @@ function	UnrealProjectView(props: { vscode: any })
 						</h5>
 					</div>
 					<ToolBar vscode={props.vscode} />
-					<img
-						style={{
-							position: "absolute",
-							bottom: '0',
-							left: '0',
-							right: '0',
-							margin: 'auto',
-							maxWidth: '350px',
-							width: '100%'
-						}}
-						src="https://i.giphy.com/media/Gm5cxiFJRVf0YZecFm/giphy.webp"
-					/>
 					<div
 						style={{
 							position: "absolute",
@@ -108,7 +96,7 @@ function	UnrealProjectView(props: { vscode: any })
 						}}
 					>
 						{/* @TODO: Do this programmatically */}
-						Last update: <span style={{ fontWeight: 'bold' }}>28/05/2022</span>
+						Last update: <span style={{ fontWeight: 'bold' }}>29/05/2022</span>
 					</div>
 				</div>
 			}
