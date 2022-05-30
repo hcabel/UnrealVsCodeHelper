@@ -1,16 +1,14 @@
 {
 	"name": "uvch",
+	"version": "0.3.1",
+	"displayName": "UnrealVsCodeHelper",
+	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
 	"publisher": "HugoCabel",
 	"author": {
 		"name": "Hugo Cabel",
 		"email": "coding@hugocabel.com"
 	},
-	"contributors": [
-
-	],
-	"displayName": "UnrealVsCodeHelper",
-	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
-	"version": "0.3.1",
+	"contributors": [],
 	"icon": "resources/UVCHExtensionIcon.png",
 	"repository": {
 		"url": "https://github.com/hcabel/UnrealVsCodeHelper"
@@ -96,7 +94,7 @@
 			},
 			{
 				"command": "UVCH.SearchUnrealDoc",
-				"title": "Search in Unreal doc",
+				"title": "Search in Unreal Documentation from selection",
 				"icon": "$(book)",
 				"category": "UVCH"
 			}
@@ -174,9 +172,20 @@
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	},
-	"license": "./LICENSE",
+	"license": "GPL-3.0 license",
+	"homepage": "https://github.com/hcabel/UnrealVsCodeHelper/",
 	"eslintConfig": {
 		"extends": "./eslintrc.json"
 	},
-	"readme": "./README.md"
+	"readme": "https://github.com/hcabel/UnrealVsCodeHelper/blob/DEV/README.md",
+	"keywords": [
+		"Unreal Engine",
+		"UE4",
+		"UE5",
+		"C++",
+		"Windows",
+		"Documentation",
+		"Build in tool",
+		"Unreal"
+	]
 }
