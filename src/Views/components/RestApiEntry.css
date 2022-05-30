@@ -31,6 +31,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	margin: 0px 5px 0px 5px;
+	text-overflow: ellipsis;
 }
 
 .RestApiEntryContent {

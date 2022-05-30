@@ -84,9 +84,6 @@ export class ViewPanelBase
 	{
 		this._Panel?.webview.onDidReceiveMessage((command: ICommand) => {
 			switch (command.action) {
-			case "OpenUrl":
-				vscode.env.openExternal(vscode.Uri.parse(command.content));
-				return;
 			case "ExecuteCommand": // Allow React component to execute vscode commands
 				vscode.commands.executeCommand(command.content.cmd, ...(command.content.args || []));
 				return;

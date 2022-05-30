@@ -83,7 +83,7 @@ export function	activate(context: vscode.ExtensionContext)
 		UVCHWebViewSubsystem.RegisterNewView(context, reactView);
 	});
 
-	// Init SwitchFile Subsystem
+	// Init SwitchFile Subsystem @TODO: Add settings to turn him off
 	UVHCSwitchFileSubsystem.Init();
 }
 

@@ -27,8 +27,17 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 	function	OnClick()
 	{
 		props.vscode.postMessage({
-			action: "OpenUrl",
-			content: props.item.link
+			action: "ExecuteCommand",
+			content: {
+				cmd: "simpleBrowser.api.open",
+				args: [
+					props.item.link,
+					{
+						preserveFocus: true,
+						viewColumn: -2 // This is the value to open the tab "beside" the current one
+					}
+				]
+			}
 		});
 	}
 
