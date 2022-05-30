@@ -71,3 +71,11 @@
 	border-radius: 0px 0px 5px 5px;
 	text-overflow: ellipsis;
 }
+
+.ImportantLink {
+	border: 1px solid var(--vscode-editorError-foreground);
+}
+
+.ImportantLink:hover {
+	border: 1px solid var(--vscode-editorError-foreground);
+}

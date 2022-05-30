@@ -15,6 +15,13 @@ import { IRestApiItem } from "../../Commands/BrowserCommands";
 
 import "./RestApiEntry.css";
 
+const usefulURL: string[] = [
+	// UFUNCTION specifiers
+	"https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions",
+	// UPROPERTY Specifers
+	"https://docs.unrealengine.com/5.0/en-US/unreal-engine-uproperty-specifiers"
+];
+
 export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 {
 	function	OnClick()
@@ -26,7 +33,7 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 	}
 
 	return (
-		<div className="RestApiEntry" onClick={OnClick}>
+		<div className={`RestApiEntry ${usefulURL.includes(props.item.link) ? "ImportantLink" : ''}`} onClick={OnClick}>
 			{/* Title */}
 			<div className="RestApiEntryTitle">
 				{props.item.title}
