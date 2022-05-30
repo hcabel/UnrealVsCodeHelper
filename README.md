@@ -11,9 +11,7 @@
 # Features
 
 ### **`Unreal Documentation Explorer`**
-<img src="./resources/readme/UnrealDocExplorer.gif" width="47%"/>
- 
-<img src="./resources/readme/UnrealDocOpenner.gif" width="47%"/><br/>
+![UnrealDocExplorer](./resources/readme/UnrealDocExplorer.gif)<br/>
 This feature allow you to either go directly to a documentation page from selection.(using ctrl+f1 while selecting text)<br/>Or you can search it with the search bar(or ctrl+alt+f1) to see all the results INSIDE VsCode.
 
 ### **`ToolBar:`** ![Plateform](https://img.shields.io/badge/Windows_Only-0078D6?style=for-the-badge&logo=windows&logoColor=white)

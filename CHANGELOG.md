@@ -7,12 +7,19 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
 
+## `[0.3.2] - 2022/05/31`
+### Added
+- Highlight very usefull website in the Unreal documentation explorer.
+### Changed
+- Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
+
+
 ## `[0.3.1] - 2022/05/29`
 ### Added
 - Color responsive to your current theme
 
 ### Changed
-- Unreal docuementation explorer, design and code refactoring
+- Unreal documentation explorer, design and code refactoring
 - Search image is hidden when the panel is too small to give more space to the snippets
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
 	"name": "uvch",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"displayName": "UnrealVsCodeHelper",
 	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
 	"publisher": "HugoCabel",
@@ -136,7 +136,7 @@
 		"build": "webpack",
 		"vscode:prepublish": "npm run package",
 		"watch": "webpack --watch",
-		"package": "webpack --mode production --devtool hidden-source-map",
+		"package": "npm run build && webpack --mode production --devtool hidden-source-map",
 		"compile-tests": "tsc -p . --outDir out",
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
