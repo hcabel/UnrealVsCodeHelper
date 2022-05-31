@@ -7,6 +7,10 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
 
+## `[0.3.3] - 2022/06/01`
+### Changed
+- **ToolBar:** Use vscode feature(task/debuger) to: launch editor, build and play game
+
 ## `[0.3.2] - 2022/05/31`
 ### Added
 - Highlight very usefull website in the Unreal documentation explorer.

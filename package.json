@@ -1,6 +1,6 @@
 {
 	"name": "uvch",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"displayName": "UnrealVsCodeHelper",
 	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
 	"publisher": "HugoCabel",
@@ -172,7 +172,7 @@
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	},
-	"license": "GPL-3.0 license",
+	"license": "./LICENSE",
 	"homepage": "https://github.com/hcabel/UnrealVsCodeHelper/",
 	"eslintConfig": {
 		"extends": "./eslintrc.json"
