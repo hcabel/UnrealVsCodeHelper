@@ -148,13 +148,28 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 	// The .exe is changing depending of the UE version
 	// @TODO: Find a better way to do this
 	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
-	const buildCommand: string = `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`;
-	const args: string[] = [
-		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
-		`-game`
-	];
-	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
-	terminal.sendText(`exit`); // We exit the terminal at the end because I think it's not usefull to keep it
+	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
+
+	vscode.debug.startDebugging(
+		vscode.workspace.workspaceFolders![0],
+		{
+			name: 'Play Editor',
+			type: 'cppvsdbg', // @TODO: Add settings for using lldb
+			request: 'launch',
+			program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
+			args: [
+				`${projectInfos.RootPath}/${projectInfos.Name}.uproject`,
+				`-game`
+				// @TODO: Add settings for using additional parameters such has -ResX, -ResY and more
+			],
+			cwd: enginePath,
+			visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
+			sourceFileMap: {
+				"D:\build\++UE5\Sync": enginePath
+			}
+		}
+	);
+
 	return (true);
 }
 
