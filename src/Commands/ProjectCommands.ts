@@ -218,10 +218,10 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 export async function	BuildEditor_Implementation(): Promise<boolean>
 {
 	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
+	let projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
 	if (!projectInfos) {
 		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
-		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+		projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
 		if (!projectInfos) {
 			return (false);
 		}
@@ -236,12 +236,6 @@ export async function	BuildEditor_Implementation(): Promise<boolean>
 		}
 	}
 
-	// Find Or Create terminal
-	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Terminal');
-	if (!terminal) {
-		terminal = vscode.window.createTerminal('[UVCH] Terminal');
-	}
-
 	const buildCommand: string = `${enginePath}\\Engine\\Build\\BatchFiles\\Build.bat`;
 	const args: string[] = [
 		`${projectInfos.Name}Editor`,
@@ -250,6 +244,21 @@ export async function	BuildEditor_Implementation(): Promise<boolean>
 		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
 		"-waitmutex"
 	];
-	terminal.sendText(`& '${buildCommand}' ${args.join(' ')}`);
+
+	const task = new vscode.Task(
+		{ type: 'shell' },
+		vscode.workspace.workspaceFolders![0],
+		`Build`,
+		'UVCH',
+		new vscode.ShellExecution(`& '${buildCommand}' ${args.join(' ')}`),
+	);
+	const execution = await vscode.tasks.executeTask(task);
+
+	vscode.tasks.onDidEndTask((event: vscode.TaskEndEvent) => {
+		if (event.execution.task === execution.task) {
+			vscode.window.showInformationMessage(`${projectInfos!.Name} build completed`);
+		}
+	});
+
 	return (true);
 }
