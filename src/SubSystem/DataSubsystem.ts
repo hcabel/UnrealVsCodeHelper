@@ -98,6 +98,13 @@ export default class UVCHDataSubsystem
 		}
 		return (this._Instance);
 	}
+	constructor() {
+		this.Init();
+	}
+	public static	Init(): UVCHDataSubsystem {
+		return (this.instance);
+	}
+	public	Init() {}
 
 	private _Datas: Map<string, DataPropertie<any>> = new Map();
 

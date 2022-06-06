@@ -16,6 +16,7 @@ import * as vscode from "vscode";
 import { IProjectInfos } from "../Commands/ProjectCommands";
 import log_uvch from "../utils/log_uvch";
 import UVCHDataSubsystem from "./DataSubsystem";
+import UVCHSettingsSubsystem from "./SettingsSubsystem";
 
 export interface ISwitchFile {
 	srcPath: string,
@@ -40,7 +41,12 @@ export default class UVHCSwitchFileSubsystem
 	}
 	public	Init()
 	{
-		// Create Switch File status bar
+		if (UVCHSettingsSubsystem.Get<boolean>("Default.UseSwitchFile") === false) {
+			return;
+		}
+		log_uvch.log("[UVHC] activate [SWITCH_FILE]");
+
+		// CREATE STATUS BAR
 		const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
 		switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
 		UVCHDataSubsystem.Listen("SwitchFile", (data: ISwitchFile) => {
@@ -61,14 +67,14 @@ export default class UVHCSwitchFileSubsystem
 		});
 		switchFileStatusbar.show();
 
-		// Listen when you focusing on a file and update the 'SwitchFile' (To switch quicker between header/cpp)
+		// LISTEN when you focusing on a file and update the 'SwitchFile' (To switch quicker between header/cpp)
 		vscode.window.onDidChangeActiveTextEditor(async(ev: vscode.TextEditor | undefined) => {
 			if (ev && ev.viewColumn && ev.viewColumn >= vscode.ViewColumn.One) {
 				UVHCSwitchFileSubsystem.RequestFindSwitchFile(ev.document);
 			}
 		});
 
-		// Find current SwitchFile
+		// FIND current SwitchFile
 		const currentDocument = vscode.window.activeTextEditor?.document;
 		if (currentDocument) {
 			this.RequestFindSwitchFile(currentDocument);
@@ -84,7 +90,7 @@ export default class UVHCSwitchFileSubsystem
 		const switchFilePath = UVCHDataSubsystem.Get<ISwitchFile>("SwitchFile");
 		if (switchFilePath) {
 
-			log_uvch.log(`[Switch] Switching to file: '${path.basename(switchFilePath.destPath)}'`);
+			log_uvch.log(`[SWITCH_FILE] Switching to file: '${path.basename(switchFilePath.destPath)}'`);
 			// Open switch file from path
 
 			const switchFileDoc = await vscode.workspace.openTextDocument(switchFilePath.destPath);
@@ -97,7 +103,7 @@ export default class UVHCSwitchFileSubsystem
 		const filePath = vscode.window.activeTextEditor?.document.fileName.replace('\\', '/') || "";
 		const extension = path.extname(filePath);
 		if ([".h", ".hpp", ".cpp"].includes(extension)) {
-			log_uvch.log(`[SWITCH] No switch file found ${path.basename(filePath)}`);
+			log_uvch.log(`[SWITCH_FILE] No switch file found ${path.basename(filePath)}`);
 			vscode.window.showErrorMessage("[UVCH] No SwitchFile found !"); // @TODO: add report action
 		}
 		return (false);
@@ -147,11 +153,11 @@ export default class UVHCSwitchFileSubsystem
 
 		const documentFullPath = document.fileName.replaceAll('\\', '/');
 		const switchSourceFile = path.basename(documentFullPath);
-		log_uvch.log(`[SWITCH] Start finding SwitchFile for '${switchSourceFile}'`);
+		log_uvch.log(`[SWITCH_FILE] Start finding SwitchFile for '${switchSourceFile}'`);
 
 		const switchFileFullPath = await this.FindSwitchFile(documentFullPath);
 		if (switchFileFullPath) {
-			log_uvch.log(`[SWITCH] Switch file found: '${path.basename(switchFileFullPath)}'`);
+			log_uvch.log(`[SWITCH_FILE] Switch file found: '${path.basename(switchFileFullPath)}'`);
 			UVCHDataSubsystem.Set<ISwitchFile>("SwitchFile", {
 				srcPath: documentFullPath,
 				destPath: switchFileFullPath
@@ -210,7 +216,7 @@ export default class UVHCSwitchFileSubsystem
 		// For each full path, check if it is the SwitchFile we are looking for
 		for (const file of filesInCurrentFolder) {
 			if (file.endsWith(`${switchSourceFileNameNoExtension}.h`) || file.endsWith(`${switchSourceFileNameNoExtension}.hpp`)) {
-				log_uvch.log(`[SWITCH] Found header file: '${path.basename(file)}'`);
+				log_uvch.log(`[SWITCH_FILE] Found header file: '${path.basename(file)}'`);
 				return (file);
 			}
 		}
@@ -255,7 +261,7 @@ export default class UVHCSwitchFileSubsystem
 		// For each full path, check if it is the SwitchFile we are looking for
 		for (const file of filesInCurrentFolder) {
 			if (file.endsWith(`${switchSourceFileNameNoExtension}.cpp`)) {
-				log_uvch.log(`[SWITCH] Found header file: '${path.basename(file)}'`);
+				log_uvch.log(`[SWITCH_FILE] Found header file: '${path.basename(file)}'`);
 				return (file);
 			}
 		}

@@ -28,7 +28,79 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"configuration": [],
+		"configuration": [
+			{
+				"id": "uvch-config",
+				"title": "UVCH Global",
+				"properties": {
+					"UVCH.Global.UseSwitchFile": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Disable feature: `switch between Header/Cpp files`",
+						"order": 0
+					},
+					"UVCH.Global.UseToolbar": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Disable feature: `Toolbar`",
+						"order": 1
+					},
+					"UVCH.Global.UseDocumentationExplorer": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Disable feature: `Documentation Explorer`",
+						"order": 2
+					}
+				},
+				"order": 1000
+			},
+			{
+				"id": "uvch-toolbar",
+				"title": "UVCH ToolBar",
+				"properties": {
+					"UVCH.Toolbar.PlayGameLaunchParameters": {
+						"type": "array",
+						"default": [
+							"%PROJECT%",
+							"-game"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"description": "Additional launch parameters for the play (Game)",
+						"order": 1
+					},
+					"UVCH.Toolbar.BuildParameters": {
+						"type": "array",
+						"default": [
+							"Win64",
+							"Development",
+							"%PROJECT%",
+							"-waitmutex"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"description": "Additional launch parameters for the play (Editor)",
+						"order": 0
+					},
+					"UVCH.Toolbar.PlayEditorLaunchParameters": {
+						"type": "array",
+						"default": [
+							"%PROJECT%"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"description": "Additional launch parameters for the play (Editor)",
+						"order": 0
+					}
+				}
+			}
+		],
 		"keybindings": [
 			{
 				"command": "UVCH.SwitchHeaderCppFile",

@@ -15,6 +15,7 @@ import * as fs from "fs";
 import { IUEProject } from "../utils/UETypes";
 import log_uvch from "../utils/log_uvch";
 import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
+import UVCHSettingsSubsystem from "../SubSystem/SettingsSubsystem";
 
 ///////////////////////////////////////////////////////////////////////////////
 // GetProjectInfos
@@ -139,16 +140,18 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 		}
 	}
 
-	// Find Or Create terminal
-	let terminal = vscode.window.terminals.find((term) => term.name === '[UVCH] Terminal');
-	if (!terminal) {
-		terminal = vscode.window.createTerminal('[UVCH] Terminal');
-	}
-
 	// The .exe is changing depending of the UE version
 	// @TODO: Find a better way to do this
 	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
 	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
+
+	const settingArgs =
+		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayGameLaunchParameters`)
+			.map((arg: string) => {
+				return (
+					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+				);
+			});
 
 	vscode.debug.startDebugging(
 		vscode.workspace.workspaceFolders![0],
@@ -158,10 +161,9 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 			request: 'launch',
 			program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
 			args: [
-				`${projectInfos.RootPath}/${projectInfos.Name}.uproject`,
-				`-game`
-				// @TODO: Add settings for using additional parameters such has -ResX, -ResY and more
+				...settingArgs
 			],
+			console: "newExternalWindow",
 			cwd: enginePath,
 			visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
 			sourceFileMap: {
@@ -209,6 +211,14 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 	const unrealExeName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor');
 	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
 
+	const settingArgs =
+		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayEditorLaunchParameters`)
+			.map((arg: string) => {
+				return (
+					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+				);
+			});
+
 	vscode.debug.startDebugging(
 		vscode.workspace.workspaceFolders![0],
 		{
@@ -217,7 +227,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 			request: 'launch',
 			program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
 			args: [
-				`${projectInfos.RootPath}/${projectInfos.Name}.uproject`,
+				...settingArgs
 			],
 			cwd: enginePath,
 			visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,

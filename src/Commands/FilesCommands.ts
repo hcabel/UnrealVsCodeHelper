@@ -10,9 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+import * as vscode from 'vscode';
+import UVCHSettingsSubsystem from "../SubSystem/SettingsSubsystem";
 import UVHCSwitchFileSubsystem from "../SubSystem/SwitchFileSubsystem";
 
 export async function	SwitchHeaderCppFile_Implementation(): Promise<boolean>
 {
-	return (await UVHCSwitchFileSubsystem.SwitchFile());
+	if (UVCHSettingsSubsystem.Get<boolean>("Default.UseSwitchFile")) {
+		return (await UVHCSwitchFileSubsystem.SwitchFile());
+	}
+	vscode.window.showInformationMessage("[UVCH] Switch file is disabled in the settings.");
+	return (false);
 }

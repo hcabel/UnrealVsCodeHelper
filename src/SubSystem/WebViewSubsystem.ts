@@ -182,7 +182,7 @@ export class WebViewBase
 	public get ViewId(): string { return (this._ViewId); }
 };
 
-class UVCHWebViewSubsystem
+export default class UVCHWebViewSubsystem
 {
 	// All of this is for having a single instance of the UVCHWebViewSubsystem
 	private static _Instance: UVCHWebViewSubsystem | undefined;
@@ -221,5 +221,3 @@ class UVCHWebViewSubsystem
 	}
 
 }
-
-export default UVCHWebViewSubsystem;

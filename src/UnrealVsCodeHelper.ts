@@ -27,6 +27,8 @@ import {
 	OpenUnrealDocFromSelection_Implementation,
 	SearchUnrealDoc_Implementation
 } from './Commands/BrowserCommands';
+import UVCHDataSubsystem from './SubSystem/DataSubsystem';
+import UVCHSettingsSubsystem from './SubSystem/SettingsSubsystem';
 
 interface	ICommands {
 	cmd: string,
@@ -67,6 +69,10 @@ export function	activate(context: vscode.ExtensionContext)
 {
 	log_uvch.log("[UVHC] activate extension");
 
+	UVCHSettingsSubsystem.Init();
+	UVCHDataSubsystem.Init();
+	UVHCSwitchFileSubsystem.Init();
+
 	// Register all commands
 	commands.forEach((command: ICommands) => {
 		log_uvch.log(`[UVHC] Register commands [UVCH.${command.cmd}]`);
@@ -82,9 +88,6 @@ export function	activate(context: vscode.ExtensionContext)
 		log_uvch.log(`[UVHC] Register view [VIEW_${reactView.viewId}]`);
 		UVCHWebViewSubsystem.RegisterNewView(context, reactView);
 	});
-
-	// Init SwitchFile Subsystem @TODO: Add settings to turn him off
-	UVHCSwitchFileSubsystem.Init();
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
