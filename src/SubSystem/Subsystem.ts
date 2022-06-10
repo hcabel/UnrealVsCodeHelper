@@ -15,16 +15,17 @@ export default class ASubsystem
 	private static _Instance: ASubsystem | undefined;
 	public static GetInstance<T extends ASubsystem>(): T | undefined {
 		if (!this._Instance) {
-			this._Instance = new ASubsystem();
+			this._Instance = new this();
 		}
 		return (this._Instance as T);
 	}
 
+	public static	Init<T extends ASubsystem>(): T | undefined {
+		// By asking for the instance, we are initalizing the class
+		return (this.GetInstance<T>());
+	}
 	constructor() {
 		this.Init();
-	}
-	public static	Init<T extends ASubsystem>(): T | undefined {
-		return (this.GetInstance<T>());
 	}
 	// has to be overridden by the subclass
 	public Init(): void {}
