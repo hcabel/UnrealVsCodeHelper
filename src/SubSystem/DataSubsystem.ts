@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+import ASubsystem from "./Subsystem";
+
 // Prototype of the listener functions
 export type DataListener<T> = (datas: T | undefined) => void;
 
@@ -88,22 +90,8 @@ export class DataPropertie<T>
 /**
  * This class will get store/manage all the data of UVCH
  */
-export default class UVCHDataSubsystem
+export default class UVCHDataSubsystem extends ASubsystem
 {
-	// All of this is for having a single instance of the UVCHDataSubsystem
-	private static _Instance: UVCHDataSubsystem | undefined;
-	public static get instance(): UVCHDataSubsystem {
-		if (!this._Instance) {
-			this._Instance = new UVCHDataSubsystem();
-		}
-		return (this._Instance);
-	}
-	constructor() {
-		this.Init();
-	}
-	public static	Init(): UVCHDataSubsystem {
-		return (this.instance);
-	}
 	public	Init() {}
 
 	private _Datas: Map<string, DataPropertie<any>> = new Map();
@@ -115,7 +103,7 @@ export default class UVCHDataSubsystem
 	 * @returns The data or undefined if key not exist
 	 */
 	public static Get<T = any>(key: string): T | undefined {
-		return (this.instance._Datas.get(key)?.data);
+		return (UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.get(key)?.data);
 	}
 
 	/**
@@ -125,11 +113,11 @@ export default class UVCHDataSubsystem
 	 * @param value The value of the data that you want to add/update
 	 */
 	public static Set<T = any>(key: string, value: T | undefined) {
-		const data = this.instance._Datas.get(key);
+		const data = UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.get(key);
 
 		if (!data) {
 			// Not already exist, create new one
-			this.instance._Datas.set(key, new DataPropertie<T>(value));
+			UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.set(key, new DataPropertie<T>(value));
 		}
 		else {
 			// Already exist, update value
@@ -144,11 +132,11 @@ export default class UVCHDataSubsystem
 	 * @param listener Your function that you want to be called when data is changed
 	 */
 	public static Listen(key: string, listener: DataListener<any>) {
-		const data = this.instance._Datas.get(key);
+		const data = UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.get(key);
 
 		if (!data) {
 			// If key doesn't exist create one with the listener and a value of undefined
-			this.instance._Datas.set(key, new DataPropertie<any>(undefined, [listener]));
+			UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.set(key, new DataPropertie<any>(undefined, [listener]));
 		}
 		else {
 			// Add listener
@@ -165,7 +153,7 @@ export default class UVCHDataSubsystem
 	 * @returns true or false, depending on if the listener has been removed successfully
 	 */
 	public static RemoveListener(key: string, listenerToRemove: DataListener<any>): boolean {
-		const data = this.instance._Datas.get(key);
+		const data = UVCHDataSubsystem.GetInstance<UVCHDataSubsystem>()!._Datas.get(key);
 
 		if (data) {
 			return (data.RemoveListener(listenerToRemove));

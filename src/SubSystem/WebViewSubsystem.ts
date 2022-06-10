@@ -14,6 +14,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import UVCHDataSubsystem from './DataSubsystem';
 import log_uvch from '../utils/log_uvch';
+import ASubsystem from './Subsystem';
 
 export interface ICommand {
 	action: string,
@@ -114,13 +115,13 @@ export class ViewPanelBase
 			log_uvch.log(`[Panel_${this._PanelId}] Now listening to ${dataKey}`);
 
 			UVCHDataSubsystem.Listen(dataKey, (data: any) => {
-				this._Panel?.webview.postMessage({ type: callbackMessageType, data: data });
+				this._Panel!.webview.postMessage({ type: callbackMessageType, data: data });
 			});
 		}
 		else {
 			// If he tried to listen to the same data twice, we trigger the listener to make sure his updated
 			const data: any | undefined = UVCHDataSubsystem.Get(dataKey);
-			this._Panel?.webview.postMessage({ type: callbackMessageType, data: data });
+			this._Panel!.webview.postMessage({ type: callbackMessageType, data: data });
 
 			// @TODO: handle unlistening and callbackMessageType update
 			log_uvch.log(`[Panel_${this._PanelId}] You tried to listen to a datakey that you were already listening to ${dataKey}`);
@@ -182,17 +183,8 @@ export class WebViewBase
 	public get ViewId(): string { return (this._ViewId); }
 };
 
-export default class UVCHWebViewSubsystem
+export default class UVCHWebViewSubsystem extends ASubsystem
 {
-	// All of this is for having a single instance of the UVCHWebViewSubsystem
-	private static _Instance: UVCHWebViewSubsystem | undefined;
-	public static get instance(): UVCHWebViewSubsystem {
-		if (!this._Instance) {
-			this._Instance = new UVCHWebViewSubsystem();
-		}
-		return (this._Instance);
-	}
-
 	// The Map where all the view has stored with there key is his viewId
 	private _Views: Map<string, WebViewBase> = new Map();
 
@@ -206,7 +198,7 @@ export default class UVCHWebViewSubsystem
 	 */
 	public static	RegisterNewView(context: vscode.ExtensionContext, reactWebView: IReactWebView): string
 	{
-		this.instance._Views.set(reactWebView.viewId, new WebViewBase(context, reactWebView));
+		UVCHWebViewSubsystem.GetInstance<UVCHWebViewSubsystem>()!._Views.set(reactWebView.viewId, new WebViewBase(context, reactWebView));
 		return (reactWebView.viewId);
 	}
 
@@ -217,7 +209,7 @@ export default class UVCHWebViewSubsystem
 	 * @returns The WebView or undefined if not exist
 	 */
 	public static	GetView(viewId: string): WebViewBase | undefined {
-		return (this.instance._Views.get(viewId));
+		return (UVCHWebViewSubsystem.GetInstance<UVCHWebViewSubsystem>()!._Views.get(viewId));
 	}
 
 }

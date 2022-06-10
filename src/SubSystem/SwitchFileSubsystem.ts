@@ -17,28 +17,15 @@ import { IProjectInfos } from "../Commands/ProjectCommands";
 import log_uvch from "../utils/log_uvch";
 import UVCHDataSubsystem from "./DataSubsystem";
 import UVCHSettingsSubsystem from "./SettingsSubsystem";
+import ASubsystem from "./Subsystem";
 
 export interface ISwitchFile {
 	srcPath: string,
 	destPath: string
 }
 
-export default class UVHCSwitchFileSubsystem
+export default class UVHCSwitchFileSubsystem extends ASubsystem
 {
-	private static _Instance: UVHCSwitchFileSubsystem | undefined;
-	public static get instance(): UVHCSwitchFileSubsystem {
-		if (!this._Instance) {
-			this._Instance = new UVHCSwitchFileSubsystem();
-		}
-		return (this._Instance);
-	}
-
-	constructor() {
-		this.Init();
-	}
-	public static	Init(): UVHCSwitchFileSubsystem {
-		return (this.instance);
-	}
 	public	Init()
 	{
 		if (UVCHSettingsSubsystem.Get<boolean>("Default.UseSwitchFile") === false) {
@@ -109,7 +96,7 @@ export default class UVHCSwitchFileSubsystem
 		return (false);
 	}
 	public static	SwitchFile(): Promise<boolean> {
-		return (UVHCSwitchFileSubsystem.instance.SwitchFile());
+		return (UVHCSwitchFileSubsystem.GetInstance<UVHCSwitchFileSubsystem>()!.SwitchFile());
 	}
 
 	/**
@@ -137,7 +124,7 @@ export default class UVHCSwitchFileSubsystem
 
 	}
 	public static	RequestFindSwitchFile(document: vscode.TextDocument) {
-		return (UVHCSwitchFileSubsystem.instance.RequestFindSwitchFile(document));
+		return (UVHCSwitchFileSubsystem.GetInstance<UVHCSwitchFileSubsystem>()!.RequestFindSwitchFile(document));
 	}
 
 	private async	FindSwitchFileRequest(document: vscode.TextDocument): Promise<boolean>

@@ -11,31 +11,16 @@
 /* ************************************************************************** */
 
 import * as vscode from 'vscode';
+import ASubsystem from './Subsystem';
 
 const configPrefix = "UVCH";
 export type ConfigSubSection = "Default" | "Toolbar" | "Switch" | "Documentation";
 export type ConfigPath = `${ConfigSubSection}.${string}`;
 
-export default class UVCHSettingsSubsystem
+export default class UVCHSettingsSubsystem extends ASubsystem
 {
-	private static _Instance: UVCHSettingsSubsystem | undefined;
-	public static get instance(): UVCHSettingsSubsystem {
-		if (!this._Instance) {
-			this._Instance = new UVCHSettingsSubsystem();
-		}
-		return (this._Instance);
-	}
-
-	constructor() {
-		this.Init();
-	}
-	public static	Init(): UVCHSettingsSubsystem {
-		return (this.instance);
-	}
-	public	Init() {}
-
 	public static Get<T = any>(section: ConfigPath): any | undefined {
-		return (this.instance.Get<T>(section));
+		return (UVCHSettingsSubsystem.GetInstance<UVCHSettingsSubsystem>()!.Get<T>(section));
 	}
 	public Get<T = any>(section: ConfigPath): any | undefined {
 		return (
