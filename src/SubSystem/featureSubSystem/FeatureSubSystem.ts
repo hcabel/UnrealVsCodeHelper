@@ -64,13 +64,30 @@ export default class AFeatureSubSystem extends ASubsystem
 			// Register commands overriding implementation to show an error message
 			// Do not add a 'when' condition to the command because we want to display this nice message
 			// with a button allowing user to easily turn the feature back on
-			// @TODO: Add a button to redirect in the settings (OR turn the feature back on)
 			this.RegisterCommands((this._Commands || []).map((cmd) => {
+				// We had to stored it before because calling this in the function wont be equal to the feature subsystem
+				const enableConfigPath = this._EnableConfigPath!;
 				return ({
 					cmd: cmd.cmd,
 					func: () => {
 						log_uvch.log(`[UVCH] ${cmd.cmd} is desactivated`);
-						vscode.window.showInformationMessage(`${this._FeatureName} feature is disabled in the settings.`);
+						vscode.window.showInformationMessage(
+							`${this._FeatureName} feature is disabled in the settings.`,
+							"Turn back on",
+							"Open settings"
+						).then((selection) => {
+							if (selection === "Open settings") {
+								vscode.commands.executeCommand("workbench.action.openWorkspaceSettings",
+									{ jsonEditor: false, query: `@ext:HugoCabel.uvch` }
+								);
+							}
+							else if (selection === "Turn back on") {
+								UVCHSettingsSubsystem.Set<boolean>(enableConfigPath, true)
+									.then(() => {
+										vscode.commands.executeCommand("workbench.action.reloadWindow");
+									});
+							}
+						});
 					}
 				});
 			}));

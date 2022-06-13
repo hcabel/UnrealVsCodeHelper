@@ -34,4 +34,14 @@ export default class UVCHSettingsSubsystem extends ASubsystem
 		);
 	}
 
+	public static Set<T = any>(section: ConfigPath, value: T): Thenable<void> {
+		return (UVCHSettingsSubsystem.GetInstance<UVCHSettingsSubsystem>()!.Set<T>(section, value));
+	}
+	public Set<T = any>(section: ConfigPath, value: T): Thenable<void> {
+		return (
+			vscode.workspace.getConfiguration(section ? configPrefix : undefined)
+				.update(section, value, 1)
+		);
+	}
+
 }
