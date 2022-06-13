@@ -14,7 +14,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { IProjectInfos } from '../Commands/ToolbarCommands';
 import ToolBar from './components/Toolbar';
-import { HorizontalBox } from './style/BaseStyle';
 
 declare const window: Window & {
 	acquireVsCodeApi: any
@@ -77,7 +76,11 @@ function	UnrealProjectView(props: { vscode: any })
 				:
 				// INTERFACE
 				<div>
-					<div style={HorizontalBox} >
+					<div style={{
+						display: 'flex',
+						justifyContent: "space-between",
+						flexDirection: "row"
+					}}>
 						<h3 style={{ marginTop: "0px" }}>
 							{_ProjectInfos.Name}
 						</h3>

@@ -16,7 +16,7 @@ import UVCHDataSubsystem from './DataSubsystem';
 import log_uvch from '../utils/log_uvch';
 import ASubsystem from './Subsystem';
 
-export interface ICommand {
+export interface IAction {
 	action: string,
 	content: any
 }
@@ -83,7 +83,7 @@ export class ViewPanelBase
 	 */
 	private	SetOnMessageReceived()
 	{
-		this._Panel?.webview.onDidReceiveMessage((command: ICommand) => {
+		this._Panel?.webview.onDidReceiveMessage((command: IAction) => {
 			switch (command.action) {
 			case "ExecuteCommand": // Allow React component to execute vscode commands
 				vscode.commands.executeCommand(command.content.cmd, ...(command.content.args || []));

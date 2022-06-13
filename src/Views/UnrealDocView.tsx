@@ -86,6 +86,7 @@ function	UnrealDocView(props: { vscode: any })
 			</div>
 			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>
 				{_Loading ?
+					// LOADING ANIMATION
 					Array.from(Array(10).keys()).map(() => {
 						return (
 							<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }} className="animated-loading"/>
@@ -93,6 +94,7 @@ function	UnrealDocView(props: { vscode: any })
 					})
 					:
 					(_RestApiItems.length > 0 ?
+						// ALL RESULTS
 						_RestApiItems.map((item: IRestApiItem) => {
 							return (
 								<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
@@ -101,6 +103,7 @@ function	UnrealDocView(props: { vscode: any })
 							);
 						})
 						:
+						// NOTHING FOUND
 						<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
 							<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
 								<span style={{ color: "gray" }}>{!_Query?.searchTerms ? "Nothing to search" : "No results found"}</span>
