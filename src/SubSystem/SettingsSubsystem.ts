@@ -19,10 +19,15 @@ export type ConfigPath = `${ConfigSubSection}.${string}`;
 
 export default class UVCHSettingsSubsystem extends ASubsystem
 {
-	public static Get<T = any>(section: ConfigPath): any | undefined {
+	/**
+	 * Get a property in the UVCH setting
+	 * @param section the seting path to get
+	 * @returns the value of the setting cast as the given type
+	 */
+	public static Get<T = any>(section: ConfigPath): T | undefined {
 		return (UVCHSettingsSubsystem.GetInstance<UVCHSettingsSubsystem>()!.Get<T>(section));
 	}
-	public Get<T = any>(section: ConfigPath): any | undefined {
+	public Get<T = any>(section: ConfigPath): T | undefined {
 		return (
 			vscode.workspace.getConfiguration(section ? configPrefix : undefined)
 				.get<T>(section)

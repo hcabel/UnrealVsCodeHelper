@@ -201,10 +201,6 @@ export default class UVCHWebViewSubsystem extends ASubsystem
 	// The Map where all the view has stored with there key is his viewId
 	private _Views: Map<string, WebViewBase> = new Map();
 
-	public Init(): void {
-		this._Views = new Map<string, WebViewBase>();
-	}
-
 	/**
 	 * Register and create a new WebView
 	 *

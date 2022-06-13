@@ -200,7 +200,7 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
 
 	const settingArgs =
-		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayGameLaunchParameters`)
+		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayGameLaunchParameters`)!
 			.map((arg: string) => {
 				return (
 					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
@@ -266,7 +266,7 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
 
 	const settingArgs =
-		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayEditorLaunchParameters`)
+		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayEditorLaunchParameters`)!
 			.map((arg: string) => {
 				return (
 					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg

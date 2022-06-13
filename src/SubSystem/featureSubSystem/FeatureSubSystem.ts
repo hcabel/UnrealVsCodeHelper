@@ -15,20 +15,31 @@ import log_uvch from '../../utils/log_uvch';
 import UVCHDataSubsystem from '../DataSubsystem';
 import UVCHSettingsSubsystem, { ConfigPath } from '../SettingsSubsystem';
 import ASubsystem from '../Subsystem';
-import UVCHWebViewSubsystem, { IReactWebView, WebViewBase } from '../WebViewSubsystem';
+import UVCHWebViewSubsystem, { IReactWebView } from '../WebViewSubsystem';
 
 export interface	IVscodeCommand {
 	cmd: string,
 	func: (...args: any[]) => any
 }
 
+/**
+ * This class purpose is to manage the features of the extension
+ */
 export default class AFeatureSubSystem extends ASubsystem
 {
+	// Human readable name of the feature
 	protected _FeatureName: string = "Unknown";
+	// Path to the config file to enable/disable the feature
 	protected _EnableConfigPath: ConfigPath | undefined = undefined;
+	// list of commands related to the feature
 	protected _Commands: IVscodeCommand[] = [];
+	// list of views/panel related to the feature
 	protected _Views: IReactWebView[] = [];
 
+	/**
+	 * This function allow you to overrite the properties before being initalized
+	 * @note for some reason when I'm doing on the constructor, the properties are not set
+	 */
 	protected	Assign()
 	{
 		this._FeatureName = "Unknown";
@@ -37,10 +48,13 @@ export default class AFeatureSubSystem extends ASubsystem
 		this._Views	= [];
 	}
 
+	/**
+	 * This function is called when the extension is loaded
+	 */
 	protected	Init()
 	{
 		const activated = (this._EnableConfigPath ? UVCHSettingsSubsystem.Get<boolean>(this._EnableConfigPath) : false);
-		log_uvch.log(`[UVHC] ${activated ? "Enable" : "Disable"} [${this._FeatureName}]`);
+		log_uvch.log(`[FEATURE] ${activated ? "Enable" : "Disable"} [${this._FeatureName}]`);
 		if (activated) {
 			this.RegisterCommands(this._Commands || []);
 			this.RegisterViews(this._Views || []);
@@ -48,6 +62,9 @@ export default class AFeatureSubSystem extends ASubsystem
 		}
 		else {
 			// Register commands overriding implementation to show an error message
+			// Do not add a 'when' condition to the command because we want to display this nice message
+			// with a button allowing user to easily turn the feature back on
+			// @TODO: Add a button to redirect in the settings (OR turn the feature back on)
 			this.RegisterCommands((this._Commands || []).map((cmd) => {
 				return ({
 					cmd: cmd.cmd,
@@ -57,14 +74,31 @@ export default class AFeatureSubSystem extends ASubsystem
 					}
 				});
 			}));
+			// We can't unregister the views because this is controlled by the package json
+			// when registering view, we actually just assigning HTML/ReactComponent to the view how's automatically
+			// Registered by vscode.
+			// /!\ Make sure to add a 'when' condition to your view in the package JSON to avoid vscode to register it
+			// eg: "when": "congig.path.to.my.setting == true"
+
 			this.Desactivate();
 		}
 	}
 
 	// To override
+	/**
+	 * This function is called when the extension is activated
+	 */
 	protected	Activate() {}
+	/**
+	 * This function is called when the extension is desactivated
+	 */
 	protected	Desactivate() {}
 
+	/**
+	 * This will register the commands to the vscode
+	 * @param commands, list of commands to register
+	 * @throws if is not context is found in the DataSubsystem
+	 */
 	protected RegisterCommands(commands: IVscodeCommand[]): void {
 		const context = UVCHDataSubsystem.Get<vscode.ExtensionContext>("Context");
 		if (!context) {
@@ -80,18 +114,22 @@ export default class AFeatureSubSystem extends ASubsystem
 		});
 	}
 
+	/**
+	 * This will set the views registered in package.json
+	 * @param views list of views to register
+	 */
 	protected RegisterViews(views: IReactWebView[]): void {
 		views.forEach((reactView: IReactWebView) => {
 			const view = UVCHWebViewSubsystem.GetView(reactView.viewId);
-			if (!view) {
-				log_uvch.log(`[UVHC] Register view [VIEW_${reactView.viewId}]`);
-				UVCHWebViewSubsystem.RegisterNewView(reactView);
-			}
-			else {
+			if (view) { // if the view is already registered, we add a new panel to it
 				reactView.panelIds.forEach((panelId: string) => {
 					log_uvch.log(`[VIEW_${reactView.viewId}] Add pannel [VIEW_${panelId}]`);
 					view.RegisterNewPanel(panelId);
 				});
+			}
+			else {
+				log_uvch.log(`[UVHC] Register view [VIEW_${reactView.viewId}]`);
+				UVCHWebViewSubsystem.RegisterNewView(reactView);
 			}
 		});
 	}

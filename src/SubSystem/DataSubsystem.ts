@@ -91,12 +91,10 @@ export class DataPropertie<T>
  */
 export default class UVCHDataSubsystem extends ASubsystem
 {
+	// Map where are stored all the data and their listeners
 	private _Datas: Map<string, DataPropertie<any>> = new Map();
 
-	public	Init()
-	{
-		this._Datas = new Map<string, DataPropertie<any>>();
-	}
+	public	Init() {}
 
 	/**
 	 * Get data

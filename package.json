@@ -124,63 +124,63 @@
 				"title": "Refresh",
 				"icon": "$(refresh)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseToolbar && isWindows"
+				"when": "isWindows"
 			},
 			{
 				"command": "UVCH.PlayGame",
 				"title": "Play (Game)",
 				"icon": "$(play)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseToolbar && isWindows"
+				"when": "isWindows"
 			},
 			{
 				"command": "UVCH.PlayEditor",
 				"title": "Play (Editor)",
 				"icon": "$(play)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseToolbar && isWindows"
+				"when": "isWindows"
 			},
 			{
 				"command": "UVCH.BuildEditor",
 				"title": "Build (Editor)",
 				"icon": "$(package)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseToolbar && isWindows"
+				"when": "isWindows"
 			},
 			{
 				"command": "UVCH.GetUnrealEnginePath",
 				"title": "Find Unreal Engine folder path",
 				"icon": "$(folder)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseToolbar && isWindows"
+				"when": "isWindows"
 			},
 			{
 				"command": "UVCH.SwitchHeaderCppFile",
 				"title": "Switch between header/cpp file",
 				"icon": "$(arrow-swap)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseSwitchFile"
+				"when": ""
 			},
 			{
 				"command": "UVCH.OpenUnrealDoc",
 				"title": "Open Unreal Documentation",
 				"icon": "$(book)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseDocumentationExplorer"
+				"when": ""
 			},
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",
 				"title": "Open Unreal Documentation from selection",
 				"icon": "$(book)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseDocumentationExplorer"
+				"when": ""
 			},
 			{
 				"command": "UVCH.SearchUnrealDoc",
 				"title": "Search in Unreal Documentation from selection",
 				"icon": "$(book)",
 				"category": "UVCH",
-				"when": "config.UVCH.Global.UseDocumentationExplorer"
+				"when": ""
 			}
 		],
 		"viewsContainers": {
