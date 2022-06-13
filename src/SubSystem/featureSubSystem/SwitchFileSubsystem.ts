@@ -13,26 +13,33 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
-import { IProjectInfos } from "../Commands/ProjectCommands";
-import log_uvch from "../utils/log_uvch";
-import UVCHDataSubsystem from "./DataSubsystem";
-import UVCHSettingsSubsystem from "./SettingsSubsystem";
-import ASubsystem from "./Subsystem";
+
+import {
+	SwitchHeaderCppFile_Implementation
+} from '../../Commands/SwitchFilesCommands';
+
+import log_uvch from "../../utils/log_uvch";
+import UVCHDataSubsystem from "../DataSubsystem";
+import AFeatureSubSystem from "./FeatureSubSystem";
 
 export interface ISwitchFile {
 	srcPath: string,
 	destPath: string
 }
 
-export default class UVHCSwitchFileSubsystem extends ASubsystem
+export default class SwitchFileSubsystem extends AFeatureSubSystem
 {
-	public	Init()
+	protected	Assign()
 	{
-		if (UVCHSettingsSubsystem.Get<boolean>("Default.UseSwitchFile") === false) {
-			return;
-		}
-		log_uvch.log("[UVHC] activate [SWITCH_FILE]");
+		this._FeatureName = "SwitchFile";
+		this._EnableConfigPath = "Global.UseSwitchFile";
+		this._Commands = [
+			{ cmd: "SwitchHeaderCppFile", func: SwitchHeaderCppFile_Implementation },
+		];
+	}
 
+	protected	Activate()
+	{
 		// CREATE STATUS BAR
 		const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
 		switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
@@ -57,7 +64,7 @@ export default class UVHCSwitchFileSubsystem extends ASubsystem
 		// LISTEN when you focusing on a file and update the 'SwitchFile' (To switch quicker between header/cpp)
 		vscode.window.onDidChangeActiveTextEditor(async(ev: vscode.TextEditor | undefined) => {
 			if (ev && ev.viewColumn && ev.viewColumn >= vscode.ViewColumn.One) {
-				UVHCSwitchFileSubsystem.RequestFindSwitchFile(ev.document);
+				SwitchFileSubsystem.RequestFindSwitchFile(ev.document);
 			}
 		});
 
@@ -96,7 +103,7 @@ export default class UVHCSwitchFileSubsystem extends ASubsystem
 		return (false);
 	}
 	public static	SwitchFile(): Promise<boolean> {
-		return (UVHCSwitchFileSubsystem.GetInstance<UVHCSwitchFileSubsystem>()!.SwitchFile());
+		return (SwitchFileSubsystem.GetInstance<SwitchFileSubsystem>()!.SwitchFile());
 	}
 
 	/**
@@ -124,20 +131,11 @@ export default class UVHCSwitchFileSubsystem extends ASubsystem
 
 	}
 	public static	RequestFindSwitchFile(document: vscode.TextDocument) {
-		return (UVHCSwitchFileSubsystem.GetInstance<UVHCSwitchFileSubsystem>()!.RequestFindSwitchFile(document));
+		return (SwitchFileSubsystem.GetInstance<SwitchFileSubsystem>()!.RequestFindSwitchFile(document));
 	}
 
 	private async	FindSwitchFileRequest(document: vscode.TextDocument): Promise<boolean>
 	{
-		let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
-		if (!projectInfos) {
-			await vscode.commands.executeCommand("UVCH.GetProjectInfos");
-			projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
-			if (!projectInfos) {
-				return (false);
-			}
-		}
-
 		const documentFullPath = document.fileName.replaceAll('\\', '/');
 		const switchSourceFile = path.basename(documentFullPath);
 		log_uvch.log(`[SWITCH_FILE] Start finding SwitchFile for '${switchSourceFile}'`);

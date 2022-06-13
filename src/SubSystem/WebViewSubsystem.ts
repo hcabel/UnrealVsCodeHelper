@@ -37,13 +37,13 @@ export class ViewPanelBase
 	private _Panel: vscode.WebviewView | undefined;
 	protected _ListeningDataKeys: string[] = [];
 
-	constructor(context: vscode.ExtensionContext, panelId: string)
+	constructor(panelId: string)
 	{
 		log_uvch.log(`[Panel_${panelId}] Create`);
 
 		this._BundleFileName = `UVCH-${panelId}`;
 		this._PanelId = panelId;
-		this._Context = context;
+		this._Context = UVCHDataSubsystem.Get('Context')!;
 
 		vscode.window.registerWebviewViewProvider(this._PanelId, {
 			resolveWebviewView: async(panel: vscode.WebviewView) => {
@@ -170,14 +170,27 @@ export class WebViewBase
 	protected _Panels: ViewPanelBase[] = [];
 	protected _WebView: vscode.WebviewView | undefined;
 
-	constructor(context: vscode.ExtensionContext, reactWebView: IReactWebView)
+	constructor(reactWebView: IReactWebView)
 	{
 		log_uvch.log(`[View_${reactWebView.viewId}] Create`);
 
 		this._ViewId = reactWebView.viewId;
 		this._Panels = reactWebView.panelIds.map((panelId) => {
-			return (new ViewPanelBase(context, panelId));
+			return (new ViewPanelBase(panelId));
 		});
+	}
+
+	public	RegisterNewPanel(panelId: string): ViewPanelBase
+	{
+		for (const panel of this._Panels) {
+			if (panel.PanelId === panelId) {
+				return (panel);
+			}
+		}
+
+		const panel = new ViewPanelBase(panelId);
+		this._Panels = this._Panels.concat([panel]);
+		return (panel);
 	}
 
 	public get ViewId(): string { return (this._ViewId); }
@@ -200,9 +213,12 @@ export default class UVCHWebViewSubsystem extends ASubsystem
 	 * @Params panelIds, The Id of all the panel in the view
 	 * @returns The new WebView id
 	 */
-	public static	RegisterNewView(context: vscode.ExtensionContext, reactWebView: IReactWebView): string
+	public static	RegisterNewView(reactWebView: IReactWebView): string
 	{
-		UVCHWebViewSubsystem.GetInstance<UVCHWebViewSubsystem>()!._Views.set(reactWebView.viewId, new WebViewBase(context, reactWebView));
+		UVCHWebViewSubsystem.GetInstance<UVCHWebViewSubsystem>()!._Views.set(
+			reactWebView.viewId,
+			new WebViewBase(reactWebView)
+		);
 		return (reactWebView.viewId);
 	}
 

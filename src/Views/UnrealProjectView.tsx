@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IProjectInfos } from '../Commands/ProjectCommands';
+import { IProjectInfos } from '../Commands/ToolbarCommands';
 import ToolBar from './components/Toolbar';
 import { HorizontalBox } from './style/BaseStyle';
 

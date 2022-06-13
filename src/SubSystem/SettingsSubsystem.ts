@@ -14,7 +14,7 @@ import * as vscode from 'vscode';
 import ASubsystem from './Subsystem';
 
 const configPrefix = "UVCH";
-export type ConfigSubSection = "Default" | "Toolbar" | "Switch" | "Documentation";
+export type ConfigSubSection = "Global" | "Toolbar" | "Switch" | "Documentation";
 export type ConfigPath = `${ConfigSubSection}.${string}`;
 
 export default class UVCHSettingsSubsystem extends ASubsystem

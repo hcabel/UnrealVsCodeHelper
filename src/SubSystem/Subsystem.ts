@@ -12,7 +12,7 @@
 
 export default class ASubsystem
 {
-	private static _Instance: ASubsystem | undefined;
+	private static _Instance: ASubsystem | undefined = undefined;
 	public static GetInstance<T extends ASubsystem>(): T | undefined {
 		if (!this._Instance) {
 			this._Instance = new this();
@@ -25,8 +25,12 @@ export default class ASubsystem
 		return (this.GetInstance<T>());
 	}
 	constructor() {
+		this.Assign();
 		this.Init();
 	}
+
 	// has to be overridden by the subclass
-	public Init(): void {}
+
+	protected	Assign() {}
+	protected	Init() {}
 };

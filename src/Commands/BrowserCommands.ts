@@ -13,7 +13,7 @@
 import * as vscode from 'vscode';
 import Axios from "axios";
 import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
-import { IProjectInfos } from "./ProjectCommands";
+import { IProjectInfos } from "./ToolbarCommands";
 import log_uvch from '../utils/log_uvch';
 
 // @TODO: Finished those interfaces

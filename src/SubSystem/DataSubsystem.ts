@@ -78,7 +78,6 @@ export class DataPropertie<T>
 	 */
 	public RemoveListener(listenerToRemove: DataListener<T>) {
 		const oldLength = this._Listeners.length;
-		console.log(5);
 		this._Listeners = this._Listeners.filter((listener: DataListener<T>) => {
 			return (listener !== listenerToRemove);
 		});
