@@ -11,6 +11,7 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 ### Added
 - Enable/Disable settings
 - Add launch parameters to Build/PlayEditor/PlayGame
+
 ### Changed
 - Fix RestItems design
 
@@ -21,6 +22,7 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 ## `[0.3.2] - 2022/05/31`
 ### Added
 - Highlight very usefull website in the Unreal documentation explorer.
+
 ### Changed
 - Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
 

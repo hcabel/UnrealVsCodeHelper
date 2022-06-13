@@ -24,9 +24,10 @@ Allow you to find the header/cpp file corresponding to the file you'r curretly e
 # Extension Settings
 
 ### 1- Global
- - Disable any of the feature
+- Disable any of the feature
+
 ### 2- Toolsbar:
- - Add any launch parameters to Build/PlayEditor/PlayGame
+- Add any launch parameters to Build/PlayEditor/PlayGame
 
 ------------------------------------------------------------------------------------------------------------------------
 
