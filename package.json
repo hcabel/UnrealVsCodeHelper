@@ -1,6 +1,6 @@
 {
 	"name": "uvch",
-	"version": "0.3.3",
+	"version": "1.0.0",
 	"displayName": "UnrealVsCodeHelper",
 	"description": "A helper for Unreal Engine, giving you lots of useful tools in a single extensions",
 	"publisher": "HugoCabel",

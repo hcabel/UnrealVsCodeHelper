@@ -7,6 +7,13 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
 
+## `[1.0.0] - 2022/06/13`
+### Added
+- Enable/Disable settings
+- Add launch parameters to Build/PlayEditor/PlayGame
+### Changed
+- Fix RestItems design
+
 ## `[0.3.3] - 2022/06/01`
 ### Changed
 - **ToolBar:** Use vscode feature(task/debuger) to: launch editor, build and play game
