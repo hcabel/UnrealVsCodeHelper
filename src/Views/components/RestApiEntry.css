@@ -59,6 +59,7 @@
 	overflow-x: hidden;
 	margin: 2px 0px 0px 5px;
 	text-overflow: ellipsis;
+	flex: 1;
 }
 
 .RestApiEntryUrl {

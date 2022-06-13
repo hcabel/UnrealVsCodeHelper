@@ -28,19 +28,29 @@ export interface IRestCse {
 export interface IRestMetaTags {
 	"apple-mobile-web-app-title": string,
 	"application-name": string,
-	availability: string,
-	crumbs: string,
+	availability?: string,
+	crumbs?: string,
+	"engine-competency"?: string,
 	host: string,
 	"msapplication-tilecolor": string,
 	"msapplication-tileimage": string,
-	"og:description": string,
-	"og:image": string,
-	"og:title": string,
+	"og:description"?: string,
+	"og:image"?: string,
+	"og:title"?: string,
+	order?: string,
+	parent?: string,
+	redirect?: string,
+	"seo-title"?: string,
+	"skill-family"?: string,
+	tags?: string,
 	"theme-color": string,
-	title: string,
-	"twitter:card": string
+	title?: string,
+	track?: string,
+	"twitter:card"?: string
+	type?: string,
+	version?: string,
 	viewport: string,
-	worker: string,
+	worker?: string,
 };
 
 export interface IRestApiItem {
@@ -51,9 +61,9 @@ export interface IRestApiItem {
 	kind: string,
 	link: string,
 	pagemap: {
-		cse_image: IRestCse[],
-		cse_thumbnail: IRestCse[],
-		metatags: IRestMetaTags[]
+		cse_image?: IRestCse[],
+		cse_thumbnail?: IRestCse[],
+		metatags?: IRestMetaTags[]
 	},
 	snippet: string,
 	title: string,

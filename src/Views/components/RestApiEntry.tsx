@@ -22,8 +22,37 @@ const usefulURL: string[] = [
 	"https://docs.unrealengine.com/5.0/en-US/unreal-engine-uproperty-specifiers"
 ];
 
+function	GetImage(item: IRestApiItem)
+{
+	if (item.pagemap.cse_image) {
+		for (const img of item.pagemap.cse_image) {
+			if (img.src) {
+				return (img.src);
+			}
+		}
+	}
+	if (item.pagemap.cse_thumbnail) {
+		for (const img of item.pagemap.cse_thumbnail) {
+			if (img.src) {
+				return (img.src);
+			}
+		}
+	}
+	if (item.pagemap.metatags) {
+		for (const img of item.pagemap.metatags) {
+			if (img["og:image"]) {
+				return (img["og:image"]);
+			}
+		}
+	}
+	return ("");
+}
+
 export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const [_Thumbnail, /* set_Thumbnail */] = React.useState<string>(GetImage(props.item));
+
 	function	OnClick()
 	{
 		props.vscode.postMessage({
@@ -41,15 +70,18 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 		});
 	}
 
+	console.log(props.item);
 	return (
 		<div className={`RestApiEntry ${usefulURL.includes(props.item.link) ? "ImportantLink" : ''}`} onClick={OnClick}>
 			{/* Title */}
 			<div className="RestApiEntryTitle">
-				{props.item.title}
+				{props.item.title.replace('...', '')}
 			</div>
 			{/* CONTENT */}
 			<div className="RestApiEntryContent">
-				<img className="RestApiEntryThumbnail" src={props.item.pagemap.metatags[0]['og:image']} />
+				{_Thumbnail &&
+					<img className="RestApiEntryThumbnail" src={_Thumbnail} />
+				}
 				{/* Snippet */}
 				<div className="RestApiEntrySnippet">
 					{props.item.snippet}
