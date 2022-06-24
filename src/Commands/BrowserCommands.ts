@@ -15,6 +15,7 @@ import Axios from "axios";
 import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
 import { IProjectInfos } from "./ToolbarCommands";
 import log_uvch from '../utils/log_uvch';
+import UVCHSettingsSubsystem from '../SubSystem/SettingsSubsystem';
 
 // @TODO: Finished those interfaces
 // I made them by looking into my request but some field might be no fully accurate
@@ -105,10 +106,45 @@ export interface IRestRequest {
 
 function	OpenPage(url: string)
 {
+	// Get Settings
+	const settingOpenPanelLocation = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.OpenPanelLocation");
+	if (!settingOpenPanelLocation) {
+		throw new Error("OpenPanelLocation setting is not set");
+	}
+
+	let viewColumn: number = -1;
+	switch (settingOpenPanelLocation)
+	{
+	case "Active":
+		viewColumn = -1; break;
+	case "Beside":
+		viewColumn = -2; break;
+	case "One":
+		viewColumn = 1; break;
+	case "Two":
+		viewColumn = 2; break;
+	case "Three":
+		viewColumn = 3; break;
+	case "Four":
+		viewColumn = 4; break;
+	case "Five":
+		viewColumn = 5; break;
+	case "Six":
+		viewColumn = 6; break;
+	case "Seven":
+		viewColumn = 7; break;
+	case "Eight":
+		viewColumn = 8; break;
+	case "Nine":
+		viewColumn = 9; break;
+	default: // Beside
+		viewColumn = -1; break;
+	}
+
 	// @TODO: add settings to redirect instead of open in vscode (and maybe choose his browser)
 	vscode.commands.executeCommand('simpleBrowser.api.open', url, {
 		preserveFocus: true,
-		viewColumn: vscode.ViewColumn.Beside
+		viewColumn: viewColumn
 	});
 }
 

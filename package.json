@@ -58,19 +58,6 @@
 				"id": "uvch-toolbar",
 				"title": "UVCH ToolBar",
 				"properties": {
-					"UVCH.Toolbar.PlayGameLaunchParameters": {
-						"type": "array",
-						"default": [
-							"%PROJECT%",
-							"-game"
-						],
-						"items": {
-							"type": "string"
-						},
-						"minItems": 0,
-						"description": "Additional launch parameters for the play (Game)",
-						"order": 1
-					},
 					"UVCH.Toolbar.BuildParameters": {
 						"type": "array",
 						"default": [
@@ -83,8 +70,21 @@
 							"type": "string"
 						},
 						"minItems": 0,
-						"description": "Additional launch parameters for the play (Editor)",
-						"order": 0
+						"markdownDescription": "Additional LaunchParameters on `Build`",
+						"order": 2
+					},
+					"UVCH.Toolbar.PlayGameLaunchParameters": {
+						"type": "array",
+						"default": [
+							"%PROJECT%",
+							"-game"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"markdownDescription": "Additional LaunchParameters on `play (Game)`",
+						"order": 1
 					},
 					"UVCH.Toolbar.PlayEditorLaunchParameters": {
 						"type": "array",
@@ -95,7 +95,45 @@
 							"type": "string"
 						},
 						"minItems": 0,
-						"description": "Additional launch parameters for the play (Editor)",
+						"markdownDescription": "Additional LaunchParameters on `play (Editor)`",
+						"order": 0
+					}
+				}
+			},
+			{
+				"id": "uvch-documentation-explorer",
+				"title": "UVCH Documentation Explorer",
+				"properties": {
+					"UVCH.DocumentationExplorer.OpenPanelLocation": {
+						"type": "string",
+						"enum": [
+							"Active",
+							"Beside",
+							"One",
+							"Two",
+							"Three",
+							"Four",
+							"Five",
+							"Six",
+							"Seven",
+							"Eight",
+							"Nine"
+						],
+						"enumDescriptions": [
+							"Open the browser in the current column",
+							"Open the browser next to the current column",
+							"Open the browser in the 1st column",
+							"Open the browser in the 2nd column",
+							"Open the browser in the 3rd column",
+							"Open the browser in the 4th column",
+							"Open the browser in the 5th column",
+							"Open the browser in the 6th column",
+							"Open the browser in the 7th column",
+							"Open the browser in the 8th column",
+							"Open the browser in the 9th column"
+						],
+						"default": "Beside",
+						"markdownDescription": "Define where the browser tab will be opened",
 						"order": 0
 					}
 				}
