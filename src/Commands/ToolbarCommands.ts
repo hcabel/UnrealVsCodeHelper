@@ -168,65 +168,77 @@ export async function	GetProjectInfos_Implementation(): Promise<boolean>
 
 /**
  * Launch the project in game mode
- *
- * @returns If the command as successfully been send to the terminal
+ * @return a promise<boolean> that resolve if the command as successfully been send to the terminal
  */
 export async function	PlayGame_Implementation(): Promise<boolean>
 {
-	await vscode.commands.executeCommand("UVCH.BuildEditor");
+	return new Promise<boolean>((resolve, reject) =>
+	{
+		vscode.commands.executeCommand<boolean>("UVCH.BuildEditor")
+			.then(async(succeeded: boolean) =>
+			{
+				if (!succeeded) {
+					// This is does not mean that the build failed, just that the command failed
+					resolve(false);
+					return;
+				}
 
-	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
-	if (!projectInfos) {
-		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
-		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
-		if (!projectInfos) {
-			return (false);
-		}
-	}
+				// Get Project data if not exist, trigger the command then try again
+				let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
+				if (!projectInfos) {
+					await vscode.commands.executeCommand("UVCH.GetProjectInfos");
+					projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+					if (!projectInfos) {
+						reject("Unable to get project infos");
+						return;
+					}
+				}
 
-	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
-	if (!enginePath) {
-		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
-		enginePath = UVCHDataSubsystem.Get('EnginePath');
-		if (!enginePath) {
-			return (false);
-		}
-	}
+				let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
+				if (!enginePath) {
+					await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
+					enginePath = UVCHDataSubsystem.Get('EnginePath');
+					if (!enginePath) {
+						reject("Unable to get engine path");
+						return;
+					}
+				}
 
-	// The .exe is changing depending of the UE version
-	// @TODO: Find a better way to do this
-	const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
-	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
+				// The .exe is changing depending of the UE version
+				// @TODO: Find a better way to do this
+				const unrealExeName = projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor';
+				const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
 
-	const settingArgs =
-		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayGameLaunchParameters`)!
-			.map((arg: string) => {
-				return (
-					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+				const settingArgs =
+					UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayGameLaunchParameters`)!
+						.map((arg: string) => {
+							return (
+								arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+							);
+						});
+
+				vscode.debug.startDebugging(
+					vscode.workspace.workspaceFolders![0],
+					{
+						name: 'Play Editor',
+						type: 'cppvsdbg', // @TODO: Add settings for using lldb
+						request: 'launch',
+						program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
+						args: [
+							...settingArgs
+						],
+						console: "newExternalWindow",
+						cwd: enginePath,
+						visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
+						sourceFileMap: {
+							"D:\build\++UE5\Sync": enginePath
+						}
+					}
 				);
+
+				resolve(true);
 			});
-
-	vscode.debug.startDebugging(
-		vscode.workspace.workspaceFolders![0],
-		{
-			name: 'Play Editor',
-			type: 'cppvsdbg', // @TODO: Add settings for using lldb
-			request: 'launch',
-			program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
-			args: [
-				...settingArgs
-			],
-			console: "newExternalWindow",
-			cwd: enginePath,
-			visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
-			sourceFileMap: {
-				"D:\build\++UE5\Sync": enginePath
-			}
-		}
-	);
-
-	return (true);
+	});
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,64 +246,77 @@ export async function	PlayGame_Implementation(): Promise<boolean>
 
 /**
  * Launch the Unreal Editor with the current project
- *
- * @returns If the command as successfully been send to the terminal
+ * @return a promise<boolean> that resolve if the command as successfully been send to the terminal
  */
 export async function	PlayEditor_Implementation(): Promise<boolean>
 {
-	await vscode.commands.executeCommand("UVCH.BuildEditor");
+	return new Promise<boolean>((resolve, reject) =>
+	{
+		vscode.commands.executeCommand<boolean>("UVCH.BuildEditor")
+			.then(async(succeeded: boolean) =>
+			{
+				if (!succeeded) {
+					// This is does not mean that the build failed, just that the command failed
+					// @TODO: find a way to know if the build failed (I tried but it didn't work)
+					resolve(false);
+					return;
+				}
 
-	// Get Project data if not exist, trigger the command then try again
-	let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
-	if (!projectInfos) {
-		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
-		projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
-		if (!projectInfos) {
-			return (false);
-		}
-	}
+				// Get Project data if not exist, trigger the command then try again
+				let projectInfos: IProjectInfos | undefined = UVCHDataSubsystem.Get('ProjectInfos');
+				if (!projectInfos) {
+					await vscode.commands.executeCommand("UVCH.GetProjectInfos");
+					projectInfos = UVCHDataSubsystem.Get('ProjectInfos');
+					if (!projectInfos) {
+						reject("Unable to get project infos");
+						return;
+					}
+				}
 
-	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
-	if (!enginePath) {
-		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
-		enginePath = UVCHDataSubsystem.Get('EnginePath');
-		if (!enginePath) {
-			return (false);
-		}
-	}
+				let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
+				if (!enginePath) {
+					await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
+					enginePath = UVCHDataSubsystem.Get('EnginePath');
+					if (!enginePath) {
+						reject("Unable to get engine path");
+						return;
+					}
+				}
 
-	// The .exe is changing depending of the UE version
-	// @TODO: Find a better way to do this
-	const unrealExeName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor');
-	const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
+				// The .exe is changing depending of the UE version
+				// @TODO: Find a better way to do this
+				const unrealExeName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4Editor' : 'UnrealEditor');
+				const natvisName = (projectInfos.UnrealVersion.charAt(0) === '4' ? 'UE4' : 'Unreal');
 
-	const settingArgs =
-		UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayEditorLaunchParameters`)!
-			.map((arg: string) => {
-				return (
-					arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+				const settingArgs =
+					UVCHSettingsSubsystem.Get<string[]>(`Toolbar.PlayEditorLaunchParameters`)!
+						.map((arg: string) => {
+							return (
+								arg === "%PROJECT%" ? `${projectInfos!.RootPath}/${projectInfos!.Name}.uproject` : arg
+							);
+						});
+
+				vscode.debug.startDebugging(
+					vscode.workspace.workspaceFolders![0],
+					{
+						name: 'Play Editor',
+						type: 'cppvsdbg', // @TODO: Add settings for using lldb
+						request: 'launch',
+						program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
+						args: [
+							...settingArgs
+						],
+						cwd: enginePath,
+						visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
+						sourceFileMap: {
+							"D:\build\++UE5\Sync": enginePath
+						}
+					}
 				);
+
+				resolve(true);
 			});
-
-	vscode.debug.startDebugging(
-		vscode.workspace.workspaceFolders![0],
-		{
-			name: 'Play Editor',
-			type: 'cppvsdbg', // @TODO: Add settings for using lldb
-			request: 'launch',
-			program: `${enginePath}\\Engine\\Binaries\\Win64\\${unrealExeName}.exe`,
-			args: [
-				...settingArgs
-			],
-			cwd: enginePath,
-			visualizerFile: `${enginePath}\\Engine\\Extras\\VisualStudioDebugging\\${natvisName}.natvis`,
-			sourceFileMap: {
-				"D:\build\++UE5\Sync": enginePath
-			}
-		}
-	);
-
-	return (true);
+	});
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -299,53 +324,56 @@ export async function	PlayEditor_Implementation(): Promise<boolean>
 
 /**
  * Launch the Unreal builder with the current project
- *
- * @returns If the command as successfully been send to the terminal
+ * @returns a promise<boolean> that resolve if the command as successfully been send to the terminal
  */
 export async function	BuildEditor_Implementation(): Promise<boolean>
 {
-	// Get Project data if not exist, trigger the command then try again
-	let projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
-	if (!projectInfos) {
-		await vscode.commands.executeCommand("UVCH.GetProjectInfos");
-		projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
+	return new Promise<boolean>(async(resolve, reject) =>
+	{
+		// Get Project data if not exist, trigger the command then try again
+		let projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
 		if (!projectInfos) {
-			return (false);
+			await vscode.commands.executeCommand("UVCH.GetProjectInfos");
+			projectInfos = UVCHDataSubsystem.Get<IProjectInfos>('ProjectInfos');
+			if (!projectInfos) {
+				reject("Unable to get project infos");
+				return;
+			}
 		}
-	}
 
-	let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
-	if (!enginePath) {
-		await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
-		enginePath = UVCHDataSubsystem.Get('EnginePath');
+		let enginePath: string | undefined = UVCHDataSubsystem.Get("EnginePath");
 		if (!enginePath) {
-			return (false);
+			await vscode.commands.executeCommand("UVCH.GetUnrealEnginePath");
+			enginePath = UVCHDataSubsystem.Get('EnginePath');
+			if (!enginePath) {
+				reject("Unable to get engine path");
+				return;
+			}
 		}
-	}
 
-	const buildCommand: string = `${enginePath}\\Engine\\Build\\BatchFiles\\Build.bat`;
-	const args: string[] = [
-		`${projectInfos.Name}Editor`,
-		"Win64",
-		"Development",
-		`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
-		"-waitmutex"
-	];
+		const buildCommand: string = `${enginePath}\\Engine\\Build\\BatchFiles\\Build.bat`;
+		const args: string[] = [
+			`${projectInfos.Name}Editor`,
+			"Win64",
+			"Development",
+			`'${projectInfos.RootPath}/${projectInfos.Name}.uproject'`,
+			"-waitmutex"
+		];
 
-	const task = new vscode.Task(
-		{ type: 'shell' },
-		vscode.workspace.workspaceFolders![0],
-		`Build`,
-		'UVCH',
-		new vscode.ShellExecution(`& '${buildCommand}' ${args.join(' ')}`),
-	);
-	const execution = await vscode.tasks.executeTask(task);
+		const task = new vscode.Task(
+			{ type: 'shell' },
+			vscode.workspace.workspaceFolders![0],
+			`Build`,
+			'UVCH',
+			new vscode.ShellExecution(`& '${buildCommand}' ${args.join(' ')}`),
+		);
+		const execution = await vscode.tasks.executeTask(task);
 
-	vscode.tasks.onDidEndTask((event: vscode.TaskEndEvent) => {
-		if (event.execution.task === execution.task) {
-			vscode.window.showInformationMessage(`${projectInfos!.Name} build completed`);
-		}
+		vscode.tasks.onDidEndTask((event: vscode.TaskEndEvent) => {
+			if (event.execution.task === execution.task) {
+				vscode.window.showInformationMessage(`${projectInfos!.Name} build completed`);
+				resolve(true);
+			}
+		});
 	});
-
-	return (true);
 }

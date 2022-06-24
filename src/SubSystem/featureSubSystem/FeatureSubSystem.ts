@@ -124,9 +124,9 @@ export default class AFeatureSubSystem extends ASubsystem
 
 		commands.forEach((command: IVscodeCommand) => {
 			log_uvch.log(`[UVHC] Register commands [UVCH.${command.cmd}]`);
-			context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, async(...args: any[]) => {
+			context.subscriptions.push(vscode.commands.registerCommand(`UVCH.${command.cmd}`, (...args: any[]) => {
 				log_uvch.log(`[UVCH.${command.cmd}] Fired`);
-				return (await command.func(...args));
+				return (command.func(...args));
 			}));
 		});
 	}
