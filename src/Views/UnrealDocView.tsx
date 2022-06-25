@@ -81,7 +81,7 @@ function	UnrealDocView(props: { vscode: any })
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
 					placeholder="Search in unreal docs"
-					value={_Query?.searchTerms || ""}
+					value={decodeURIComponent(_Query?.searchTerms || "")}
 				/>
 			</div>
 			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>

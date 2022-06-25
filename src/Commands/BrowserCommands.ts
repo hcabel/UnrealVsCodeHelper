@@ -164,23 +164,27 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 	}
 
 	// Remove extra spaces
-	keyword = keyword.trim();
 	keyword = keyword.replace(/\s\s+/gm, ' ');
+	keyword = keyword.trim();
 
 	// If keyword is not valid, we return false
 	if (!keyword || /^\s*$/.test(keyword)) {
-		vscode.window.showErrorMessage(`Invalid request: '${keyword}'`);
+		vscode.window.showErrorMessage(`Invalid keyword: '${keyword}'`);
 		return (false);
 	}
 
-	// This allow to add the project version in our research query
-	let unrealVersion = "";
+	// Construct query from settings format
+	const settingResearchFormat = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.ResearchFormat") || "";
 	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
-	if (projectInfos && /[4|5]\.[0-9]([0-9])?/.test(keyword) === false) {
-		unrealVersion = ` ${projectInfos.UnrealVersion}`;
+	console.log(projectInfos);
+	const query = settingResearchFormat
+		.replace("%KEYWORD%", keyword)
+		.replace("%VERSION%", (projectInfos?.UnrealVersion || ""))
+		.trim();
+	if (!query) {
+		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
+		return (false);
 	}
-
-	let query = `${keyword}${unrealVersion}`;
 
 	// This help to spam request to the Rest API because we'r limited to 100 request per day
 	const oldRequest = UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest");
@@ -199,11 +203,10 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		return (true);
 	}
 
-	// replace space by '+' because they aren't allowed in the url
-	query = query.replace(' ', '+');
-	// @TODO: IMPORTANT: This may throw with a 429 status code, this mean that our google app has reach the limit of request per day
+	// IMPORTANT: This may throw an error with a 429 status code, this mean that our google app has reach the limit of request per day
+	// @TODO: Replace this method with googleIt npm package or something like it (adding site:[url] you can limit the search to a specific site)
  	const res = await Axios.get<IRestRequest>(
-		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${query}`);
+		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${encodeURIComponent(query)}`);
 	UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", res.data || undefined);
 
 	if (open) {

@@ -134,6 +134,12 @@
 						],
 						"default": "Beside",
 						"markdownDescription": "Define where the browser tab will be opened",
+						"order": 1
+					},
+					"UVCH.DocumentationExplorer.ResearchFormat": {
+						"type": "string",
+						"default": "%VERSION% %KEYWORD%",
+						"markdownDescription": "You can add extra parameters to the search query.\n\nEg: `'%VERSION% C++ %KEYWORD%'` => `'5.0 C++ IOnlineSubsystem'`",
 						"order": 0
 					}
 				}

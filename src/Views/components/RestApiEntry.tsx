@@ -70,7 +70,6 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 		});
 	}
 
-	console.log(props.item);
 	return (
 		<div className={`RestApiEntry ${usefulURL.includes(props.item.link) ? "ImportantLink" : ''}`} onClick={OnClick}>
 			{/* Title */}
