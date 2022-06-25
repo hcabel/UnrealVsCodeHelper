@@ -6,67 +6,87 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - Auto completions on unreal's enums
 - define tools suggestions
 - Infos details on specifique unreal defines/function/modules
+- Rename project scripts
+- package project scripts
+- Clean project scripts
+
+## `[1.0.1] - 2022/06/25`
+### Added
+- `DocExplorer:` You can now change the request format in the settings (eg: if you want to add 'C++' to all your requests or if you don't want the current unreal version to be added)
+- `DocExplorer:` New setting to set where you want the browser tab to be oppened
+
+### Fix
+- `ToolBar:` Now play commands/buttons are waiting for the build to finish before executing
+- `SwitchFile:` Resolve crash when no public/private folder in path
+- `Interfaces:` Resolve crash when moving any interface panel
+
+### Changed
+- `DocExplorer:` Error message when the request show no result
+- `SwitchFile:` Error message when switching from unsupported file
+
+### Remove
+- `SwitchFile:` Hide status bar when on unsupported file
 
 ## `[1.0.0] - 2022/06/13`
 ### Added
-- Enable/Disable settings
-- Add launch parameters to Build/PlayEditor/PlayGame
+- `Features:` You can disable any of the feature in the settings INDIVIDUALLY
+- `ToolBar:` New settings to add any additional flags to build/play(game)/play(editor) commands
 
 ### Changed
-- Fix RestItems design
+- `DocExplorer:` Fix RestItems design
 
 ## `[0.3.3] - 2022/06/01`
 ### Changed
-- **ToolBar:** Use vscode feature(task/debuger) to: launch editor, build and play game
+- `ToolBar:` Use vscode feature(task/debuger) to: launch editor, build and play game
 
 ## `[0.3.2] - 2022/05/31`
 ### Added
-- Highlight very usefull website in the Unreal documentation explorer.
+- `DocExplorer:` Highlight very usefull website in the Unreal documentation explorer. (if you want a page to be added, please contact me)
 
 ### Changed
-- Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
+- `DocExplorer:` Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
 
 
 ## `[0.3.1] - 2022/05/29`
 ### Added
-- Color responsive to your current theme
+- `Interfaces:` Color responsive to your current theme
 
 ### Changed
-- Unreal documentation explorer, design and code refactoring
-- Search image is hidden when the panel is too small to give more space to the snippets
+- `DocExplorer:` design and code refactoring
+- `DocExplorer:` Search image is hidden when the panel is too small to give more space to the snippets
 
 ### Fixed
-- Search scroll Y on search snippets
-- Blocked in loading mode when searching for the same thing
+- `DocExplorer:` Fix scroll Y axis
+- `DocExplorer:` Resove stuck in loading animation when searching for the same thing
 
 ## `[0.3.0] - 2022/05/28`
 ### Added
-- **Command:** `UVCH.OpenUnrealDoc` Open unreal documentation in your browser
-- **Shortcut:** `alt+f1` Trigger `UVCH.OpenUnrealDoc` with the current selection has keyword
-- **Panel:** `UnrealDocView` Show all the search results INSIDE VsCode
-- **Shortcut:** `alt+shift+f1` Allow you do to a reseach from the current selection
+- `DocExplorer:` New command ***UVCH.OpenUnrealDoc*** who's opening documentation page in your browser
+- `DocExplorer:` New shortcut ***alt+f1*** Triggering ***UVCH.OpenUnrealDoc*** with the current selection has keyword
+- `DocExplorer:` New interface panel ***UnrealDocumentationExplorer***, a small browser for unreal documention INSIDE VsCode
+- `DocExplorer:` New shortcut ***alt+shift+f1*** triggering ***UVCH.SearchUnrealDoc*** Allowing you do to do a reseach from the current selection without opening the browser tab
 
 ## `[0.2.0] - 2022/05/27`
 ### Added
-- **Command:** `UVCH.SwitchHeaderCppFile` Switch between header/cpp files
-- **StatusBar:** Show which SwitchFile is correponding with the current file
-- **Shortcut:** `alt+o` Trigger the `UVCH.SwitchHeaderCppFile` command
+- `SwitchFile:` New command ***UVCH.SwitchHeaderCppFile*** Switching between header/cpp files, when on *.h, *.hpp and *.cpp file
+- `SwitchFile:` New statusBar showing you which SwitchFile is correponding with the current file
+- `SwitchFile:` New shortcut ***alt+o*** Triggering ***UVCH.SwitchHeaderCppFile*** commands
 
 ## `[0.1.1] - 2022/05/25`
 ### Added
-- **Extension Logo**
+- `Global:` Add new AWSOME logo !!!!
 
 ### fixed
-- **Minor bugs**
-- **Package json information** they were not accurate (eg: wrong name)
+- `Global:` Fix minor bug
+- `Global:` Fix ***package.json*** unacurate informations
 
 ### remove
-- **`Unnecessary popup`**
+- `Global:` Remvoe unecessary popup
 
 ## `[0.1.0] - 2022/05/24`
 ### Added
-- **Command:** `UVCH.PlayGame` Start your project has a game
-- **Command:** `UVCH.PlayEditor` Start your project in the editor
-- **Command:** `UVCH.BuildEditor` Build your project for the editor
-- **ActionBar:** `UVCH` Open UnrealVsCodeHelper side panel
-- **Panel:** `UnrealProjectView` Add variety of button triggerring some commands
+- `ToolBar:` New command ***UVCH.PlayGame*** Start your project has a game
+- `ToolBar:` New command ***UVCH.PlayEditor*** Start your project in the editor
+- `ToolBar:` New command ***UVCH.BuildEditor*** Build your project for the editor
+- `Global:` New ActionBar ***UVCH*** Open UnrealVsCodeHelper side panel
+- `ToolBar:` New Panel ***UnrealProjectView*** Showing the ToolBar feature interface
