@@ -169,6 +169,7 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 
 	// If keyword is not valid, we return false
 	if (!keyword || /^\s*$/.test(keyword)) {
+		vscode.window.showErrorMessage(`Invalid request: '${keyword}'`);
 		return (false);
 	}
 
@@ -185,9 +186,13 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 	const oldRequest = UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest");
 	if (oldRequest && oldRequest.queries.request[0].searchTerms === query) {
 		// If the request is the same
-		if (open === true && oldRequest.items && oldRequest.items[0].link) {
-			// But we open him if he wanted to
-			OpenPage(oldRequest.items[0].link);
+		if (open) {
+			if (oldRequest.items && oldRequest.items.length > 0) {
+				OpenPage(oldRequest.items[0].link);
+			}
+			else {
+				vscode.window.showErrorMessage(`No result found for '${keyword}'`);
+			}
 		}
 		// Even if nothing change we set the value to trigger all listener
 		UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest"));
@@ -201,12 +206,16 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${query}`);
 	UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", res.data || undefined);
 
-	if (open && res.data.items && res.data.items.length > 0) {
-		log_uvch.log(`[UVHC] open url: '${res.data.items[0].link}' from '${keyword}'`);
+	if (open) {
+		if (res.data.items && res.data.items.length > 0) {
+			log_uvch.log(`[UVHC] open url: '${res.data.items[0].link}' from keyword '${keyword}'`);
 
-		// Open the page into vscode using Simple Browser
-		OpenPage(res.data.items[0].link);
-		return (true);
+			// Open the page into vscode using Simple Browser
+			OpenPage(res.data.items[0].link);
+			return (true);
+		}
+		vscode.window.showErrorMessage(`No result found for '${keyword}'`);
+		return (false);
 	}
 
 	return (res.data ? true : false);
