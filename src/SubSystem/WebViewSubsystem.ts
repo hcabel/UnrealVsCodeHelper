@@ -47,6 +47,9 @@ export class ViewPanelBase
 
 		vscode.window.registerWebviewViewProvider(this._PanelId, {
 			resolveWebviewView: async(panel: vscode.WebviewView) => {
+				panel.onDidDispose(() => {
+					this._Panel = undefined;
+				});
 				this.InitReactPanel(panel);
 			}
 		});
