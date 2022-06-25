@@ -149,7 +149,7 @@
 			{
 				"command": "UVCH.SwitchHeaderCppFile",
 				"key": "alt+o",
-				"when": "editorTextFocus"
+				"when": ""
 			},
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",

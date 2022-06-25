@@ -44,6 +44,7 @@ export default class SwitchFileSubsystem extends AFeatureSubSystem
 		const switchFileStatusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 1000);
 		switchFileStatusbar.command = `UVCH.SwitchHeaderCppFile`;
 		UVCHDataSubsystem.Listen("SwitchFile", (data: ISwitchFile) => {
+			switchFileStatusbar.show();
 			if (data) {
 				const fileName = path.basename(data.destPath);
 				switchFileStatusbar.text = `[${fileName}]`;
@@ -52,11 +53,15 @@ export default class SwitchFileSubsystem extends AFeatureSubSystem
 			}
 			else {
 				const extension = path.extname(vscode.window.activeTextEditor?.document.fileName || "");
-				if (extension === ".h" || extension === ".hpp" || extension === ".cpp") {
+				if ([".h", ".hpp", ".cpp"].includes(extension)) {
 					switchFileStatusbar.tooltip = `Sorry but we were not able to find matching the file`;
 					switchFileStatusbar.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
+					switchFileStatusbar.text = `[Unknown]`;
 				}
-				switchFileStatusbar.text = `[Unknown]`;
+				else {
+					// hide when not in a supported file
+					switchFileStatusbar.hide();
+				}
 			}
 		});
 		switchFileStatusbar.show();
@@ -81,24 +86,28 @@ export default class SwitchFileSubsystem extends AFeatureSubSystem
 	 */
 	public async	SwitchFile(): Promise<boolean>
 	{
+		const currentFileFilePath = vscode.window.activeTextEditor?.document.fileName.replace('\\', '/') || "";
+		const currentFileExtension = path.extname(currentFileFilePath);
+		if ([".h", ".hpp", ".cpp"].includes(currentFileExtension) === false) {
+			vscode.window.showErrorMessage("[SWITCH_FILE] Not supported in current file extension !");
+			return (false);
+		}
+
 		const switchFilePath = UVCHDataSubsystem.Get<ISwitchFile>("SwitchFile");
 		if (switchFilePath) {
-
 			log_uvch.log(`[SWITCH_FILE] Switching to file: '${path.basename(switchFilePath.destPath)}'`);
-			// Open switch file from path
 
+			// Open switch file from path
 			const switchFileDoc = await vscode.workspace.openTextDocument(switchFilePath.destPath);
 			if (switchFileDoc) {
 				await vscode.window.showTextDocument(switchFileDoc, { preview: false });
 				return (true);
 			}
-			vscode.window.showErrorMessage(`[UVCH] Failed to open switch file: ${switchFilePath.destPath}`);
+
+			vscode.window.showErrorMessage(`[SWITCH_FILE] Failed to open switch file: ${switchFilePath.destPath}`);
 		}
-		const filePath = vscode.window.activeTextEditor?.document.fileName.replace('\\', '/') || "";
-		const extension = path.extname(filePath);
-		if ([".h", ".hpp", ".cpp"].includes(extension)) {
-			log_uvch.log(`[SWITCH_FILE] No switch file found ${path.basename(filePath)}`);
-			vscode.window.showErrorMessage("[UVCH] No SwitchFile found !"); // @TODO: add report action
+		else {
+			vscode.window.showErrorMessage("[SWITCH_FILE] No SwitchFile found !"); // @TODO: add report action
 		}
 		return (false);
 	}
