@@ -277,24 +277,29 @@ export default class SwitchFileSubsystem extends AFeatureSubSystem
 	{
 		let bIsSouceInPrivateFolder = false;
 
-		// Look for the last private folder
-		let privateFolderName = "";
+		// Look for the last private/public folder in the path
+		let folderCoupleA = "";
 		const allFoldersName = sourcePath.split('/');
 		for (const folderName of allFoldersName) {
-			if (/private/i.test(folderName)) {
+			if (/private/i.test(folderName)) { // Check for 'private'
 				bIsSouceInPrivateFolder = true;
-				privateFolderName = folderName;
+				folderCoupleA = folderName;
 				break;
 			}
-			else if (/public/i.test(folderName)) {
-				privateFolderName = folderName;
+			else if (/public/i.test(folderName)) { // Check for 'public'
+				folderCoupleA = folderName;
 				break;
 			}
 		}
 
-		// Search the public folder at the same path has the private folder
-		const pathBeforePrivate = sourcePath.substring(0, sourcePath.lastIndexOf(privateFolderName) - 1);
-		const publicFolderName = fs.readdirSync(pathBeforePrivate)
+		if (!folderCoupleA) {
+			// private and public folder not found
+			return (undefined);
+		}
+
+		// Search the public/private folder at the same path has the private folder
+		const pathBeforePrivate = sourcePath.substring(0, sourcePath.lastIndexOf(folderCoupleA) - 1);
+		const folderCoupleB = fs.readdirSync(pathBeforePrivate)
 			.find((folderName) => {
 				if (bIsSouceInPrivateFolder) {
 					return (/public/i.test(folderName));
@@ -302,9 +307,9 @@ export default class SwitchFileSubsystem extends AFeatureSubSystem
 				return (/private/i.test(folderName));
 			});
 
-		if (publicFolderName)
+		if (folderCoupleB)
 		{
-			const publicPath = sourcePath.replace(privateFolderName, publicFolderName);
+			const publicPath = sourcePath.replace(folderCoupleA, folderCoupleB);
 			const publicRootPath = `${publicPath}/${sourceNameNoExtension}`;
 
 			// Search for the switch file in the public folder using all the extension in params
