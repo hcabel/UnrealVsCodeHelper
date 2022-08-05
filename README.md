@@ -6,8 +6,10 @@
 ![](https://img.shields.io/github/license/hcabel/UnrealVsCodeHelper)
 
 <div style="display: flex">
-	<a href="https://youtu.be/_usDZ6osnR4">
+	<a style="display: flex; flex-direction: column; align-items: center; width: fit-content;"
+		 href="https://youtu.be/_usDZ6osnR4">
 		<img src="./resources/readme/youtubelogo.png" alt="UnrealVsCodeHelper README video" />
+		readme video
 	</a>
 </div>
 
@@ -17,7 +19,7 @@
 > - **`Issues`** https://github.com/hcabel/UnrealVsCodeHelper/issues
 > - **`Help me`** https://github.com/hcabel/UnrealVsCodeHelper
 
-# Features
+# Features![Target](https://img.shields.io/badge/-Unreal%20Engine-313131?style=for-the-badge&logo=unreal-engine&logoColor=white) ![TargetLanguage](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 
 ### **`Unreal Documentation Explorer`**
 ![UnrealDocExplorer](./resources/readme/UnrealDocExplorer.gif)<br/>
