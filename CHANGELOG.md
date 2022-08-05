@@ -10,6 +10,11 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - package project scripts
 - Clean project scripts
 
+## `[1.0.2] - 2022/08/05`
+
+### Changed
+- `Readme` Add the "video readme" to the readme and some automated badges
+
 ## `[1.0.1] - 2022/06/25`
 ### Added
 - `DocExplorer:` You can now change the request format in the settings (eg: if you want to add 'C++' to all your requests or if you don't want the current unreal version to be added)
