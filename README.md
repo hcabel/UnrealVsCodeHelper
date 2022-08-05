@@ -1,6 +1,17 @@
 # UnrealVsCodeHelper README
 
-![Target](https://img.shields.io/badge/-Unreal%20Engine-313131?style=for-the-badge&logo=unreal-engine&logoColor=white) ![TargetLanguage](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![](https://img.shields.io/github/stars/hcabel/UnrealVsCodeHelper?label=stars&style=social)
+![](https://img.shields.io/github/repo-size/hcabel/UnrealVsCodeHelper)
+![](https://img.shields.io/github/issues/hcabel/UnrealVsCodeHelper)
+![](https://img.shields.io/github/license/hcabel/UnrealVsCodeHelper)
+
+<div style="display: flex">
+	<a style="display: flex; flex-direction: column; align-items: center; width: fit-content;"
+		 href="https://youtu.be/_usDZ6osnR4">
+		<img src="./resources/readme/youtubelogo.png" alt="UnrealVsCodeHelper README video" />
+		readme video
+	</a>
+</div>
 
 #### This extension is here to help developing with UnrealEngine.<br/> My ambitions is to give has much tools has VisualAssistX on VisualStudio (We're no even close yet :D)
 
