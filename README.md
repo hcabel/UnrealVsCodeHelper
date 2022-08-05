@@ -6,10 +6,8 @@
 ![](https://img.shields.io/github/license/hcabel/UnrealVsCodeHelper)
 
 <div style="display: flex">
-	<a style="display: flex; flex-direction: column; align-items: center; width: fit-content;"
-		 href="https://youtu.be/_usDZ6osnR4">
+	<a href="https://youtu.be/_usDZ6osnR4">
 		<img src="./resources/readme/youtubelogo.png" alt="UnrealVsCodeHelper README video" />
-		readme video
 	</a>
 </div>
 
