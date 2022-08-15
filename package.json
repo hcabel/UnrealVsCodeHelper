@@ -154,7 +154,7 @@
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",
 				"key": "ctrl+f1",
-				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus"
+				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus || config.UVCH.Global.UseDocumentationExplorer && editorFocus"
 			},
 			{
 				"command": "UVCH.SearchUnrealDoc",
