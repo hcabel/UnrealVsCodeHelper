@@ -16,10 +16,12 @@ import { IRestApiItem } from "../../Commands/BrowserCommands";
 import "./RestApiEntry.css";
 
 const usefulURL: string[] = [
-	// UFUNCTION specifiers
+	// UFUNCTION
 	"https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions",
-	// UPROPERTY Specifers
-	"https://docs.unrealengine.com/5.0/en-US/unreal-engine-uproperty-specifiers"
+	// UPROPERTY
+	"https://docs.unrealengine.com/5.0/en-US/unreal-engine-uproperty-specifiers",
+	// METATAGS
+	"https://docs.unrealengine.com/5.0/en-US/metadata-specifiers-in-unreal-engine"
 ];
 
 function	GetImage(item: IRestApiItem)
