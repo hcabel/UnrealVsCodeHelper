@@ -164,6 +164,12 @@
 		],
 		"commands": [
 			{
+				"command": "UVCH.GoToSettings",
+				"title": "Open UVCH settings",
+				"icon": "$(gear)",
+				"when": ""
+			},
+			{
 				"command": "UVCH.GetProjectInfos",
 				"title": "Refresh",
 				"icon": "$(refresh)",
@@ -258,6 +264,11 @@
 					"command": "UVCH.GetProjectInfos",
 					"group": "navigation",
 					"when": "view == UnrealProjectView"
+				},
+				{
+					"command": "UVCH.GoToSettings",
+					"group": "navigation",
+					"when": "view == UnrealProjectView || view == UnrealDocView"
 				}
 			]
 		}

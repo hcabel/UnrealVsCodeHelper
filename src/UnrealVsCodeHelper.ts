@@ -17,12 +17,19 @@ import UVCHDataSubsystem from './SubSystem/DataSubsystem';
 import UVCHSettingsSubsystem from './SubSystem/SettingsSubsystem';
 import ToolbarSubsystem from './SubSystem/featureSubSystem/ToolbarSubsystem';
 import DocumentationExplorerSubsystem from './SubSystem/featureSubSystem/DocumentationExplorer';
+import { GoToSettings_Implementation } from './Commands/GeneralCommands';
 
 // Function triggered when the 'activationEvents' in the package.json is called
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function	activate(context: vscode.ExtensionContext)
 {
 	log_uvch.log("[UVHC] activate extension");
+
+	// Register global commands
+	context.subscriptions.push(vscode.commands.registerCommand(`UVCH.GoToSettings`, () => {
+		log_uvch.log(`[UVCH.GoToSettings] Fired`);
+		return (GoToSettings_Implementation());
+	}));
 
 	UVCHSettingsSubsystem.Init();
 	UVCHDataSubsystem.Init();
