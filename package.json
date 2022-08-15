@@ -257,7 +257,7 @@
 				{
 					"command": "UVCH.GetProjectInfos",
 					"group": "navigation",
-					"when": "view == ProjectView"
+					"when": "view == UnrealProjectView"
 				}
 			]
 		}
