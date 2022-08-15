@@ -163,7 +163,7 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		keyword = inputSearch;
 	}
 
-	// Remove extra spaces
+	// Remove extra white spaces
 	keyword = keyword.replace(/\s\s+/gm, ' ');
 	keyword = keyword.trim();
 
@@ -176,10 +176,14 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 	// Construct query from settings format
 	const settingResearchFormat = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.ResearchFormat") || "";
 	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
-	console.log(projectInfos);
+
+	const bKeywordContainVersion: boolean =
+		RegExp(/(\s|^)((UE[0-9])|((UE)?[0-9]\.[0-9][0-9]?)|((UE)?[0-9]\.[0-9][0-9]\.[0-9][0-9]?))(\s|$)/i)
+			.test(keyword);
+
 	const query = settingResearchFormat
 		.replace("%KEYWORD%", keyword)
-		.replace("%VERSION%", (projectInfos?.UnrealVersion || ""))
+		.replace("%VERSION%", (bKeywordContainVersion ? "" : projectInfos?.UnrealVersion || ""))
 		.trim();
 	if (!query) {
 		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
