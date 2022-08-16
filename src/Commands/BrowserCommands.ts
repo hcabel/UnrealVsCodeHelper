@@ -11,98 +11,32 @@
 /* ************************************************************************** */
 
 import * as vscode from 'vscode';
-import Axios from "axios";
+import GoogleThis from 'googlethis';
 import UVCHDataSubsystem from "../SubSystem/DataSubsystem";
 import { IProjectInfos } from "./ToolbarCommands";
 import log_uvch from '../utils/log_uvch';
 import UVCHSettingsSubsystem from '../SubSystem/SettingsSubsystem';
 
-// @TODO: Finished those interfaces
-// I made them by looking into my request but some field might be no fully accurate
-// (eg: 'safe' in 'IRestQueryRequest' return 'off' so I'm guessing his type is  '"off" | "on"' but I'm not sure)
-// Also some of those field might be undefined depending of the request response
-
-export interface IRestCse {
-	src: string
-}
-
-export interface IRestMetaTags {
-	"apple-mobile-web-app-title": string,
-	"application-name": string,
-	availability?: string,
-	crumbs?: string,
-	"engine-competency"?: string,
-	host: string,
-	"msapplication-tilecolor": string,
-	"msapplication-tileimage": string,
-	"og:description"?: string,
-	"og:image"?: string,
-	"og:title"?: string,
-	order?: string,
-	parent?: string,
-	redirect?: string,
-	"seo-title"?: string,
-	"skill-family"?: string,
-	tags?: string,
-	"theme-color": string,
-	title?: string,
-	track?: string,
-	"twitter:card"?: string
-	type?: string,
-	version?: string,
-	viewport: string,
-	worker?: string,
-};
-
-export interface IRestApiItem {
-	displayLink: string,
-	htmlFormatedUrl: string,
-	htmlSnippet: string,
-	htmlTitle: string,
-	kind: string,
-	link: string,
-	pagemap: {
-		cse_image?: IRestCse[],
-		cse_thumbnail?: IRestCse[],
-		metatags?: IRestMetaTags[]
-	},
-	snippet: string,
+export interface IGoogleRequestEntry {
 	title: string,
-}
-
-export interface IRestQueryRequest {
-	count: number,
-	cs: string,
-	inputEncoding: string,
-	outputEncoding: string,
-	safe: string,
-	searchTerms: string,
-	startIndex: number,
-	title: string,
-	totalResults: number,
-}
-
-export interface IRestRequest {
-	context: {
-		title: string
-	},
-	items?: IRestApiItem[],
-	kind: string,
-	queries: {
-		nextPage: IRestQueryRequest[],
-		request: IRestQueryRequest[]
-	},
-	searchInformation: {
-		formattedSearchTime: string,
-		formattedTotalResults: string,
-		searchTime: number
-		totalResults: string,
-	},
-	url: {
-		template: string,
-		type: string,
+	description: string,
+	url: string,
+	favicons: {
+		high_res: string,
+		low_res: string,
 	}
 };
+export interface IGoogleQuery {
+	keyword: string, // The keyword originally used
+	formatedQuery: string, // The query formated with the user format in the settings
+	fullQuery: string, // formatedQuery + hidden properties (e.g.: allowed websites)
+	options: object // The options to use for the query
+}
+
+export interface IGoogleRequest {
+	query: IGoogleQuery,
+	result: IGoogleRequestEntry[]
+}
 
 function	OpenPage(url: string)
 {
@@ -148,6 +82,49 @@ function	OpenPage(url: string)
 	});
 }
 
+function	FormatQuery(keyword: string): IGoogleQuery | undefined
+{
+	// Remove extra white spaces
+	keyword = keyword.replace(/\s\s+/gm, ' ');
+	keyword = keyword.trim();
+
+	// If keyword is not valid, we return false
+	if (!keyword || /^\s*$/.test(keyword)) {
+		vscode.window.showErrorMessage(`Invalid keyword: '${keyword}'`);
+		return (undefined);
+	}
+
+	// Construct query from settings format
+	const settingResearchFormat = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.ResearchFormat") || "";
+	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
+
+	const bKeywordContainVersion: boolean =
+		RegExp(/(\s|^)((UE[0-9])|((UE)?[0-9]\.[0-9][0-9]?)|((UE)?[0-9]\.[0-9][0-9]\.[0-9][0-9]?))(\s|$)/i)
+			.test(keyword);
+
+	const query = settingResearchFormat
+		.replace("%KEYWORD%", keyword)
+		.replace("%VERSION%", (bKeywordContainVersion ? "" : projectInfos?.UnrealVersion || ""))
+		.trim();
+
+	// Get website list in the settings
+	const websiteList = UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.ResearchWebsiteList") || [];
+	// format all the url into a single string parsable by the google search engine
+	const allowedWebsiteString =
+		(websiteList.length > 0 ? ` site:${websiteList.join(" OR site:")}` : "");
+
+	return ({
+		formatedQuery: query,
+		fullQuery: query + allowedWebsiteString,
+		keyword: keyword,
+		options: {
+			page: 0,
+			safe: false,
+			additional_params: {}
+		}
+	});
+}
+
 export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: boolean = true): Promise<boolean | undefined>
 {
 	if (!keyword || keyword === "") {
@@ -163,69 +140,48 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		keyword = inputSearch;
 	}
 
-	// Remove extra white spaces
-	keyword = keyword.replace(/\s\s+/gm, ' ');
-	keyword = keyword.trim();
-
-	// If keyword is not valid, we return false
-	if (!keyword || /^\s*$/.test(keyword)) {
-		vscode.window.showErrorMessage(`Invalid keyword: '${keyword}'`);
-		return (false);
-	}
-
-	// Construct query from settings format
-	const settingResearchFormat = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.ResearchFormat") || "";
-	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
-
-	const bKeywordContainVersion: boolean =
-		RegExp(/(\s|^)((UE[0-9])|((UE)?[0-9]\.[0-9][0-9]?)|((UE)?[0-9]\.[0-9][0-9]\.[0-9][0-9]?))(\s|$)/i)
-			.test(keyword);
-
-	const query = settingResearchFormat
-		.replace("%KEYWORD%", keyword)
-		.replace("%VERSION%", (bKeywordContainVersion ? "" : projectInfos?.UnrealVersion || ""))
-		.trim();
+	const query = FormatQuery(keyword);
 	if (!query) {
 		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
 		return (false);
 	}
 
-	// This help to spam request to the Rest API because we'r limited to 100 request per day
-	const oldRequest = UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest");
-	if (oldRequest && oldRequest.queries.request[0].searchTerms === query) {
+	// This help against request spaming
+	const oldRequest = UVCHDataSubsystem.Get<IGoogleRequest>("LastGoogleRequest");
+	if (oldRequest && oldRequest.query.keyword === query.keyword) {
 		// If the request is the same
 		if (open) {
-			if (oldRequest.items && oldRequest.items.length > 0) {
-				OpenPage(oldRequest.items[0].link);
+			if (oldRequest.result && oldRequest.result.length > 0) {
+				OpenPage(oldRequest.result[0].url);
 			}
 			else {
 				vscode.window.showErrorMessage(`No result found for '${keyword}'`);
 			}
 		}
 		// Even if nothing change we set the value to trigger all listener
-		UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", UVCHDataSubsystem.Get<IRestRequest>("DocSearchRequest"));
+		UVCHDataSubsystem.Set<IGoogleRequest>("LastGoogleRequest", UVCHDataSubsystem.Get<IGoogleRequest>("LastGoogleRequest"));
 		return (true);
 	}
 
-	// IMPORTANT: This may throw an error with a 429 status code, this mean that our google app has reach the limit of request per day
-	// @TODO: Replace this method with googleIt npm package or something like it (adding site:[url] you can limit the search to a specific site)
- 	const res = await Axios.get<IRestRequest>(
-		`https://www.googleapis.com/customsearch/v1?key=AIzaSyAzqhOfdBENpvOveCfKUhyPhZ3oLargph4&cx=082017022e8db588a&q=${encodeURIComponent(query)}`);
-	UVCHDataSubsystem.Set<IRestRequest>("DocSearchRequest", res.data || undefined);
+	const result = {
+		query: query,
+		result: (await GoogleThis.search(query.fullQuery, query.options)).results
+	};
+	UVCHDataSubsystem.Set<IGoogleRequest>("LastGoogleRequest", result);
 
 	if (open) {
-		if (res.data.items && res.data.items.length > 0) {
-			log_uvch.log(`[UVHC] open url: '${res.data.items[0].link}' from keyword '${keyword}'`);
+		if (result.result && result.result.length > 0) {
+			log_uvch.log(`[UVHC] open url: '${result.result[0].url}' from keyword '${keyword}'`);
 
 			// Open the page into vscode using Simple Browser
-			OpenPage(res.data.items[0].link);
+			OpenPage(result.result[0].url);
 			return (true);
 		}
 		vscode.window.showErrorMessage(`No result found for '${keyword}'`);
 		return (false);
 	}
 
-	return (res.data ? true : false);
+	return (result.result.length > 0 ? true : false);
 }
 
 export async function	OpenUnrealDocFromSelection_Implementation(open: boolean = true)

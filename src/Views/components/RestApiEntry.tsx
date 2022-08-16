@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 import * as React from "react";
-import { IRestApiItem } from "../../Commands/BrowserCommands";
+import { IGoogleRequestEntry } from "../../Commands/BrowserCommands";
 
 import "./RestApiEntry.css";
 
@@ -24,36 +24,10 @@ const usefulURL: string[] = [
 	"https://docs.unrealengine.com/5.0/en-US/metadata-specifiers-in-unreal-engine"
 ];
 
-function	GetImage(item: IRestApiItem)
-{
-	if (item.pagemap.cse_image) {
-		for (const img of item.pagemap.cse_image) {
-			if (img.src) {
-				return (img.src);
-			}
-		}
-	}
-	if (item.pagemap.cse_thumbnail) {
-		for (const img of item.pagemap.cse_thumbnail) {
-			if (img.src) {
-				return (img.src);
-			}
-		}
-	}
-	if (item.pagemap.metatags) {
-		for (const img of item.pagemap.metatags) {
-			if (img["og:image"]) {
-				return (img["og:image"]);
-			}
-		}
-	}
-	return ("");
-}
-
-export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
+export function	RestApiEntry(props: { vscode: any, item: IGoogleRequestEntry })
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_Thumbnail, /* set_Thumbnail */] = React.useState<string>(GetImage(props.item));
+	const [_Thumbnail, /* set_Thumbnail */] = React.useState<string>(props.item.favicons.high_res || "");
 
 	function	OnClick()
 	{
@@ -62,7 +36,7 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 			content: {
 				cmd: "simpleBrowser.api.open",
 				args: [
-					props.item.link,
+					props.item.url,
 					{
 						preserveFocus: true,
 						viewColumn: -2 // This is the value to open the tab "beside" the current one
@@ -73,7 +47,7 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 	}
 
 	return (
-		<div className={`RestApiEntry ${usefulURL.includes(props.item.link) ? "ImportantLink" : ''}`} onClick={OnClick}>
+		<div className={`RestApiEntry ${usefulURL.includes(props.item.url) ? "ImportantLink" : ''}`} onClick={OnClick}>
 			{/* Title */}
 			<div className="RestApiEntryTitle">
 				{props.item.title.replace('...', '')}
@@ -85,12 +59,12 @@ export function	RestApiEntry(props: { vscode: any, item: IRestApiItem })
 				}
 				{/* Snippet */}
 				<div className="RestApiEntrySnippet">
-					{props.item.snippet}
+					{props.item.description}
 				</div>
 			</div>
 			{/* URL */}
 			<div className="RestApiEntryUrl">
-				{props.item.link}
+				{props.item.url}
 			</div>
 		</div>
 	);

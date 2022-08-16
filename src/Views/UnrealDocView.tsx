@@ -12,7 +12,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IRestApiItem, IRestQueryRequest, IRestRequest } from '../Commands/BrowserCommands';
+import { IGoogleQuery, IGoogleRequest, IGoogleRequestEntry } from '../Commands/BrowserCommands';
 import { RestApiEntry } from './components/RestApiEntry';
 import SearchBar from './components/SearchBar';
 
@@ -25,23 +25,23 @@ declare const window: Window & {
 function	UnrealDocView(props: { vscode: any })
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_RestApiItems, set_RestApiItems] = React.useState<IRestApiItem[]>([]);
+	const [_RestApiItems, set_RestApiItems] = React.useState<IGoogleRequestEntry[]>([]);
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_Query, set_Query] = React.useState<IRestQueryRequest | undefined>();
+	const [_Query, set_Query] = React.useState<IGoogleQuery | undefined>();
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	const [_Loading, set_Loading] = React.useState<boolean>(false); // This is a number to display the loading animation
+	const [_Loading, set_Loading] = React.useState<boolean>(false);
 
-	function	UpdateUrls(request: IRestRequest | undefined)
+	function	UpdateUrls(request: IGoogleRequest | undefined)
 	{
 		set_Loading(false);
 		if (request) {
-			set_RestApiItems(request.items || []);
-			set_Query(request.queries.request?.[0] || undefined);
+			set_RestApiItems(request.result || []);
+			set_Query(request.query);
 		}
 	}
 
 	function	OnMessage(message: any) {
-		if (message.data.type === "Update-Request") {
+		if (message.data.type === "OnNewQuery") {
 			UpdateUrls(message.data.data);
 		}
 	}
@@ -67,7 +67,7 @@ function	UnrealDocView(props: { vscode: any })
 		props.vscode.postMessage({
 			action: "ListenToDataSubsystem",
 			content: [
-				{ dataKey: "DocSearchRequest", callbackMessageType: "Update-Request" }
+				{ dataKey: "LastGoogleRequest", callbackMessageType: "OnNewQuery" }
 			]
 		});
 
@@ -81,7 +81,7 @@ function	UnrealDocView(props: { vscode: any })
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
 					placeholder="Search in unreal docs"
-					value={decodeURIComponent(_Query?.searchTerms || "")}
+					value={_Query?.formatedQuery || "onlinesubsystem"}
 				/>
 			</div>
 			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>
@@ -95,7 +95,7 @@ function	UnrealDocView(props: { vscode: any })
 					:
 					(_RestApiItems.length > 0 ?
 						// ALL RESULTS
-						_RestApiItems.map((item: IRestApiItem) => {
+						_RestApiItems.map((item: IGoogleRequestEntry) => {
 							return (
 								<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
 									<RestApiEntry vscode={props.vscode} item={item} />
@@ -106,7 +106,7 @@ function	UnrealDocView(props: { vscode: any })
 						// NOTHING FOUND
 						<li style={{ listStyle: "none", margin: "5px", marginBottom: "10px" }}>
 							<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-								<span style={{ color: "gray" }}>{!_Query?.searchTerms ? "Nothing to search" : "No results found"}</span>
+								<span style={{ color: "gray" }}>{!_Query ? "Nothing to search" : "No results found"}</span>
 							</div>
 						</li>
 					)

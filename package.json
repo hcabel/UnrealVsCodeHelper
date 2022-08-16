@@ -104,6 +104,20 @@
 				"id": "uvch-documentation-explorer",
 				"title": "UVCH Documentation Explorer",
 				"properties": {
+					"UVCH.DocumentationExplorer.ResearchWebsiteList": {
+						"type": "array",
+						"default": [
+							"docs.unrealengine.com",
+							"unrealcommunity.wiki",
+							"dev.epicgames.com"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 1,
+						"markdownDescription": "List of websites to search for documentation",
+						"order": 2
+					},
 					"UVCH.DocumentationExplorer.OpenPanelLocation": {
 						"type": "string",
 						"enum": [
@@ -310,6 +324,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.27.2",
+		"googlethis": "^1.3.0",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	},
