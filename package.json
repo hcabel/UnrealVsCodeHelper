@@ -102,9 +102,9 @@
 			},
 			{
 				"id": "uvch-documentation-explorer",
-				"title": "UVCH Documentation Explorer",
+				"title": "UVCH Browser",
 				"properties": {
-					"UVCH.DocumentationExplorer.ResearchWebsiteList": {
+					"UVCH.DocumentationExplorer.DocSearchAllowedWebsiteList": {
 						"type": "array",
 						"default": [
 							"docs.unrealengine.com",
@@ -115,8 +115,20 @@
 							"type": "string"
 						},
 						"minItems": 1,
-						"markdownDescription": "List of websites to search for documentation",
+						"markdownDescription": "Every website where the DocSearch will search into",
 						"order": 2
+					},
+					"UVCH.DocumentationExplorer.UnrealSearchAllowedWebsiteList": {
+						"type": "array",
+						"default": [
+							"*"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"markdownDescription": "Every website where the UnrealSearch will search into (DocSearch website are already included).\n\n`use: '*' to allow every website`",
+						"order": 3
 					},
 					"UVCH.DocumentationExplorer.OpenPanelLocation": {
 						"type": "string",
@@ -171,7 +183,7 @@
 				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus || config.UVCH.Global.UseDocumentationExplorer && editorFocus"
 			},
 			{
-				"command": "UVCH.SearchUnrealDoc",
+				"command": "UVCH.UnrealSearchFromSelection",
 				"key": "ctrl+shift+f1",
 				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus && editorHasSelection"
 			}
@@ -240,8 +252,15 @@
 				"when": ""
 			},
 			{
-				"command": "UVCH.SearchUnrealDoc",
-				"title": "Search in Unreal Documentation from selection",
+				"command": "UVCH.UnrealSearch",
+				"title": "Search a therme or sentences and show the result in the UnrealDocBrowser",
+				"icon": "$(book)",
+				"category": "UVCH",
+				"when": ""
+			},
+			{
+				"command": "UVCH.UnrealSearchFromSelection",
+				"title": "Search a therme or sentences and show the result in the UnrealDocBrowser from current selection",
 				"icon": "$(book)",
 				"category": "UVCH",
 				"when": ""

@@ -13,7 +13,8 @@
 import {
 	OpenUnrealDoc_Implementation,
 	OpenUnrealDocFromSelection_Implementation,
-	SearchUnrealDoc_Implementation
+	UnrealSearch_Implementation,
+	UnrealSearchFromSelection_Implementation
 } from '../../Commands/BrowserCommands';
 
 import AFeatureSubSystem from "./FeatureSubSystem";
@@ -27,7 +28,8 @@ export default class DocumentationExplorerSubsystem extends AFeatureSubSystem
 		this._Commands = [
 			{ cmd: "OpenUnrealDoc", func: OpenUnrealDoc_Implementation },
 			{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation },
-			{ cmd: "SearchUnrealDoc", func: SearchUnrealDoc_Implementation }
+			{ cmd: "UnrealSearch", func: UnrealSearch_Implementation },
+			{ cmd: "UnrealSearchFromSelection", func: UnrealSearchFromSelection_Implementation },
 		];
 		this._Views = [
 			{

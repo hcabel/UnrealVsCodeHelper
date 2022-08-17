@@ -38,6 +38,23 @@ export interface IGoogleRequest {
 	result: IGoogleRequestEntry[]
 }
 
+async function	VerifyKeyword(keyword: string): Promise<string>
+{
+	if (!keyword || keyword === "") {
+		// If no keyword is provided, we show a input box for the user to enter a keyword
+		const inputSearch = await vscode.window.showInputBox({
+			title: 'DocSearch input box',
+			placeHolder: 'DocSearch...',
+		});
+		// If the user cancel the input box, we return false
+		if (!inputSearch) {
+			return ("");
+		}
+		keyword = inputSearch;
+	}
+	return (keyword);
+}
+
 function	OpenPage(url: string)
 {
 	// Get Settings
@@ -82,7 +99,7 @@ function	OpenPage(url: string)
 	});
 }
 
-function	FormatQuery(keyword: string): IGoogleQuery | undefined
+function	FormatQuery(keyword: string, websiteList: string[] = []): IGoogleQuery | undefined
 {
 	// Remove extra white spaces
 	keyword = keyword.replace(/\s\s+/gm, ' ');
@@ -107,8 +124,6 @@ function	FormatQuery(keyword: string): IGoogleQuery | undefined
 		.replace("%VERSION%", (bKeywordContainVersion ? "" : projectInfos?.UnrealVersion || ""))
 		.trim();
 
-	// Get website list in the settings
-	const websiteList = UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.ResearchWebsiteList") || [];
 	// format all the url into a single string parsable by the google search engine
 	const allowedWebsiteString =
 		(websiteList.length > 0 ? ` site:${websiteList.join(" OR site:")}` : "");
@@ -125,63 +140,48 @@ function	FormatQuery(keyword: string): IGoogleQuery | undefined
 	});
 }
 
-export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: boolean = true): Promise<boolean | undefined>
+async function	SendQuery(query: IGoogleQuery): Promise<IGoogleRequest>
 {
-	if (!keyword || keyword === "") {
-		// If no keyword is provided, we show a input box for the user to enter a keyword
-		const inputSearch = await vscode.window.showInputBox({
-			title: 'Unreal keywords',
-			placeHolder: 'type your search'
-		});
-		// If the user cancel the input box, we return false
-		if (!inputSearch) {
-			return (false);
-		}
-		keyword = inputSearch;
+	// Sending request
+	const newRequest = await GoogleThis.search(query.fullQuery, query.options);
+	const result = {
+		query: query,
+		result: newRequest.results
+	};
+	console.log({ query: query.fullQuery, res: result.result.map((r: any) => r.url)});
+	// Update the value
+	UVCHDataSubsystem.Set<IGoogleRequest>("LastGoogleRequest", result);
+
+	if (!result.result || result.result.length === 0) {
+		vscode.window.showErrorMessage(`No result found for '${query.formatedQuery}'`);
 	}
 
-	const query = FormatQuery(keyword);
+	return (result);
+}
+
+export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: boolean = false): Promise<boolean>
+{
+	keyword = await VerifyKeyword(keyword);
+	if (!keyword) {
+		return (false);
+	}
+
+	// Get website list in the settings
+	const websiteList = UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.DocSearchAllowedWebsiteList") || [];
+	// Format the query
+	const query = FormatQuery(keyword, websiteList);
 	if (!query) {
 		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
 		return (false);
 	}
 
-	// This help against request spaming
-	const oldRequest = UVCHDataSubsystem.Get<IGoogleRequest>("LastGoogleRequest");
-	if (oldRequest && oldRequest.query.keyword === query.keyword) {
-		// If the request is the same
-		if (open) {
-			if (oldRequest.result && oldRequest.result.length > 0) {
-				OpenPage(oldRequest.result[0].url);
-			}
-			else {
-				vscode.window.showErrorMessage(`No result found for '${keyword}'`);
-			}
-		}
-		// Even if nothing change we set the value to trigger all listener
-		UVCHDataSubsystem.Set<IGoogleRequest>("LastGoogleRequest", UVCHDataSubsystem.Get<IGoogleRequest>("LastGoogleRequest"));
-		return (true);
+	const request = await SendQuery(query);
+	if (request.result && open) {
+		log_uvch.log(`[UVHC] open url: '${request.result[0].url}' from keyword '${keyword}'`);
+		// Open the page into vscode using Simple Browser
+		OpenPage(request.result[0].url);
 	}
-
-	const result = {
-		query: query,
-		result: (await GoogleThis.search(query.fullQuery, query.options)).results
-	};
-	UVCHDataSubsystem.Set<IGoogleRequest>("LastGoogleRequest", result);
-
-	if (open) {
-		if (result.result && result.result.length > 0) {
-			log_uvch.log(`[UVHC] open url: '${result.result[0].url}' from keyword '${keyword}'`);
-
-			// Open the page into vscode using Simple Browser
-			OpenPage(result.result[0].url);
-			return (true);
-		}
-		vscode.window.showErrorMessage(`No result found for '${keyword}'`);
-		return (false);
-	}
-
-	return (result.result.length > 0 ? true : false);
+	return (request.result && request.result.length > 0 ? true : false);
 }
 
 export async function	OpenUnrealDocFromSelection_Implementation(open: boolean = true)
@@ -189,13 +189,43 @@ export async function	OpenUnrealDocFromSelection_Implementation(open: boolean = 
 	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
 	const selection = editor?.document.getText(editor.selection);
+
 	// Send request with keyword = selection
 	OpenUnrealDoc_Implementation(selection || "", open);
 }
 
-export async function	SearchUnrealDoc_Implementation()
+export async function	UnrealSearch_Implementation(keyword: string = "")
 {
-	OpenUnrealDocFromSelection_Implementation(false);
+	if (!keyword) {
+		return (false);
+	}
+
+	// Get website list in the settings
+	const websiteList = [
+		...(UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.DocSearchAllowedWebsiteList") || []),
+		...(UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.UnrealSearchAllowedWebsiteList") || []),
+	];
+	// Format the query
+	const query = FormatQuery(keyword, websiteList);
+	if (!query) {
+		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
+		return (false);
+	}
+
+	SendQuery(query);
+
+	// Show UnrealDocView
+	vscode.commands.executeCommand("UnrealDocView.focus");
+}
+
+export async function	UnrealSearchFromSelection_Implementation()
+{
+	// Find current selection text
+	const editor = vscode.window.activeTextEditor;
+	const selection = editor?.document.getText(editor.selection);
+
+	// Send request with keyword = selection
+	UnrealSearch_Implementation(selection || "");
 	// Show UnrealDocView
 	vscode.commands.executeCommand("UnrealDocView.focus");
 }

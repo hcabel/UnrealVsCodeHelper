@@ -53,8 +53,8 @@ function	UnrealDocView(props: { vscode: any })
 			props.vscode.postMessage({
 				action: "ExecuteCommand",
 				content: {
-					cmd: "UVCH.OpenUnrealDoc",
-					args: [value, false]
+					cmd: "UVCH.UnrealSearch",
+					args: [value]
 				}
 			});
 		}
@@ -80,8 +80,8 @@ function	UnrealDocView(props: { vscode: any })
 				<SearchBar
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
-					placeholder="Search in unreal docs"
-					value={_Query?.formatedQuery || "onlinesubsystem"}
+					placeholder="UnrealSearch"
+					value={_Query?.keyword || ""}
 				/>
 			</div>
 			<ul style={{ width: "calc(100% - 10px)", height: "100%", padding: 0, margin: "5px 5px 0px 5px", boxSizing: "border-box" }}>
