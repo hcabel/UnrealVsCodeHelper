@@ -14,7 +14,7 @@ import * as vscode from 'vscode';
 import ASubsystem from './Subsystem';
 
 const configPrefix = "UVCH";
-export type ConfigSubSection = "Global" | "Toolbar" | "Switch" | "DocumentationExplorer";
+export type ConfigSubSection = "Global" | "Toolbar" | "Switch" | "Browser";
 export type ConfigPath = `${ConfigSubSection}.${string}`;
 
 export default class UVCHSettingsSubsystem extends ASubsystem
@@ -28,20 +28,22 @@ export default class UVCHSettingsSubsystem extends ASubsystem
 		return (UVCHSettingsSubsystem.GetInstance<UVCHSettingsSubsystem>()!.Get<T>(section));
 	}
 	public Get<T = any>(section: ConfigPath): T | undefined {
-		return (
-			vscode.workspace.getConfiguration(section ? configPrefix : undefined)
-				.get<T>(section)
-		);
+		const config = vscode.workspace.getConfiguration(section ? configPrefix : undefined);
+		if (!config) {
+			throw Error(`No config found for '${section}'`);
+		}
+		return (config.get<T>(section));
 	}
 
 	public static Set<T = any>(section: ConfigPath, value: T): Thenable<void> {
 		return (UVCHSettingsSubsystem.GetInstance<UVCHSettingsSubsystem>()!.Set<T>(section, value));
 	}
 	public Set<T = any>(section: ConfigPath, value: T): Thenable<void> {
-		return (
-			vscode.workspace.getConfiguration(section ? configPrefix : undefined)
-				.update(section, value, 1)
-		);
+		const config = vscode.workspace.getConfiguration(section ? configPrefix : undefined);
+		if (!config) {
+			throw Error(`No config found for '${section}'`);
+		}
+		return (config.update(section, value, 1));
 	}
 
 }

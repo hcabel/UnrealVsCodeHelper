@@ -21,7 +21,7 @@
 
 # Features![Target](https://img.shields.io/badge/-Unreal%20Engine-313131?style=for-the-badge&logo=unreal-engine&logoColor=white) ![TargetLanguage](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 
-### **`Unreal Documentation Explorer`**
+### **`UVCH Browser`**
 ![UnrealDocExplorer](./resources/readme/UnrealDocExplorer.gif)<br/>
 This feature allow you to either go directly to a documentation page from selection.(using ctrl+f1 while selecting text)<br/>Or you can search it with the search bar(or ctrl+alt+f1) to see all the results INSIDE VsCode.
 

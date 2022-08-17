@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   UnrealDocView.tsx                                  :+:      :+:    :+:   */
+/*   UVCHBrowser.tsx                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,13 +16,13 @@ import { IGoogleQuery, IGoogleRequest, IGoogleRequestEntry } from '../Commands/B
 import { RestApiEntry } from './components/RestApiEntry';
 import SearchBar from './components/SearchBar';
 
-import "./UnrealDocView.css";
+import "./UVCHBrowser.css";
 
 declare const window: Window & {
 	acquireVsCodeApi: any
 };
 
-function	UnrealDocView(props: { vscode: any })
+function	UVCHBrowser(props: { vscode: any })
 {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const [_RestApiItems, set_RestApiItems] = React.useState<IGoogleRequestEntry[]>([]);
@@ -117,6 +117,6 @@ function	UnrealDocView(props: { vscode: any })
 }
 
 ReactDOM.render(
-	<UnrealDocView vscode={window.acquireVsCodeApi()} />,
-	document.getElementById('UnrealDocView-root')
+	<UVCHBrowser vscode={window.acquireVsCodeApi()} />,
+	document.getElementById('UVCHBrowser-root')
 );

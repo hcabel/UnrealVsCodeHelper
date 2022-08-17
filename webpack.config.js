@@ -97,6 +97,6 @@ function GenerateAllViewConfigutation(views) {
 module.exports = [ extensionConfig, ...GenerateAllViewConfigutation(
 	[
 		"UnrealProjectView",
-		"UnrealDocView"
+		"UVCHBrowser"
 	])
 ];

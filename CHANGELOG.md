@@ -68,7 +68,7 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 ### Added
 - `DocExplorer:` New command ***UVCH.OpenUnrealDoc*** who's opening documentation page in your browser
 - `DocExplorer:` New shortcut ***alt+f1*** Triggering ***UVCH.OpenUnrealDoc*** with the current selection has keyword
-- `DocExplorer:` New interface panel ***UnrealDocumentationExplorer***, a small browser for unreal documention INSIDE VsCode
+- `DocExplorer:` New interface panel ***UVCH Browser***, a small browser for unreal documention INSIDE VsCode
 - `DocExplorer:` New shortcut ***alt+shift+f1*** triggering ***UVCH.UnrealSearch*** Allowing you do to do a reseach from the current selection without opening the browser tab
 
 ## `[0.2.0] - 2022/05/27`

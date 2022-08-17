@@ -58,7 +58,7 @@ async function	VerifyKeyword(keyword: string): Promise<string>
 function	OpenPage(url: string)
 {
 	// Get Settings
-	const settingOpenPanelLocation = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.OpenPanelLocation");
+	const settingOpenPanelLocation = UVCHSettingsSubsystem.Get<string>("Browser.DocSearch.OpenPanelLocation");
 	if (!settingOpenPanelLocation) {
 		throw new Error("OpenPanelLocation setting is not set");
 	}
@@ -112,14 +112,14 @@ function	FormatQuery(keyword: string, websiteList: string[] = []): IGoogleQuery 
 	}
 
 	// Construct query from settings format
-	const settingResearchFormat = UVCHSettingsSubsystem.Get<string>("DocumentationExplorer.ResearchFormat") || "";
+	const settingSearchFormat = UVCHSettingsSubsystem.Get<string>("Browser.SearchFormat") || "";
 	const projectInfos = UVCHDataSubsystem.Get<IProjectInfos>("ProjectInfos");
 
 	const bKeywordContainVersion: boolean =
 		RegExp(/(\s|^)((UE[0-9])|((UE)?[0-9]\.[0-9][0-9]?)|((UE)?[0-9]\.[0-9][0-9]\.[0-9][0-9]?))(\s|$)/i)
 			.test(keyword);
 
-	const query = settingResearchFormat
+	const query = settingSearchFormat
 		.replace("%KEYWORD%", keyword)
 		.replace("%VERSION%", (bKeywordContainVersion ? "" : projectInfos?.UnrealVersion || ""))
 		.trim();
@@ -167,13 +167,16 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 	}
 
 	// Get website list in the settings
-	const websiteList = UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.DocSearchAllowedWebsiteList") || [];
+	const websiteList = UVCHSettingsSubsystem.Get<string[]>("Browser.DocSearch.AllowedWebsiteList") || [];
 	// Format the query
 	const query = FormatQuery(keyword, websiteList);
-	if (!query) {
-		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
+	if (!query || !query.keyword || !query.formatedQuery || !query.fullQuery) {
+		vscode.window.showErrorMessage(`Invalid query: '${keyword}'`);
 		return (false);
 	}
+
+	// Show UVCHBrowser
+	vscode.commands.executeCommand("UVCHBrowser.focus");
 
 	const request = await SendQuery(query);
 	if (request.result && open) {
@@ -181,10 +184,12 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		// Open the page into vscode using Simple Browser
 		OpenPage(request.result[0].url);
 	}
+
+
 	return (request.result && request.result.length > 0 ? true : false);
 }
 
-export async function	OpenUnrealDocFromSelection_Implementation(open: boolean = true)
+export function	OpenUnrealDocFromSelection_Implementation(open: boolean = true)
 {
 	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
@@ -194,7 +199,7 @@ export async function	OpenUnrealDocFromSelection_Implementation(open: boolean = 
 	OpenUnrealDoc_Implementation(selection || "", open);
 }
 
-export async function	UnrealSearch_Implementation(keyword: string = "")
+export async function	UnrealSearch_Implementation(keyword: string = ""): Promise<boolean>
 {
 	if (!keyword) {
 		return (false);
@@ -202,23 +207,25 @@ export async function	UnrealSearch_Implementation(keyword: string = "")
 
 	// Get website list in the settings
 	const websiteList = [
-		...(UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.DocSearchAllowedWebsiteList") || []),
-		...(UVCHSettingsSubsystem.Get<string[]>("DocumentationExplorer.UnrealSearchAllowedWebsiteList") || []),
+		...(UVCHSettingsSubsystem.Get<string[]>("Browser.DocSearch.AllowedWebsiteList") || []),
+		...(UVCHSettingsSubsystem.Get<string[]>("Browser.UnrealSearch.AllowedWebsiteList") || []),
 	];
 	// Format the query
 	const query = FormatQuery(keyword, websiteList);
-	if (!query) {
+	if (!query || !query.keyword || !query.formatedQuery || !query.fullQuery) {
 		vscode.window.showErrorMessage(`Invalid query: '${query}'`);
 		return (false);
 	}
 
-	SendQuery(query);
+	// Show UVCHBrowser
+	vscode.commands.executeCommand("UVCHBrowser.focus");
 
-	// Show UnrealDocView
-	vscode.commands.executeCommand("UnrealDocView.focus");
+	const request = await SendQuery(query);
+
+	return (request.result && request.result.length > 0 ? true : false);
 }
 
-export async function	UnrealSearchFromSelection_Implementation()
+export function	UnrealSearchFromSelection_Implementation()
 {
 	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
@@ -226,6 +233,4 @@ export async function	UnrealSearchFromSelection_Implementation()
 
 	// Send request with keyword = selection
 	UnrealSearch_Implementation(selection || "");
-	// Show UnrealDocView
-	vscode.commands.executeCommand("UnrealDocView.focus");
 }

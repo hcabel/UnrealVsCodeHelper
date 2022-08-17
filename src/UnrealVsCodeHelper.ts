@@ -16,7 +16,7 @@ import SwitchFileSubsystem from './SubSystem/featureSubSystem/SwitchFileSubsyste
 import UVCHDataSubsystem from './SubSystem/DataSubsystem';
 import UVCHSettingsSubsystem from './SubSystem/SettingsSubsystem';
 import ToolbarSubsystem from './SubSystem/featureSubSystem/ToolbarSubsystem';
-import DocumentationExplorerSubsystem from './SubSystem/featureSubSystem/DocumentationExplorer';
+import BrowserSubsystem from './SubSystem/featureSubSystem/BrowserSubsystem';
 import { GoToSettings_Implementation } from './Commands/GeneralCommands';
 
 // Function triggered when the 'activationEvents' in the package.json is called
@@ -39,7 +39,7 @@ export function	activate(context: vscode.ExtensionContext)
 	// You should not use a feature outise of the Subsystems, but if you do make sure there not disabled
 	SwitchFileSubsystem.Init();
 	ToolbarSubsystem.Init();
-	DocumentationExplorerSubsystem.Init();
+	BrowserSubsystem.Init();
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

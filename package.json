@@ -45,10 +45,10 @@
 						"markdownDescription": "Disable feature: `Toolbar`",
 						"order": 1
 					},
-					"UVCH.Global.UseDocumentationExplorer": {
+					"UVCH.Global.UseBrowser": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Disable feature: `Documentation Explorer`",
+						"markdownDescription": "Disable feature: `UVCH Browser`",
 						"order": 2
 					}
 				},
@@ -104,7 +104,19 @@
 				"id": "uvch-documentation-explorer",
 				"title": "UVCH Browser",
 				"properties": {
-					"UVCH.DocumentationExplorer.DocSearchAllowedWebsiteList": {
+					"UVCH.Browser.UnrealSearch.AllowedWebsiteList": {
+						"type": "array",
+						"default": [
+							"*"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"markdownDescription": "Every website where the UnrealSearch will search into (DocSearch website are already included).\n\n`use: '*' to allow every website`",
+						"order": 4
+					},
+					"UVCH.Browser.DocSearch.AllowedWebsiteList": {
 						"type": "array",
 						"default": [
 							"docs.unrealengine.com",
@@ -116,21 +128,9 @@
 						},
 						"minItems": 1,
 						"markdownDescription": "Every website where the DocSearch will search into",
-						"order": 2
-					},
-					"UVCH.DocumentationExplorer.UnrealSearchAllowedWebsiteList": {
-						"type": "array",
-						"default": [
-							"*"
-						],
-						"items": {
-							"type": "string"
-						},
-						"minItems": 0,
-						"markdownDescription": "Every website where the UnrealSearch will search into (DocSearch website are already included).\n\n`use: '*' to allow every website`",
 						"order": 3
 					},
-					"UVCH.DocumentationExplorer.OpenPanelLocation": {
+					"UVCH.Browser.DocSearch.OpenPanelLocation": {
 						"type": "string",
 						"enum": [
 							"Active",
@@ -162,7 +162,7 @@
 						"markdownDescription": "Define where the browser tab will be opened",
 						"order": 1
 					},
-					"UVCH.DocumentationExplorer.ResearchFormat": {
+					"UVCH.Browser.SearchFormat": {
 						"type": "string",
 						"default": "%VERSION% %KEYWORD%",
 						"markdownDescription": "You can add extra parameters to the search query.\n\nEg: `'%VERSION% C++ %KEYWORD%'` => `'5.0 C++ IOnlineSubsystem'`",
@@ -180,12 +180,12 @@
 			{
 				"command": "UVCH.OpenUnrealDocFromSelection",
 				"key": "ctrl+f1",
-				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus || config.UVCH.Global.UseDocumentationExplorer && editorFocus"
+				"when": "config.UVCH.Global.UseBrowser && editorTextFocus || config.UVCH.Global.UseBrowser && editorFocus"
 			},
 			{
 				"command": "UVCH.UnrealSearchFromSelection",
 				"key": "ctrl+shift+f1",
-				"when": "config.UVCH.Global.UseDocumentationExplorer && editorTextFocus && editorHasSelection"
+				"when": "config.UVCH.Global.UseBrowser && editorTextFocus && editorHasSelection"
 			}
 		],
 		"commands": [
@@ -285,9 +285,9 @@
 				},
 				{
 					"type": "webview",
-					"id": "UnrealDocView",
-					"name": "Unreal Documentation Explorer",
-					"when": "config.UVCH.Global.UseDocumentationExplorer"
+					"id": "UVCHBrowser",
+					"name": "UVCH Browser",
+					"when": "config.UVCH.Global.UseBrowser"
 				}
 			]
 		},
@@ -301,7 +301,7 @@
 				{
 					"command": "UVCH.GoToSettings",
 					"group": "navigation",
-					"when": "view == UnrealProjectView || view == UnrealDocView"
+					"when": "view == UnrealProjectView || view == UVCHBrowser"
 				}
 			]
 		}

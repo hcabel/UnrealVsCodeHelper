@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DocumentationExplorer.ts                           :+:      :+:    :+:   */
+/*   BrowserSubsystem.ts                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: HugoCabel <coding@hugocabel.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -19,12 +19,12 @@ import {
 
 import AFeatureSubSystem from "./FeatureSubSystem";
 
-export default class DocumentationExplorerSubsystem extends AFeatureSubSystem
+export default class BrowserSubsystem extends AFeatureSubSystem
 {
 	protected	Assign()
 	{
-		this._FeatureName = "DocumentationExplorer";
-		this._EnableConfigPath = "Global.UseDocumentationExplorer";
+		this._FeatureName = "Browser";
+		this._EnableConfigPath = "Global.UseBrowser";
 		this._Commands = [
 			{ cmd: "OpenUnrealDoc", func: OpenUnrealDoc_Implementation },
 			{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation },
@@ -35,7 +35,7 @@ export default class DocumentationExplorerSubsystem extends AFeatureSubSystem
 			{
 				viewId: "UVCH",
 				panelIds: [
-					"UnrealDocView"
+					"UVCHBrowser"
 				]
 			}
 		];
