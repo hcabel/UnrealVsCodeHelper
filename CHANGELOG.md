@@ -10,6 +10,20 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - package project scripts
 - Clean project scripts
 
+## `[1.1.0] - 2022/08/23`
+
+### Added
+- `Browser` Add new usefull link for Unreal meta tags
+- `Global` Add gear icon on every view to access UVCH settings easily
+
+### Change
+- `Shortcut` QuickSearch triggerable when you focusing a terminal (Not from selection though)
+- `Browser` Replace Search method from 'Google API' to the npm package 'GoogleThis' because free tu use
+
+### Fix
+- `Browser` Fix bug who was duplicating search versions
+- `Global` Fix the reload logo on the project view who wasn't showing up
+
 ## `[1.0.2] - 2022/08/05`
 
 ### Changed
@@ -17,8 +31,8 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 
 ## `[1.0.1] - 2022/06/25`
 ### Added
-- `DocExplorer:` You can now change the request format in the settings (eg: if you want to add 'C++' to all your requests or if you don't want the current unreal version to be added)
-- `DocExplorer:` New setting to set where you want the browser tab to be oppened
+- `Browser:` You can now change the request format in the settings (eg: if you want to add 'C++' to all your requests or if you don't want the current unreal version to be added)
+- `Browser:` New setting to set where you want the browser tab to be oppened
 
 ### Fix
 - `ToolBar:` Now play commands/buttons are waiting for the build to finish before executing
@@ -26,7 +40,7 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - `Interfaces:` Resolve crash when moving any interface panel
 
 ### Changed
-- `DocExplorer:` Error message when the request show no result
+- `Browser:` Error message when the request show no result
 - `SwitchFile:` Error message when switching from unsupported file
 
 ### Remove
@@ -38,7 +52,7 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - `ToolBar:` New settings to add any additional flags to build/play(game)/play(editor) commands
 
 ### Changed
-- `DocExplorer:` Fix RestItems design
+- `Browser:` Fix RestItems design
 
 ## `[0.3.3] - 2022/06/01`
 ### Changed
@@ -46,10 +60,10 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 
 ## `[0.3.2] - 2022/05/31`
 ### Added
-- `DocExplorer:` Highlight very usefull website in the Unreal documentation explorer. (if you want a page to be added, please contact me)
+- `Browser:` Highlight very usefull website in the Unreal documentation explorer. (if you want a page to be added, please contact me)
 
 ### Changed
-- `DocExplorer:` Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
+- `Browser:` Documentation pages ar now open directly in VS Code, instead of opening a new browser tab.
 
 
 ## `[0.3.1] - 2022/05/29`
@@ -57,19 +71,19 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - `Interfaces:` Color responsive to your current theme
 
 ### Changed
-- `DocExplorer:` design and code refactoring
-- `DocExplorer:` Search image is hidden when the panel is too small to give more space to the snippets
+- `Browser:` design and code refactoring
+- `Browser:` Search image is hidden when the panel is too small to give more space to the snippets
 
 ### Fixed
-- `DocExplorer:` Fix scroll Y axis
-- `DocExplorer:` Resove stuck in loading animation when searching for the same thing
+- `Browser:` Fix scroll Y axis
+- `Browser:` Resove stuck in loading animation when searching for the same thing
 
 ## `[0.3.0] - 2022/05/28`
 ### Added
-- `DocExplorer:` New command ***UVCH.QuickSearch*** who's opening documentation page in your browser
-- `DocExplorer:` New shortcut ***alt+f1*** Triggering ***UVCH.QuickSearch*** with the current selection has keyword
-- `DocExplorer:` New interface panel ***UVCH Browser***, a small browser for unreal documention INSIDE VsCode
-- `DocExplorer:` New shortcut ***alt+shift+f1*** triggering ***UVCH.BrowserSearch*** Allowing you do to do a reseach from the current selection without opening the browser tab
+- `Browser:` New command ***UVCH.QuickSearch*** who's opening documentation page in your browser
+- `Browser:` New shortcut ***alt+f1*** Triggering ***UVCH.QuickSearch*** with the current selection has keyword
+- `Browser:` New interface panel ***UVCH Browser***, a small browser for unreal documention INSIDE VsCode
+- `Browser:` New shortcut ***alt+shift+f1*** triggering ***UVCH.BrowserSearch*** Allowing you do to do a reseach from the current selection without opening the browser tab
 
 ## `[0.2.0] - 2022/05/27`
 ### Added
