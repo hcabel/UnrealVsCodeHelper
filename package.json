@@ -36,19 +36,19 @@
 					"UVCH.Global.UseSwitchFile": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Disable feature: `switch between Header/Cpp files`",
+						"markdownDescription": "Use feature: `switch between Header/Cpp files`",
 						"order": 0
 					},
 					"UVCH.Global.UseToolbar": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Disable feature: `Toolbar`",
+						"markdownDescription": "Use feature: `Toolbar`",
 						"order": 1
 					},
 					"UVCH.Global.UseBrowser": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Disable feature: `UVCH Browser`",
+						"markdownDescription": "Use feature: `UVCH Browser`",
 						"order": 2
 					}
 				},
@@ -101,36 +101,10 @@
 				}
 			},
 			{
-				"id": "uvch-documentation-explorer",
+				"id": "uvch-browser",
 				"title": "UVCH Browser",
 				"properties": {
-					"UVCH.Browser.UnrealSearch.AllowedWebsiteList": {
-						"type": "array",
-						"default": [
-							"*"
-						],
-						"items": {
-							"type": "string"
-						},
-						"minItems": 0,
-						"markdownDescription": "Every website where the UnrealSearch will search into (DocSearch website are already included).\n\n`use: '*' to allow every website`",
-						"order": 4
-					},
-					"UVCH.Browser.DocSearch.AllowedWebsiteList": {
-						"type": "array",
-						"default": [
-							"docs.unrealengine.com",
-							"unrealcommunity.wiki",
-							"dev.epicgames.com"
-						],
-						"items": {
-							"type": "string"
-						},
-						"minItems": 1,
-						"markdownDescription": "Every website where the DocSearch will search into",
-						"order": 3
-					},
-					"UVCH.Browser.DocSearch.OpenPanelLocation": {
+					"UVCH.Browser.OpenPanelLocation": {
 						"type": "string",
 						"enum": [
 							"Active",
@@ -160,13 +134,41 @@
 						],
 						"default": "Beside",
 						"markdownDescription": "Define where the browser tab will be opened",
-						"order": 1
+						"order": 0
 					},
 					"UVCH.Browser.SearchFormat": {
 						"type": "string",
 						"default": "%VERSION% %KEYWORD%",
 						"markdownDescription": "You can add extra parameters to the search query.\n\nEg: `'%VERSION% C++ %KEYWORD%'` => `'5.0 C++ IOnlineSubsystem'`",
-						"order": 0
+						"order": 1
+					},
+					"UVCH.Browser.QuickSearchAllowedWebsite": {
+						"type": "array",
+						"default": [
+							"docs.unrealengine.com",
+							"unrealcommunity.wiki",
+							"dev.epicgames.com"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 1,
+						"markdownDescription": "Allowed website when using the **quick search** cmd *(ctrl+f1)*\n\n`use: '*' to allow every website`",
+						"order": 2
+					},
+					"UVCH.Browser.SearchBarAllowedWebsite": {
+						"type": "array",
+						"default": [
+							"docs.unrealengine.com",
+							"unrealcommunity.wiki",
+							"dev.epicgames.com"
+						],
+						"items": {
+							"type": "string"
+						},
+						"minItems": 0,
+						"markdownDescription": "Allowed website when using the **search bar** *(ctrl+shift+f1)*.\n\n`use: '*' to allow every website`",
+						"order": 3
 					}
 				}
 			}
@@ -178,12 +180,17 @@
 				"when": ""
 			},
 			{
-				"command": "UVCH.OpenUnrealDocFromSelection",
+				"command": "UVCH.QuickSearch",
 				"key": "ctrl+f1",
-				"when": "config.UVCH.Global.UseBrowser && editorTextFocus || config.UVCH.Global.UseBrowser && editorFocus"
+				"when": "config.UVCH.Global.UseBrowser && !editorHasSelection"
 			},
 			{
-				"command": "UVCH.UnrealSearchFromSelection",
+				"command": "UVCH.QuickSearchFromSelection",
+				"key": "ctrl+f1",
+				"when": "config.UVCH.Global.UseBrowser && editorHasSelection"
+			},
+			{
+				"command": "UVCH.BrowserSearchFromSelection",
 				"key": "ctrl+shift+f1",
 				"when": "config.UVCH.Global.UseBrowser && editorTextFocus && editorHasSelection"
 			}
@@ -199,71 +206,71 @@
 				"command": "UVCH.GetProjectInfos",
 				"title": "Refresh",
 				"icon": "$(refresh)",
-				"category": "UVCH",
-				"when": "isWindows"
+				"category": "UVCHToolbar",
+				"when": "isWindows && config.UVCH.Global.UseToolbar"
 			},
 			{
 				"command": "UVCH.PlayGame",
 				"title": "Play (Game)",
 				"icon": "$(play)",
-				"category": "UVCH",
-				"when": "isWindows"
+				"category": "UVCHToolbar",
+				"when": "isWindows && config.UVCH.Global.UseToolbar"
 			},
 			{
 				"command": "UVCH.PlayEditor",
 				"title": "Play (Editor)",
 				"icon": "$(play)",
-				"category": "UVCH",
-				"when": "isWindows"
+				"category": "UVCHToolbar",
+				"when": "isWindows && config.UVCH.Global.UseToolbar"
 			},
 			{
 				"command": "UVCH.BuildEditor",
 				"title": "Build (Editor)",
 				"icon": "$(package)",
-				"category": "UVCH",
-				"when": "isWindows"
+				"category": "UVCHToolbar",
+				"when": "isWindows && config.UVCH.Global.UseToolbar"
 			},
 			{
 				"command": "UVCH.GetUnrealEnginePath",
 				"title": "Find Unreal Engine folder path",
 				"icon": "$(folder)",
-				"category": "UVCH",
-				"when": "isWindows"
+				"category": "UVCHToolbar",
+				"when": "isWindows && config.UVCH.Global.UseToolbar"
 			},
 			{
 				"command": "UVCH.SwitchHeaderCppFile",
 				"title": "Switch between header/cpp file",
 				"icon": "$(arrow-swap)",
-				"category": "UVCH",
-				"when": ""
+				"category": "UVCHSwitchFile",
+				"when": "config.UVCH.Global.UseSwitchFile"
 			},
 			{
-				"command": "UVCH.OpenUnrealDoc",
-				"title": "Open Unreal Documentation",
-				"icon": "$(book)",
-				"category": "UVCH",
-				"when": ""
+				"command": "UVCH.QuickSearch",
+				"title": "Open webpage with the most relevant web results",
+				"icon": "$(search)",
+				"category": "UVCHBrowser",
+				"when": "config.UVCH.Global.UseBrowser"
 			},
 			{
-				"command": "UVCH.OpenUnrealDocFromSelection",
-				"title": "Open Unreal Documentation from selection",
-				"icon": "$(book)",
-				"category": "UVCH",
-				"when": ""
+				"command": "UVCH.QuickSearchFromSelection",
+				"title": "Open webpage with the most relevant web results from selected word",
+				"icon": "$(search)",
+				"category": "UVCHBrowser",
+				"when": "config.UVCH.Global.UseBrowser"
 			},
 			{
-				"command": "UVCH.UnrealSearch",
-				"title": "Search a therme or sentences and show the result in the UnrealDocBrowser",
-				"icon": "$(book)",
-				"category": "UVCH",
-				"when": ""
+				"command": "UVCH.BrowserSearch",
+				"title": "Search a therme or sentences and show the result in the UVCH Browser",
+				"icon": "$(search)",
+				"category": "UVCHBrowser",
+				"when": "config.UVCH.Global.UseBrowser"
 			},
 			{
-				"command": "UVCH.UnrealSearchFromSelection",
-				"title": "Search a therme or sentences and show the result in the UnrealDocBrowser from current selection",
-				"icon": "$(book)",
-				"category": "UVCH",
-				"when": ""
+				"command": "UVCH.BrowserSearchFromSelection",
+				"title": "Search a therme or sentences and show the result in the UVCH Browser from current selection",
+				"icon": "$(search)",
+				"category": "UVCHBrowser",
+				"when": "config.UVCH.Global.UseBrowser"
 			}
 		],
 		"viewsContainers": {

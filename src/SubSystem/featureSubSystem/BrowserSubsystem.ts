@@ -11,10 +11,10 @@
 /* ************************************************************************** */
 
 import {
-	OpenUnrealDoc_Implementation,
-	OpenUnrealDocFromSelection_Implementation,
-	UnrealSearch_Implementation,
-	UnrealSearchFromSelection_Implementation
+	QuickSearch_Implementation,
+	QuickSearchFromSelection_Implementation,
+	BrowserSearch_Implementation,
+	BrowserSearchFromSelection_Implementation
 } from '../../Commands/BrowserCommands';
 
 import AFeatureSubSystem from "./FeatureSubSystem";
@@ -26,10 +26,10 @@ export default class BrowserSubsystem extends AFeatureSubSystem
 		this._FeatureName = "Browser";
 		this._EnableConfigPath = "Global.UseBrowser";
 		this._Commands = [
-			{ cmd: "OpenUnrealDoc", func: OpenUnrealDoc_Implementation },
-			{ cmd: "OpenUnrealDocFromSelection", func: OpenUnrealDocFromSelection_Implementation },
-			{ cmd: "UnrealSearch", func: UnrealSearch_Implementation },
-			{ cmd: "UnrealSearchFromSelection", func: UnrealSearchFromSelection_Implementation },
+			{ cmd: "QuickSearch", func: QuickSearch_Implementation },
+			{ cmd: "QuickSearchFromSelection", func: QuickSearchFromSelection_Implementation },
+			{ cmd: "BrowserSearch", func: BrowserSearch_Implementation },
+			{ cmd: "BrowserSearchFromSelection", func: BrowserSearchFromSelection_Implementation },
 		];
 		this._Views = [
 			{

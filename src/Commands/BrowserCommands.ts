@@ -58,7 +58,7 @@ async function	VerifyKeyword(keyword: string): Promise<string>
 function	OpenPage(url: string)
 {
 	// Get Settings
-	const settingOpenPanelLocation = UVCHSettingsSubsystem.Get<string>("Browser.DocSearch.OpenPanelLocation");
+	const settingOpenPanelLocation = UVCHSettingsSubsystem.Get<string>("Browser.OpenPanelLocation");
 	if (!settingOpenPanelLocation) {
 		throw new Error("OpenPanelLocation setting is not set");
 	}
@@ -159,7 +159,7 @@ async function	SendQuery(query: IGoogleQuery): Promise<IGoogleRequest>
 	return (result);
 }
 
-export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: boolean = false): Promise<boolean>
+export async function	QuickSearch_Implementation(keyword: string = "", open: boolean = false): Promise<boolean>
 {
 	keyword = await VerifyKeyword(keyword);
 	if (!keyword) {
@@ -167,7 +167,7 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 	}
 
 	// Get website list in the settings
-	const websiteList = UVCHSettingsSubsystem.Get<string[]>("Browser.DocSearch.AllowedWebsiteList") || [];
+	const websiteList = UVCHSettingsSubsystem.Get<string[]>("Browser.QuickSearchAllowedWebsite") || [];
 	// Format the query
 	const query = FormatQuery(keyword, websiteList);
 	if (!query || !query.keyword || !query.formatedQuery || !query.fullQuery) {
@@ -185,31 +185,27 @@ export async function	OpenUnrealDoc_Implementation(keyword: string = "", open: b
 		OpenPage(request.result[0].url);
 	}
 
-
 	return (request.result && request.result.length > 0 ? true : false);
 }
 
-export function	OpenUnrealDocFromSelection_Implementation(open: boolean = true)
+export function	QuickSearchFromSelection_Implementation(open: boolean = true)
 {
 	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
 	const selection = editor?.document.getText(editor.selection);
 
 	// Send request with keyword = selection
-	OpenUnrealDoc_Implementation(selection || "", open);
+	QuickSearch_Implementation(selection || "", open);
 }
 
-export async function	UnrealSearch_Implementation(keyword: string = ""): Promise<boolean>
+export async function	BrowserSearch_Implementation(keyword: string = ""): Promise<boolean>
 {
 	if (!keyword) {
 		return (false);
 	}
 
 	// Get website list in the settings
-	const websiteList = [
-		...(UVCHSettingsSubsystem.Get<string[]>("Browser.DocSearch.AllowedWebsiteList") || []),
-		...(UVCHSettingsSubsystem.Get<string[]>("Browser.UnrealSearch.AllowedWebsiteList") || []),
-	];
+	const websiteList = UVCHSettingsSubsystem.Get<string[]>("Browser.Browser.SearchBarAllowedWebsite") || [];
 	// Format the query
 	const query = FormatQuery(keyword, websiteList);
 	if (!query || !query.keyword || !query.formatedQuery || !query.fullQuery) {
@@ -225,12 +221,12 @@ export async function	UnrealSearch_Implementation(keyword: string = ""): Promise
 	return (request.result && request.result.length > 0 ? true : false);
 }
 
-export function	UnrealSearchFromSelection_Implementation()
+export function	BrowserSearchFromSelection_Implementation()
 {
 	// Find current selection text
 	const editor = vscode.window.activeTextEditor;
 	const selection = editor?.document.getText(editor.selection);
 
 	// Send request with keyword = selection
-	UnrealSearch_Implementation(selection || "");
+	BrowserSearch_Implementation(selection || "");
 }

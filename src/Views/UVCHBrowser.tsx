@@ -53,7 +53,7 @@ function	UVCHBrowser(props: { vscode: any })
 			props.vscode.postMessage({
 				action: "ExecuteCommand",
 				content: {
-					cmd: "UVCH.UnrealSearch",
+					cmd: "UVCH.BrowserSearch",
 					args: [value]
 				}
 			});
@@ -80,7 +80,7 @@ function	UVCHBrowser(props: { vscode: any })
 				<SearchBar
 					onBlur={OnBlur}
 					blurType={["OnEnter", "OnIconClicked"]}
-					placeholder="UnrealSearch"
+					placeholder="BrowserSearch"
 					value={_Query?.keyword || ""}
 				/>
 			</div>
