@@ -134,35 +134,55 @@ export class ViewPanelBase
 	/**
 	 * Get the base HTML to allow showing a React component
 	 */
-	 private	GetHTMLHasString(): string
-	 {
-		 const reactAppPathOnDisk = vscode.Uri.file(
-			 path.join(this._Context.extensionPath, 'dist', `${this._BundleFileName}.js`)
-		 );
-		 const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
+	private	GetHTMLHasString(): string
+	{
+		const reactAppPathOnDisk = vscode.Uri.file(
+			path.join(this._Context.extensionPath, 'dist', `${this._BundleFileName}.js`)
+		);
+		const reactAppUri = this._Panel!.webview.asWebviewUri(reactAppPathOnDisk);
 
-		 return (`
-			 <!DOCTYPE html>
-			 <html lang="en">
-				 <head>
-					 <meta charset="UTF-8">
-					 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-					 <meta http-equiv="Content-Security-Policy"
-					 content="default-src 'none';
-							 img-src https:;
-							 script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
-							 style-src vscode-resource: 'unsafe-inline';">
-					 <script>
-						 window.acquireVsCodeApi = acquireVsCodeApi;
-					 </script>
-				 </head>
-				 <body style="padding: 0">
-					 <div id="${this._PanelId}-root"></div>
-					 <script src="${reactAppUri}"></script>
-				 </body>
-			 </html>
-		 `);
-	 }
+		this._Panel!.webview.options = {
+			enableScripts: true,
+			localResourceRoots: [vscode.Uri.file(path.join(this._Context.extensionPath, 'dist'))],
+		};
+
+		function GetNonce() {
+			let text = '';
+			const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			for (let i = 0; i < 32; i++) {
+				text += possible.charAt(Math.floor(Math.random() * possible.length));
+			}
+			return text;
+		}
+
+		const nonce = GetNonce();
+
+		return (`
+			<!DOCTYPE html>
+			<html lang="en">
+				<head>
+					<meta charset="UTF-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<meta
+						http-equiv="Content-Security-Policy"
+						content="
+							default-src 'none';
+							img-src ${this._Panel!.webview.cspSource} http:;
+							script-src 'nonce-${nonce}' 'unsafe-hashes' 'unsafe-eval' 'unsafe-inline';
+							style-src ${this._Panel!.webview.cspSource} 'unsafe-hashes' 'unsafe-eval' 'unsafe-inline';
+						"
+					>
+					<script nonce="${nonce}">
+						window.acquireVsCodeApi = acquireVsCodeApi;
+					</script>
+				</head>
+				<body style="padding: 0">
+					<div id="${this._PanelId}-root"></div>
+					<script nonce="${nonce}" src="${reactAppUri}"></script>
+				</body>
+			</html>
+		`);
+	}
 
 	public get PanelId(): string { return (this._PanelId); }
 }
