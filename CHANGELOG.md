@@ -10,6 +10,11 @@ All notable changes to the "UnrealVsCodeHelper" extension will be documented in 
 - package project scripts
 - Clean project scripts
 
+## `[1.1.1] - 2022/02/02`
+
+### Fix
+- `Global` Fix content policy issue
+
 ## `[1.1.0] - 2022/08/23`
 
 ### Added
