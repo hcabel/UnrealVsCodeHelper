@@ -13,7 +13,7 @@
 	</a>
 </div>
 
-#### This extension is here to help you develop with Unreal Engine.<br/> My ambition is to provide as many tools as VisualAssistX does on Visual Studio (we're not even close yet :D).
+#### This extension is here to help you develop with Unreal Engine.
 
 > - **`Ideas`** coding@hugocabel.com
 > - **`Issues`** https://github.com/hcabel/UnrealVsCodeHelper/issues
